@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Finanzierungskalkulator</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: #F8F9FA;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .fade-in { animation: fadeIn 0.6s ease-out forwards; }
+    .form-input-underline {
+      background-color: transparent;
+      border: none;
+      border-bottom: 1px solid #ced4da;
+      border-radius: 0;
+      padding: 0.5rem 0.2rem;
+      color: #212529;
+      transition: border-color 0.3s, border-width 0.3s;
+      -webkit-appearance: none;
+         appearance: none;
+    }
+    .form-input-underline:focus {
+      border-color: #032659;
+      border-width: 0 0 1px 0;
+      box-shadow: none;
+      outline: none;
+    }
+    .result-field {
+      background-color: transparent;
+      border: none;
+      padding: 0.5rem 0.2rem;
+      color: #212529;
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+    .panel {
+      background-color: #ffffff;
+      border: 1px solid #f0f0f0;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+      border-radius: 0.75rem;
+    }
+    .toggle-section {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.45s ease, margin-top 0.45s ease;
+    }
+    .toggle-section.open-offer { margin-top: 2rem; }
+    .toggle-section.open-timeline { margin-top: 0.75rem; }
+    #offer-icon {
+      font-weight: 500;
+      transition: transform 0.5s ease-in-out;
+    }
+    #timeline-icon {
+      font-weight: 500;
+      transition: transform 0.35s ease;
+    }
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 51px;
+      height: 31px;
+    }
+    .toggle-switch input { opacity: 0; width: 0; height: 0; }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #ccc;
+      transition: 0.4s;
+      border-radius: 34px;
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 27px;
+      width: 27px;
+      left: 2px;
+      bottom: 2px;
+      background-color: #ffffff;
+      transition: 0.4s;
+      border-radius: 50%;
+    }
+    input:checked + .slider { background-color: #032659; }
+    input:checked + .slider:before { transform: translateX(20px); }
+  </style>
+</head>
+<body class="text-slate-800 min-h-screen p-4 py-16">
+<div class="w-full max-w-5xl mx-auto">
+  <!-- Header -->
+  <header class="text-left mt-6 mb-6">
+    <h1 class="text-4xl sm:text-5xl font-bold uppercase" style="color: #032659; letter-spacing: 0.06em;">
+      FINANZIERUNGSKALKULATOR
+    </h1>
+    <p class="mt-4 text-slate-500 text-lg" style="letter-spacing: 0.072em;">
+      Gib deine Werte ein und erhalte die Rate, Kosten und den Zins.
+    </p>
+    <!-- Info-Button mit Tooltip -->
+    <div class="flex items-center mt-4">
+      <div class="relative inline-block">
+        <span id="info-button" class="text-slate-600 bg-gray-200 hover:bg-gray-300 rounded-full px-2 py-0.5 text-sm font-semibold cursor-help">i</span>
+        <div id="info-tooltip" class="absolute left-1/2 -translate-x-1/2 top-full mt-1 w-64 bg-white border border-gray-300 rounded p-2 text-xs text-slate-700 shadow-md z-20 hidden">
+          1) Werte eingeben: Anschaffungswert, Laufzeit sowie Anzahlung/Restwert/Marge (in € oder % über den Schalter).<br>
+          2) „Berechnen“ klicken: Rate, Gesamtkosten und indikativer Zins erscheinen; Ring zeigt die Kostenanteile.<br>
+          3) „Finanzierungsverlauf“ öffnen für Zins-/Tilgungsverlauf je Monat.<br>
+          4) Unter „Angebot erstellen“ Kontaktdaten wählen (Leasing/Mietkauf) und PDF herunterladen.
+        </div>
+      </div>
+    </div>
+  </header>
+  <!-- Kalkulator-Panel -->
+  <main class="w-full">
+    <div class="panel rounded-2xl relative">
+      <div class="grid grid-cols-1 lg:grid-cols-2">
+        <!-- Eingabe-Spalte -->
+        <div class="p-6 sm:p-10 flex flex-col h-full">
+          <div class="space-y-8">
+            <!-- Anschaffungswert & Laufzeit -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8">
+              <div>
+                <label for="anschaffungswert" class="block text-sm font-medium text-slate-600 mb-1">
+                  Anschaffungswert (€)
+                </label>
+                <input type="text" id="anschaffungswert" value="0" class="numeric-input w-full form-input-underline text-lg" />
+              </div>
+              <div>
+                <label for="laufzeit" class="block text-sm font-medium text-slate-600 mb-1">
+                  Laufzeit (Monate)
+                </label>
+                <input type="number" id="laufzeit" value="0" class="w-full form-input-underline text-lg" />
+              </div>
+            </div>
+            <!-- Anzahlung & Restwert -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8">
+              <div class="flex items-end">
+                <div class="w-full">
+                  <label for="anzahlung" class="block text-sm font-medium text-slate-600 mb-1">
+                    Anzahlung <span id="anzahlung-unit">(€)</span>
+                  </label>
+                  <input type="text" id="anzahlung" value="0" class="numeric-input w-full form-input-underline text-lg" />
+                </div>
+                <label class="toggle-switch ml-4 flex-shrink-0">
+                  <input type="checkbox" id="anzahlung-toggle" />
+                  <span class="slider"></span>
+                </label>
+              </div>
+              <div class="flex items-end">
+                <div class="w-full">
+                  <label for="restwert" class="block text-sm font-medium text-slate-600 mb-1">
+                    Restwert <span id="restwert-unit">(€)</span>
+                  </label>
+                  <input type="text" id="restwert" value="0" class="numeric-input w-full form-input-underline text-lg" />
+                </div>
+                <label class="toggle-switch ml-4 flex-shrink-0">
+                  <input type="checkbox" id="restwert-toggle" />
+                  <span class="slider"></span>
+                </label>
+              </div>
+            </div>
+            <!-- Basiszins & Marge -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8">
+              <div class="flex items-end">
+                <div class="w-full">
+                  <label for="basiszins" class="block text-sm font-medium text-slate-600 mb-1">
+                    Basiszins (% p.a.)
+                  </label>
+                  <input type="text" id="basiszins" value="0" class="numeric-input w-full form-input-underline text-lg" />
+                </div>
+              </div>
+              <div class="flex items-end">
+                <div class="w-full">
+                  <label for="margegesamt" class="flex items-baseline text-sm font-medium text-slate-600 mb-1">
+                    <span>Marge&nbsp;Gesamt</span>
+                    <span id="marge-unit" class="ml-1">(€)</span>
+                  </label>
+                  <input type="text" id="margegesamt" value="0" class="numeric-input w-full form-input-underline text-lg" />
+                </div>
+                <label class="toggle-switch ml-4 flex-shrink-0">
+                  <input type="checkbox" id="marge-toggle" />
+                  <span class="slider"></span>
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="mt-auto">
+            <div class="mt-16">
+              <button id="calculate-btn" class="w-full bg-[#032659] text-white font-bold py-4 px-4 rounded-lg hover:bg-opacity-90 focus:outline-none focus:ring-4 focus:ring-[#032659]/50 transition-all duration-300 ease-in-out">
+                Berechnen
+              </button>
+            </div>
+            <div class="mt-12 pt-8 border-t border-[#ced4da]">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-6">
+                <div>
+                  <label for="indikativer-zins" class="block text-sm font-medium text-slate-600">
+                    Indikativer Zins (% p.a.)
+                  </label>
+                  <input type="text" id="indikativer-zins" class="w-full result-field" readonly />
+                </div>
+                <div>
+                  <label for="leasingfaktor" class="block text-sm font-medium text-slate-600">
+                    Leasingfaktor (%)
+                  </label>
+                  <input type="text" id="leasingfaktor" class="w-full result-field" readonly />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Ergebnis-Spalte (Chart & Werte) -->
+        <div class="p-6 sm:p-10 flex flex-col border-t lg:border-t-0 border-gray-200/50">
+          <div class="h-[7.5rem] flex items-start justify-center pt-1 text-center">
+            <div>
+              <label class="block text-sm font-medium text-slate-600">Monatliche Leasingrate</label>
+              <p id="result-text" class="text-4xl font-bold text-slate-900 mt-2 h-12"></p>
+            </div>
+          </div>
+          <div id="result-container" class="w-full hidden flex-grow flex flex-col justify-center items-center text-center -mt-16">
+            <div id="error-text" class="text-red-500 mt-2 font-medium h-6"></div>
+            <div class="w-full max-w-sm mx-auto">
+              <canvas id="cost-chart"></canvas>
+            </div>
+            <div class="mt-12 pt-8 border-t border-[#ced4da] w-full max-w-xs">
+              <div class="text-center">
+                <label for="gesamtkosten" class="block text-sm font-medium text-slate-600">Gesamtkosten (€)</label>
+                <input type="text" id="gesamtkosten" class="w-full result-field text-center" readonly />
+              </div>
+            </div>
+          </div>
+          <div id="placeholder-container" class="w-full flex-grow flex flex-col justify-center items-center text-center text-slate-500 -mt-16">
+            <p>Ihre Ergebnisse werden hier angezeigt.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <!-- Angebot erstellen -->
+  <section class="w-full mt-8">
+    <div class="panel rounded-2xl p-6">
+      <button id="offer-toggle" class="w-full flex justify-between items-center text-left">
+        <h2 class="text-xl font-bold text-slate-800">Angebot erstellen</h2>
+        <span id="offer-icon" class="text-3xl text-slate-800">+</span>
+      </button>
+      <div id="offer-container" class="toggle-section">
+        <form class="space-y-8">
+          <!-- Finanzierungsart & Anrede -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8">
+            <div>
+              <label for="finanzierungsart" class="block text-sm font-medium text-slate-600 mb-1">Finanzierungsart</label>
+              <select id="finanzierungsart" class="w-full form-input-underline text-lg">
+                <option value="">Bitte wählen</option>
+                <option>Leasing</option>
+                <option>Mietkauf</option>
+              </select>
+            </div>
+            <div>
+              <label for="anrede" class="block text-sm font-medium text-slate-600 mb-1">Anrede</label>
+              <select id="anrede" class="w-full form-input-underline text-lg">
+                <option value="">Bitte wählen</option>
+                <option>Herr</option>
+                <option>Frau</option>
+              </select>
+            </div>
+          </div>
+          <!-- Vorname & Nachname -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8">
+            <div>
+              <label for="vorname" class="block text-sm font-medium text-slate-600 mb-1">Vorname</label>
+              <input type="text" id="vorname" class="w-full form-input-underline text-lg" />
+            </div>
+            <div>
+              <label for="nachname" class="block text-sm font-medium text-slate-600 mb-1">Nachname</label>
+              <input type="text" id="nachname" class="w-full form-input-underline text-lg" />
+            </div>
+          </div>
+          <!-- Firma -->
+          <div>
+            <label for="firma" class="block text-sm font-medium text-slate-600 mb-1">Firma</label>
+            <input type="text" id="firma" class="w-full form-input-underline text-lg" />
+          </div>
+          <!-- Adresse, PLZ, Ort -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-x-10 gap-y-8">
+            <div>
+              <label for="adresse" class="block text-sm font-medium text-slate-600 mb-1">Adresse &amp; Hausnummer</label>
+              <input type="text" id="adresse" class="w-full form-input-underline text-lg" />
+            </div>
+            <div>
+              <label for="plz" class="block text-sm font-medium text-slate-600 mb-1">Postleitzahl</label>
+              <input type="text" id="plz" class="w-full form-input-underline text-lg" />
+            </div>
+            <div>
+              <label for="ort" class="block text-sm font-medium text-slate-600 mb-1">Ort</label>
+              <input type="text" id="ort" class="w-full form-input-underline text-lg" />
+            </div>
+          </div>
+          <!-- Objekt & Hersteller -->
+          <div>
+            <label for="objekt" class="block text-sm font-medium text-slate-600 mb-1">Objekt</label>
+            <input type="text" id="objekt" class="w-full form-input-underline text-lg" />
+          </div>
+          <div>
+            <label for="hersteller" class="block text-sm font-medium text-slate-600 mb-1">Hersteller</label>
+            <input type="text" id="hersteller" class="w-full form-input-underline text-lg" />
+          </div>
+          <!-- E-Mail & Telefon -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8">
+            <div>
+              <label for="email" class="block text-sm font-medium text-slate-600 mb-1">E-Mail</label>
+              <input type="email" id="email" class="w-full form-input-underline text-lg" />
+            </div>
+            <div>
+              <label for="telefon" class="block text-sm font-medium text-slate-600 mb-1">Telefonnummer</label>
+              <input type="text" id="telefon" class="w-full form-input-underline text-lg" />
+            </div>
+          </div>
+          <!-- Objektart -->
+          <div>
+            <label for="objektart" class="block text-sm font-medium text-slate-600 mb-1">Objektart</label>
+            <select id="objektart" class="w-full form-input-underline text-lg">
+              <option value="">Bitte wählen</option>
+              <option>Neu</option>
+              <option>Gebraucht</option>
+            </select>
+          </div>
+          <!-- PDF Download Button -->
+          <div class="mt-8 flex justify-end">
+            <button type="button" id="download-pdf-btn" class="w-full md:w-1/2 mx-auto bg-[#032659] text-white font-bold py-4 px-4 rounded-lg hover:bg-opacity-90 focus:outline-none focus:ring-4 focus:ring-[#032659]/50 transition-all duration-300 ease-in-out">
+              Angebot herunterladen
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+  <!-- Finanzierungsverlauf -->
+  <section class="w-full mt-8">
+    <div class="panel rounded-2xl p-6">
+      <button id="timeline-toggle" class="w-full flex justify-between items-center text-left">
+        <h2 class="text-xl font-bold text-slate-800">Finanzierungsverlauf</h2>
+        <span id="timeline-icon" class="text-3xl text-slate-800 select-none">+</span>
+      </button>
+      <div id="timeline-container" class="toggle-section">
+        <div class="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm text-slate-600">
+          <div class="flex items-center gap-2 bg-slate-50 rounded-lg px-3 py-2">
+            <span class="inline-block h-3 w-3 rounded-full" style="background:#032659;"></span>
+            <span><b>Restschuld</b> (Linie)</span>
+          </div>
+          <div class="flex items-center gap-2 bg-slate-50 rounded-lg px-3 py-2">
+            <span class="inline-block h-3 w-3 rounded" style="background:rgba(176,196,222,0.6);"></span>
+            <span><b>Zinsanteil</b> (Fläche)</span>
+          </div>
+          <div class="flex items-center gap-2 bg-slate-50 rounded-lg px-3 py-2">
+            <span class="inline-block h-3 w-3 rounded" style="background:rgba(3,38,89,0.12);"></span>
+            <span><b>Tilgungsanteil</b> (Fläche)</span>
+          </div>
+        </div>
+        <div class="mt-4">
+          <canvas id="timeline-chart" height="180"></canvas>
+        </div>
+        <div class="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm text-slate-700">
+          <div class="bg-white rounded-lg border border-slate-200 px-3 py-2">
+            <div class="text-slate-500">Monatliche Rate</div>
+            <div id="tl-rate" class="font-semibold">–</div>
+          </div>
+          <div class="bg-white rounded-lg border border-slate-200 px-3 py-2">
+            <div class="text-slate-500">Zins gesamt</div>
+            <div id="tl-zins-gesamt" class="font-semibold">–</div>
+          </div>
+          <div class="bg-white rounded-lg border border-slate-200 px-3 py-2">
+            <div class="text-slate-500">Tilgung gesamt</div>
+            <div id="tl-tilgung-gesamt" class="font-semibold">–</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+<script>
+  // Hilfsfunktionen
+  const unformat = (str) => {
+    if (typeof str !== 'string' || !str) return 0;
+    return parseFloat(str.replace(/\./g, '').replace(',', '.')) || 0;
+  };
+  function formatLocale(value, options = {}) {
+    if (value === null || value === undefined || value === '') return '';
+    return Number(value).toLocaleString('de-DE', options);
+  }
+  function formatInput(event) {
+    const el = event.target;
+    const numericValue = unformat(el.value);
+    if (el.value === '') {
+      return;
+    }
+    el.value = formatLocale(numericValue, { maximumFractionDigits: 2 });
+  }
+  // Finanzierungsformeln
+  function PMT(rate, nper, pv, fv = 0) {
+    if (rate === 0) return -(pv + fv) / nper;
+    const pvFactor = Math.pow(1 + rate, nper);
+    return -(rate * (fv + pv * pvFactor)) / (pvFactor - 1);
+  }
+  function RATE(nper, pmt, pv, fv = 0) {
+    const precision = 1e-7;
+    const maxIter = 100;
+    let low = -0.99, high = 5;
+    const f = (rate) => {
+      if (rate === 0) return pv + pmt * nper + fv;
+      return pv * Math.pow(1 + rate, nper) + pmt * ((Math.pow(1 + rate, nper) - 1) / rate) + fv;
+    };
+    for (let i = 0; i < maxIter; i++) {
+      if (low >= high) break;
+      const mid = (low + high) / 2;
+      const fMid = f(mid);
+      if (Math.abs(fMid) < precision) {
+        return mid * 12;
+      }
+      if (f(low) * fMid < 0) {
+        high = mid;
+      } else {
+        low = mid;
+      }
+    }
+    return ((low + high) / 2) * 12;
+  }
+  // Globale Variablen und DOM-Elemente
+  let costChart = null;
+  let timelineChart = null;
+  const anzahlungToggle = document.getElementById('anzahlung-toggle');
+  const restwertToggle = document.getElementById('restwert-toggle');
+  const margeToggle = document.getElementById('marge-toggle');
+  const anzahlungUnit = document.getElementById('anzahlung-unit');
+  const restwertUnit = document.getElementById('restwert-unit');
+  const margeUnit = document.getElementById('marge-unit');
+  const indikativerZinsEl = document.getElementById('indikativer-zins');
+  const leasingfaktorEl = document.getElementById('leasingfaktor');
+  const gesamtkostenEl = document.getElementById('gesamtkosten');
+  const resultContainer = document.getElementById('result-container');
+  const placeholderContainer = document.getElementById('placeholder-container');
+  const resultText = document.getElementById('result-text');
+  const errorText = document.getElementById('error-text');
+  const costChartCanvas = document.getElementById('cost-chart');
+  const timelineContainer = document.getElementById('timeline-container');
+  const timelineChartCanvas = document.getElementById('timeline-chart');
+  const tlRateEl = document.getElementById('tl-rate');
+  const tlZinsSumEl = document.getElementById('tl-zins-gesamt');
+  const tlTilgSumEl = document.getElementById('tl-tilgung-gesamt');
+  const offerToggleBtn = document.getElementById('offer-toggle');
+  const offerContainer = document.getElementById('offer-container');
+  const offerIcon = document.getElementById('offer-icon');
+  const timelineToggleBtn = document.getElementById('timeline-toggle');
+  const timelineIcon = document.getElementById('timeline-icon');
+  const pdfButton = document.getElementById('download-pdf-btn');
+  const calculateBtn = document.getElementById('calculate-btn');
+  // Hauptberechnung
+  function performCalculation() {
+    const av = unformat(document.getElementById('anschaffungswert').value);
+    const lz = parseInt(document.getElementById('laufzeit').value) || 0;
+    const bz = unformat(document.getElementById('basiszins').value);
+    const azInput = unformat(document.getElementById('anzahlung').value);
+    const rwInput = unformat(document.getElementById('restwert').value);
+    const margeInput = unformat(document.getElementById('margegesamt').value);
+    const az = anzahlungToggle.checked ? (azInput / 100) * av : azInput;
+    const rw = restwertToggle.checked ? (rwInput / 100) * av : rwInput;
+    const marge = margeToggle.checked ? (margeInput / 100) * av : margeInput;
+    if (av <= 0 || lz <= 0) {
+      showError("Anschaffungswert und Laufzeit müssen größer als 0 sein.");
+      return;
+    }
+    hideError();
+    const finanzierungsbetrag = av - az;
+    const principal = av - az + marge;
+    const monRate = bz / 100 / 12;
+    const leasingInternal = PMT(monRate, lz, principal, -rw);
+    const leasingRate = -leasingInternal;
+    displayResult(leasingRate, az, rw, av, lz);
+    const indZins = RATE(lz, leasingInternal, finanzierungsbetrag, -rw);
+    indikativerZinsEl.value = formatLocale(indZins * 100, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' %';
+    if (timelineContainer.classList.contains('open-timeline')) {
+      generateTimelineChart(finanzierungsbetrag, leasingRate, lz, indZins);
+      timelineContainer.style.maxHeight = timelineContainer.scrollHeight + 'px';
+    }
+  }
+  function displayResult(rate, anzahlung, restwert, av, monate) {
+    resultContainer.classList.remove('hidden');
+    resultContainer.classList.add('fade-in');
+    placeholderContainer.classList.add('hidden');
+    resultText.textContent = formatLocale(rate, { style: 'currency', currency: 'EUR' });
+    const kosten = anzahlung + rate * (monate || 0) + restwert;
+    gesamtkostenEl.value = formatLocale(kosten, { style: 'currency', currency: 'EUR' });
+    const faktor = av > 0 ? (rate / av) * 100 : 0;
+    leasingfaktorEl.value = formatLocale(faktor, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' %';
+    updateCostChart(anzahlung, rate * (monate || 0), restwert);
+  }
+  function updateCostChart(anzahlung, summeRaten, restwert) {
+    if (costChart) costChart.destroy();
+    const ctx = costChartCanvas.getContext('2d');
+    const values = [anzahlung, summeRaten, restwert];
+    const total = values.reduce((a, b) => a + b, 0);
+    costChart = new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Anzahlung', 'Summe der Raten', 'Restwert'],
+        datasets: [{
+          data: values,
+          backgroundColor: ['#032659', '#004225', '#E35335'],
+          borderColor: '#F8F9FA',
+          borderWidth: 5,
+          hoverOffset: 10
+        }]
+      },
+      options: {
+        responsive: true,
+        cutout: '75%',
+        plugins: {
+          legend: {
+            position: 'bottom',
+            align: 'start',
+            labels: {
+              color: '#6C757D',
+              padding: 20,
+              boxWidth: 12,
+              font: {
+                size: 14,
+                family: "'Montserrat', sans-serif"
+              }
+            },
+            onClick: (e, legendItem, legend) => {
+              const idx = legendItem.index;
+              const chart = legend.chart;
+              chart.toggleDataVisibility(idx);
+              chart.update();
+              let visibleSum = 0;
+              chart.getDatasetMeta(0).data.forEach((arc, i) => {
+                if (chart.getDataVisibility(i)) {
+                  visibleSum += chart.data.datasets[0].data[i];
+                }
+              });
+              gesamtkostenEl.value = formatLocale(visibleSum, { style: 'currency', currency: 'EUR' });
+            }
+          },
+          tooltip: {
+            callbacks: {
+              label: ctx => ctx.label + ': ' + formatLocale(ctx.parsed, { style: 'currency', currency: 'EUR' })
+            }
+          }
+        }
+      }
+    });
+    gesamtkostenEl.value = formatLocale(total, { style: 'currency', currency: 'EUR' });
+  }
+  function generateTimelineChart(startkapital, rate, monate, jahreszins) {
+    if (timelineChart) timelineChart.destroy();
+    let restschuld = startkapital;
+    const monZins = jahreszins / 12;
+    const labels = [];
+    const zinsAnteile = [];
+    const tilgAnteile = [];
+    const restSchulden = [];
+    let totalZins = 0;
+    let totalTilgung = 0;
+    for (let i = 1; i <= monate; i++) {
+      labels.push(`M ${i}`);
+      const zins = restschuld * monZins;
+      const tilg = rate - zins;
+      restschuld = restschuld - tilg;
+      if (restschuld < 0) restschuld = 0;
+      zinsAnteile.push(zins);
+      tilgAnteile.push(tilg);
+      restSchulden.push(restschuld);
+      totalZins += zins;
+      totalTilgung += tilg;
+    }
+    tlRateEl.textContent = formatLocale(rate, { style: 'currency', currency: 'EUR' });
+    tlZinsSumEl.textContent = formatLocale(totalZins, { style: 'currency', currency: 'EUR' });
+    tlTilgSumEl.textContent = formatLocale(totalTilgung, { style: 'currency', currency: 'EUR' });
+    const ctx = timelineChartCanvas.getContext('2d');
+    timelineChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            type: 'line',
+            label: 'Restschuld',
+            data: restSchulden,
+            borderColor: '#032659',
+            backgroundColor: 'transparent',
+            borderWidth: 2,
+            pointRadius: 0,
+            tension: 0.1,
+            yAxisID: 'y1'
+          },
+          {
+            label: 'Zinsanteil',
+            data: zinsAnteile,
+            backgroundColor: 'rgba(176,196,222,0.6)',
+            stack: 'combined',
+            yAxisID: 'y'
+          },
+          {
+            label: 'Tilgungsanteil',
+            data: tilgAnteile,
+            backgroundColor: 'rgba(3,38,89,0.12)',
+            stack: 'combined',
+            yAxisID: 'y'
+          }
+        ]
+      },
+      options: {
+        plugins: { legend: { position: 'top' } },
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          x: { stacked: true },
+          y: {
+            position: 'left',
+            stacked: true,
+            beginAtZero: true,
+            title: { display: true, text: 'Ratenzusammensetzung (€)' }
+          },
+          y1: {
+            type: 'linear',
+            position: 'right',
+            beginAtZero: true,
+            display: true,
+            title: { display: true, text: 'Restschuld (€)' },
+            grid: { drawOnChartArea: false }
+          }
+        },
+        interaction: { mode: 'index', intersect: false }
+      }
+    });
+  }
+  function showError(msg) {
+    resultText.textContent = '';
+    errorText.textContent = msg;
+    indikativerZinsEl.value = '';
+    leasingfaktorEl.value = '';
+    gesamtkostenEl.value = '';
+    resultContainer.classList.add('hidden');
+    if (costChart) { costChart.destroy(); costChart = null; }
+    if (timelineChart) { timelineChart.destroy(); timelineChart = null; }
+  }
+  function hideError() {
+    errorText.textContent = '';
+  }
+  function setupToggle(toggleEl, inputEl, unitEl) {
+    toggleEl.addEventListener('change', () => {
+      const av = unformat(document.getElementById('anschaffungswert').value);
+      const currentVal = unformat(inputEl.value);
+      if (toggleEl.checked) {
+        unitEl.textContent = '(%)';
+        if (av > 0) {
+          inputEl.value = formatLocale((currentVal / av) * 100, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+      } else {
+        unitEl.textContent = '(€)';
+        if (av > 0) {
+          inputEl.value = formatLocale((currentVal / 100) * av, { maximumFractionDigits: 0 });
+        }
+      }
+      performCalculation();
+    });
+  }
+  setupToggle(anzahlungToggle, document.getElementById('anzahlung'), anzahlungUnit);
+  setupToggle(restwertToggle, document.getElementById('restwert'), restwertUnit);
+  setupToggle(margeToggle, document.getElementById('margegesamt'), margeUnit);
+  document.querySelectorAll('.numeric-input').forEach(input => {
+    input.addEventListener('input', formatInput);
+  });
+  document.getElementById('laufzeit').addEventListener('input', performCalculation);
+  calculateBtn.addEventListener('click', performCalculation);
+  offerToggleBtn.addEventListener('click', () => {
+    const isOpen = offerContainer.classList.toggle('open-offer');
+    offerIcon.style.transform = isOpen ? 'rotate(45deg)' : 'rotate(0deg)';
+    offerContainer.style.maxHeight = isOpen ? offerContainer.scrollHeight + 'px' : null;
+  });
+  timelineToggleBtn.addEventListener('click', () => {
+    const isOpen = timelineContainer.classList.toggle('open-timeline');
+    timelineIcon.style.transform = isOpen ? 'rotate(45deg)' : 'rotate(0deg)';
+    if (isOpen) {
+      performCalculation();
+      timelineContainer.style.maxHeight = timelineContainer.scrollHeight + 'px';
+    } else {
+      timelineContainer.style.maxHeight = null;
+    }
+  });
+  pdfButton.addEventListener('click', () => {
+    const values = {
+      anschaffungswert: document.getElementById('anschaffungswert').value,
+      laufzeit: document.getElementById('laufzeit').value,
+      anzahlung: document.getElementById('anzahlung').value + (anzahlungToggle.checked ? ' %' : ' €'),
+      restwert: document.getElementById('restwert').value + (restwertToggle.checked ? ' %' : ' €'),
+      marge: document.getElementById('margegesamt').value + (margeToggle.checked ? ' %' : ' €'),
+      basiszins: document.getElementById('basiszins').value,
+      indikativerZins: indikativerZinsEl.value,
+      leasingfaktor: leasingfaktorEl.value,
+      gesamtkosten: gesamtkostenEl.value,
+      finanzierungsart: document.getElementById('finanzierungsart').value,
+      anrede: document.getElementById('anrede').value,
+      vorname: document.getElementById('vorname').value,
+      nachname: document.getElementById('nachname').value,
+      firma: document.getElementById('firma').value,
+      adresse: document.getElementById('adresse').value,
+      plz: document.getElementById('plz').value,
+      ort: document.getElementById('ort').value,
+      objekt: document.getElementById('objekt').value,
+      hersteller: document.getElementById('hersteller').value,
+      email: document.getElementById('email').value,
+      telefon: document.getElementById('telefon').value,
+      objektart: document.getElementById('objektart').value
+    };
+    const chartURL = costChartCanvas.toDataURL('image/png');
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+    pdf.setFontSize(18);
+    const offerTitle = values.finanzierungsart || 'Finanzierungs';
+    pdf.text(offerTitle + 'angebot', 15, 20);
+    pdf.setFontSize(12);
+    let y = 35;
+    const addLine = (label, val) => {
+      pdf.text(`${label}: ${val}`, 15, y);
+      y += 6;
+    };
+    addLine('Anschaffungswert', values.anschaffungswert + ' €');
+    addLine('Laufzeit', values.laufzeit + ' Monate');
+    addLine('Anzahlung', values.anzahlung);
+    addLine('Restwert', values.restwert);
+    addLine('Marge Gesamt', values.marge);
+    addLine('Basiszins', values.basiszins + ' % p.a.');
+    addLine('Indikativer Zins', values.indikativerZins);
+    addLine('Leasingfaktor', values.leasingfaktor);
+    addLine('Gesamtkosten', values.gesamtkosten);
+    if (values.finanzierungsart || values.vorname || values.email) {
+      y += 4;
+      pdf.setFontSize(14);
+      pdf.text('Kundendaten', 15, y);
+      y += 6;
+      pdf.setFontSize(12);
+      addLine('Finanzierungsart', values.finanzierungsart);
+      addLine('Anrede', values.anrede);
+      addLine('Vorname', values.vorname);
+      addLine('Nachname', values.nachname);
+      addLine('Firma', values.firma);
+      addLine('Adresse', `${values.adresse} ${values.plz} ${values.ort}`);
+      addLine('Objekt', values.objekt);
+      addLine('Hersteller', values.hersteller);
+      addLine('E-Mail', values.email);
+      addLine('Telefon', values.telefon);
+      addLine('Objektart', values.objektart);
+    }
+    const imgProps = pdf.getImageProperties(chartURL);
+    const imgWidth = 100;
+    const imgHeight = (imgProps.height / imgProps.width) * imgWidth;
+    pdf.addImage(chartURL, 'PNG', 15, y + 10, imgWidth, imgHeight);
+    pdf.save(offerTitle + 'angebot.pdf');
+  });
+</script>
+</body>
+</html>
