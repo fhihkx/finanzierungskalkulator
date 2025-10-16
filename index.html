@@ -29,7 +29,7 @@
       color: #212529;
       transition: border-color 0.3s, border-width 0.3s;
       -webkit-appearance: none;
-         appearance: none;
+          appearance: none;
     }
     .form-input-underline:focus {
       border-color: #032659;
@@ -37,6 +37,20 @@
       box-shadow: none;
       outline: none;
     }
+    /* ADDED: Style for error fields */
+    .form-input-underline.has-error {
+        border-color: #ef4444; /* red-500 */
+    }
+    .error-icon {
+        position: absolute;
+        top: 50%;
+        right: 0;
+        transform: translateY(-50%);
+        color: #ef4444;
+        width: 1.25rem; /* w-5 */
+        height: 1.25rem; /* h-5 */
+    }
+
     .result-field {
       background-color: transparent;
       border: none;
@@ -58,13 +72,9 @@
     }
     .toggle-section.open-offer { margin-top: 2rem; }
     .toggle-section.open-timeline { margin-top: 0.75rem; }
-    #offer-icon {
+    #offer-icon, #timeline-icon {
       font-weight: 500;
       transition: transform 0.5s ease-in-out;
-    }
-    #timeline-icon {
-      font-weight: 500;
-      transition: transform 0.35s ease;
     }
     .toggle-switch {
       position: relative;
@@ -94,6 +104,12 @@
     }
     input:checked + .slider { background-color: #032659; }
     input:checked + .slider:before { transform: translateX(20px); }
+
+    /* ADDED: Style for select placeholder */
+    select.is-placeholder {
+        color: #9ca3af; /* text-gray-400 */
+        font-size: 0.95rem;
+    }
   </style>
 </head>
 <body class="text-slate-800 min-h-screen p-4 py-16">
@@ -109,12 +125,12 @@
     <!-- Info-Button mit Tooltip -->
     <div class="flex items-center mt-4">
       <div class="relative inline-block">
-        <span id="info-button" class="text-slate-600 bg-gray-200 hover:bg-gray-300 rounded-full px-2 py-0.5 text-sm font-semibold cursor-help">i</span>
-        <div id="info-tooltip" class="absolute left-1/2 -translate-x-1/2 top-full mt-1 w-64 bg-white border border-gray-300 rounded p-2 text-xs text-slate-700 shadow-md z-20 hidden">
-          1) Werte eingeben: Anschaffungswert, Laufzeit sowie Anzahlung/Restwert/Marge (in € oder % über den Schalter).<br>
-          2) „Berechnen“ klicken: Rate, Gesamtkosten und indikativer Zins erscheinen; Ring zeigt die Kostenanteile.<br>
-          3) „Finanzierungsverlauf“ öffnen für Zins-/Tilgungsverlauf je Monat.<br>
-          4) Unter „Angebot erstellen“ Kontaktdaten wählen (Leasing/Mietkauf) und PDF herunterladen.
+        <span id="info-button" class="text-slate-600 bg-gray-200 hover:bg-gray-300 rounded-full px-2.5 py-0.5 text-sm font-bold cursor-help select-none">i</span>
+        <div id="info-tooltip" class="absolute left-1/2 -translate-x-1/2 top-full mt-2 w-72 bg-white border border-gray-300 rounded-lg p-3 text-xs text-slate-700 shadow-xl z-20 hidden">
+          <b>1) Werte eingeben:</b> Anschaffungswert, Laufzeit sowie Anzahlung, Restwert und Marge (in € oder % über den Schalter).<br><br>
+          <b>2) „Berechnen“ klicken:</b> Rate, Gesamtkosten und Zins erscheinen; der Ring zeigt die Kostenanteile.<br><br>
+          <b>3) „Finanzierungsverlauf“ öffnen</b> für Zins- und Tilgungsverlauf je Monat.<br><br>
+          <b>4) Angebot erstellen:</b> Kontaktdaten ausfüllen (Leasing/Mietkauf) und PDF herunterladen.
         </div>
       </div>
     </div>
@@ -252,35 +268,47 @@
         <span id="offer-icon" class="text-3xl text-slate-800">+</span>
       </button>
       <div id="offer-container" class="toggle-section">
-        <form class="space-y-8">
+        <form class="space-y-8" novalidate>
           <!-- Finanzierungsart & Anrede -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8">
             <div>
               <label for="finanzierungsart" class="block text-sm font-medium text-slate-600 mb-1">Finanzierungsart</label>
-              <select id="finanzierungsart" class="w-full form-input-underline text-lg">
-                <option value="">Bitte wählen</option>
-                <option>Leasing</option>
-                <option>Mietkauf</option>
-              </select>
+              <div class="relative">
+                <select id="finanzierungsart" class="w-full form-input-underline text-lg is-placeholder" required>
+                  <option value="">Bitte wählen</option>
+                  <option>Leasing</option>
+                  <option>Mietkauf</option>
+                </select>
+                <svg class="error-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+              </div>
             </div>
             <div>
               <label for="anrede" class="block text-sm font-medium text-slate-600 mb-1">Anrede</label>
-              <select id="anrede" class="w-full form-input-underline text-lg">
-                <option value="">Bitte wählen</option>
-                <option>Herr</option>
-                <option>Frau</option>
-              </select>
+              <div class="relative">
+                <select id="anrede" class="w-full form-input-underline text-lg is-placeholder" required>
+                  <option value="">Bitte wählen</option>
+                  <option>Herr</option>
+                  <option>Frau</option>
+                </select>
+                <svg class="error-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+              </div>
             </div>
           </div>
           <!-- Vorname & Nachname -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8">
             <div>
               <label for="vorname" class="block text-sm font-medium text-slate-600 mb-1">Vorname</label>
-              <input type="text" id="vorname" class="w-full form-input-underline text-lg" />
+              <div class="relative">
+                <input type="text" id="vorname" class="w-full form-input-underline text-lg" required />
+                <svg class="error-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+              </div>
             </div>
             <div>
               <label for="nachname" class="block text-sm font-medium text-slate-600 mb-1">Nachname</label>
-              <input type="text" id="nachname" class="w-full form-input-underline text-lg" />
+              <div class="relative">
+                <input type="text" id="nachname" class="w-full form-input-underline text-lg" required />
+                <svg class="error-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+              </div>
             </div>
           </div>
           <!-- Firma -->
@@ -292,48 +320,73 @@
           <div class="grid grid-cols-1 md:grid-cols-3 gap-x-10 gap-y-8">
             <div>
               <label for="adresse" class="block text-sm font-medium text-slate-600 mb-1">Adresse &amp; Hausnummer</label>
-              <input type="text" id="adresse" class="w-full form-input-underline text-lg" />
+              <div class="relative">
+                <input type="text" id="adresse" class="w-full form-input-underline text-lg" required />
+                <svg class="error-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+              </div>
             </div>
             <div>
               <label for="plz" class="block text-sm font-medium text-slate-600 mb-1">Postleitzahl</label>
-              <input type="text" id="plz" class="w-full form-input-underline text-lg" />
+              <div class="relative">
+                <input type="text" id="plz" class="w-full form-input-underline text-lg" required />
+                <svg class="error-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+              </div>
             </div>
             <div>
               <label for="ort" class="block text-sm font-medium text-slate-600 mb-1">Ort</label>
-              <input type="text" id="ort" class="w-full form-input-underline text-lg" />
+              <div class="relative">
+                <input type="text" id="ort" class="w-full form-input-underline text-lg" required />
+                <svg class="error-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+              </div>
             </div>
           </div>
           <!-- Objekt & Hersteller -->
           <div>
             <label for="objekt" class="block text-sm font-medium text-slate-600 mb-1">Objekt</label>
-            <input type="text" id="objekt" class="w-full form-input-underline text-lg" />
+            <div class="relative">
+                <input type="text" id="objekt" class="w-full form-input-underline text-lg" required />
+                <svg class="error-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+            </div>
           </div>
           <div>
             <label for="hersteller" class="block text-sm font-medium text-slate-600 mb-1">Hersteller</label>
-            <input type="text" id="hersteller" class="w-full form-input-underline text-lg" />
+            <div class="relative">
+                <input type="text" id="hersteller" class="w-full form-input-underline text-lg" required />
+                <svg class="error-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+            </div>
           </div>
           <!-- E-Mail & Telefon -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8">
             <div>
               <label for="email" class="block text-sm font-medium text-slate-600 mb-1">E-Mail</label>
-              <input type="email" id="email" class="w-full form-input-underline text-lg" />
+                <div class="relative">
+                    <input type="email" id="email" class="w-full form-input-underline text-lg" required />
+                    <svg class="error-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+                </div>
             </div>
             <div>
               <label for="telefon" class="block text-sm font-medium text-slate-600 mb-1">Telefonnummer</label>
-              <input type="text" id="telefon" class="w-full form-input-underline text-lg" />
+                <div class="relative">
+                    <input type="text" id="telefon" class="w-full form-input-underline text-lg" required />
+                    <svg class="error-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+                </div>
             </div>
           </div>
           <!-- Objektart -->
           <div>
             <label for="objektart" class="block text-sm font-medium text-slate-600 mb-1">Objektart</label>
-            <select id="objektart" class="w-full form-input-underline text-lg">
-              <option value="">Bitte wählen</option>
-              <option>Neu</option>
-              <option>Gebraucht</option>
-            </select>
+            <div class="relative">
+                <select id="objektart" class="w-full form-input-underline text-lg is-placeholder" required>
+                  <option value="">Bitte wählen</option>
+                  <option>Neu</option>
+                  <option>Gebraucht</option>
+                </select>
+                <svg class="error-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+            </div>
           </div>
-          <!-- PDF Download Button -->
-          <div class="mt-8 flex justify-end">
+          <!-- Container für Fehlermeldung und Button -->
+          <div class="mt-8 text-center">
+            <p id="offer-error-message" class="text-red-600 text-sm mb-4 hidden"></p>
             <button type="button" id="download-pdf-btn" class="w-full md:w-1/2 mx-auto bg-[#032659] text-white font-bold py-4 px-4 rounded-lg hover:bg-opacity-90 focus:outline-none focus:ring-4 focus:ring-[#032659]/50 transition-all duration-300 ease-in-out">
               Angebot herunterladen
             </button>
@@ -461,6 +514,9 @@
   const timelineIcon = document.getElementById('timeline-icon');
   const pdfButton = document.getElementById('download-pdf-btn');
   const calculateBtn = document.getElementById('calculate-btn');
+  const infoButton = document.getElementById('info-button');
+  const infoTooltip = document.getElementById('info-tooltip');
+
   // Hauptberechnung
   function performCalculation() {
     const av = unformat(document.getElementById('anschaffungswert').value);
@@ -617,11 +673,11 @@
         ]
       },
       options: {
-        plugins: { legend: { position: 'top' } },
+        plugins: { legend: { display: false } },
         responsive: true,
         maintainAspectRatio: false,
         scales: {
-          x: { stacked: true },
+          x: { stacked: true, grid: { display: false } },
           y: {
             position: 'left',
             stacked: true,
@@ -676,10 +732,15 @@
   setupToggle(restwertToggle, document.getElementById('restwert'), restwertUnit);
   setupToggle(margeToggle, document.getElementById('margegesamt'), margeUnit);
   document.querySelectorAll('.numeric-input').forEach(input => {
-    input.addEventListener('input', formatInput);
+    input.addEventListener('input', performCalculation);
+    input.addEventListener('blur', formatInput);
   });
   document.getElementById('laufzeit').addEventListener('input', performCalculation);
   calculateBtn.addEventListener('click', performCalculation);
+  
+  infoButton.addEventListener('mouseenter', () => infoTooltip.classList.remove('hidden'));
+  infoButton.addEventListener('mouseleave', () => infoTooltip.classList.add('hidden'));
+
   offerToggleBtn.addEventListener('click', () => {
     const isOpen = offerContainer.classList.toggle('open-offer');
     offerIcon.style.transform = isOpen ? 'rotate(45deg)' : 'rotate(0deg)';
@@ -695,7 +756,39 @@
       timelineContainer.style.maxHeight = null;
     }
   });
+
   pdfButton.addEventListener('click', () => {
+    const offerErrorMessage = document.getElementById('offer-error-message');
+    const requiredFields = Array.from(offerContainer.querySelectorAll('[required]'));
+    let isFormValid = true;
+
+    // Reset previous errors
+    requiredFields.forEach(field => {
+        const parent = field.closest('.relative');
+        const icon = parent.querySelector('.error-icon');
+        field.classList.remove('has-error');
+        if (icon) icon.classList.add('hidden');
+    });
+
+    // Validate fields
+    requiredFields.forEach(field => {
+      if (!field.value.trim()) {
+        isFormValid = false;
+        const parent = field.closest('.relative');
+        const icon = parent.querySelector('.error-icon');
+        field.classList.add('has-error');
+        if (icon) icon.classList.remove('hidden');
+      }
+    });
+    
+    if (!isFormValid) {
+        offerErrorMessage.textContent = 'Bitte füllen Sie alle markierten Felder aus, um das Angebot herunterzuladen.';
+        offerErrorMessage.classList.remove('hidden');
+        return;
+    }
+    
+    offerErrorMessage.classList.add('hidden');
+
     const values = {
       anschaffungswert: document.getElementById('anschaffungswert').value,
       laufzeit: document.getElementById('laufzeit').value,
@@ -752,7 +845,7 @@
       addLine('Vorname', values.vorname);
       addLine('Nachname', values.nachname);
       addLine('Firma', values.firma);
-      addLine('Adresse', `${values.adresse} ${values.plz} ${values.ort}`);
+      addLine('Adresse', `${values.adresse}, ${values.plz} ${values.ort}`);
       addLine('Objekt', values.objekt);
       addLine('Hersteller', values.hersteller);
       addLine('E-Mail', values.email);
@@ -765,6 +858,20 @@
     pdf.addImage(chartURL, 'PNG', 15, y + 10, imgWidth, imgHeight);
     pdf.save(offerTitle + 'angebot.pdf');
   });
+  
+  // ADDED: Logic for placeholder styling of select elements
+  document.querySelectorAll('select.is-placeholder').forEach(select => {
+    select.addEventListener('change', (e) => {
+        if (e.target.value) {
+            e.target.classList.remove('is-placeholder');
+        } else {
+            e.target.classList.add('is-placeholder');
+        }
+    });
+  });
+
+  window.addEventListener('load', performCalculation);
 </script>
 </body>
 </html>
+
