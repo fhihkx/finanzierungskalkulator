@@ -37,7 +37,6 @@
       box-shadow: none;
       outline: none;
     }
-    /* ADDED: Style for error fields */
     .form-input-underline.has-error {
         border-color: #ef4444; /* red-500 */
     }
@@ -105,34 +104,51 @@
     input:checked + .slider { background-color: #032659; }
     input:checked + .slider:before { transform: translateX(20px); }
 
-    /* ADDED: Style for select placeholder */
     select.is-placeholder {
         color: #9ca3af; /* text-gray-400 */
         font-size: 0.95rem;
+    }
+
+    /* History Modal */
+    #history-modal {
+        transition: opacity 0.3s ease-in-out;
+    }
+    #history-panel {
+        transition: transform 0.3s ease-in-out;
     }
   </style>
 </head>
 <body class="text-slate-800 min-h-screen p-4 py-16">
 <div class="w-full max-w-5xl mx-auto">
   <!-- Header -->
-  <header class="text-left mt-6 mb-6">
-    <h1 class="text-4xl sm:text-5xl font-bold uppercase" style="color: #032659; letter-spacing: 0.06em;">
-      FINANZIERUNGSKALKULATOR
-    </h1>
-    <p class="mt-4 text-slate-500 text-lg" style="letter-spacing: 0.072em;">
-      Gib deine Werte ein und erhalte die Rate, Kosten und den Zins.
-    </p>
-    <!-- Info-Button mit Tooltip -->
-    <div class="flex items-center mt-4">
-      <div class="relative inline-block">
-        <span id="info-button" class="text-slate-600 bg-gray-200 hover:bg-gray-300 rounded-full px-2.5 py-0.5 text-sm font-bold cursor-help select-none">i</span>
-        <div id="info-tooltip" class="absolute left-1/2 -translate-x-1/2 top-full mt-2 w-72 bg-white border border-gray-300 rounded-lg p-3 text-xs text-slate-700 shadow-xl z-20 hidden">
-          <b>1) Werte eingeben:</b> Anschaffungswert, Laufzeit sowie Anzahlung, Restwert und Marge (in € oder % über den Schalter).<br><br>
-          <b>2) „Berechnen“ klicken:</b> Rate, Gesamtkosten und Zins erscheinen; der Ring zeigt die Kostenanteile.<br><br>
-          <b>3) „Finanzierungsverlauf“ öffnen</b> für Zins- und Tilgungsverlauf je Monat.<br><br>
-          <b>4) Angebot erstellen:</b> Kontaktdaten ausfüllen (Leasing/Mietkauf) und PDF herunterladen.
+  <header class="text-left mt-6 mb-6 flex justify-between items-start">
+    <div>
+        <h1 class="text-4xl sm:text-5xl font-bold uppercase" style="color: #032659; letter-spacing: 0.06em;">
+        FINANZIERUNGSKALKULATOR
+        </h1>
+        <p class="mt-4 text-slate-500 text-lg" style="letter-spacing: 0.072em;">
+        Gib deine Werte ein und erhalte die Rate, Kosten und den Zins.
+        </p>
+        <!-- Info-Button mit Tooltip -->
+        <div class="flex items-center mt-4">
+        <div class="relative inline-block">
+            <span id="info-button" class="text-slate-600 bg-gray-200 hover:bg-gray-300 rounded-full px-2.5 py-0.5 text-sm font-bold cursor-help select-none">i</span>
+            <div id="info-tooltip" class="absolute left-1/2 -translate-x-1/2 top-full mt-2 w-72 bg-white border border-gray-300 rounded-lg p-3 text-xs text-slate-700 shadow-xl z-20 hidden">
+            <b>1) Werte eingeben:</b> Anschaffungswert, Laufzeit sowie Anzahlung, Restwert und Marge (in € oder % über den Schalter).<br><br>
+            <b>2) „Berechnen“ klicken:</b> Rate, Gesamtkosten und Zins erscheinen; der Ring zeigt die Kostenanteile.<br><br>
+            <b>3) „Finanzierungsverlauf“ öffnen</b> für Zins- und Tilgungsverlauf je Monat.<br><br>
+            <b>4) Angebot erstellen:</b> Kontaktdaten ausfüllen (Leasing/Mietkauf) und PDF herunterladen.
+            </div>
         </div>
-      </div>
+        </div>
+    </div>
+    <!-- History Button -->
+    <div class="pt-1">
+        <button id="history-button" title="Berechnungsverlauf anzeigen" class="p-2 rounded-full hover:bg-gray-200 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+        </button>
     </div>
   </header>
   <!-- Kalkulator-Panel -->
@@ -196,9 +212,8 @@
               </div>
               <div class="flex items-end">
                 <div class="w-full">
-                  <label for="margegesamt" class="flex items-baseline text-sm font-medium text-slate-600 mb-1">
-                    <span>Marge&nbsp;Gesamt</span>
-                    <span id="marge-unit" class="ml-1">(€)</span>
+                  <label for="margegesamt" class="block text-sm font-medium text-slate-600 mb-1">
+                    Marge Gesamt <span id="marge-unit">(€)</span>
                   </label>
                   <input type="text" id="margegesamt" value="0" class="numeric-input w-full form-input-underline text-lg" />
                 </div>
@@ -262,7 +277,7 @@
   </main>
   <!-- Angebot erstellen -->
   <section class="w-full mt-8">
-    <div class="panel rounded-2xl p-6">
+    <div class="panel rounded-2xl p-6 sm:p-10">
       <button id="offer-toggle" class="w-full flex justify-between items-center text-left">
         <h2 class="text-xl font-bold text-slate-800">Angebot erstellen</h2>
         <span id="offer-icon" class="text-3xl text-slate-800">+</span>
@@ -314,7 +329,10 @@
           <!-- Firma -->
           <div>
             <label for="firma" class="block text-sm font-medium text-slate-600 mb-1">Firma</label>
-            <input type="text" id="firma" class="w-full form-input-underline text-lg" />
+            <div class="relative">
+                <input type="text" id="firma" class="w-full form-input-underline text-lg" required />
+                <svg class="error-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+            </div>
           </div>
           <!-- Adresse, PLZ, Ort -->
           <div class="grid grid-cols-1 md:grid-cols-3 gap-x-10 gap-y-8">
@@ -385,7 +403,7 @@
             </div>
           </div>
           <!-- Container für Fehlermeldung und Button -->
-          <div class="mt-8 text-center">
+          <div class="mt-8 text-center min-h-[7rem] flex flex-col justify-end pb-2">
             <p id="offer-error-message" class="text-red-600 text-sm mb-4 hidden"></p>
             <button type="button" id="download-pdf-btn" class="w-full md:w-1/2 mx-auto bg-[#032659] text-white font-bold py-4 px-4 rounded-lg hover:bg-opacity-90 focus:outline-none focus:ring-4 focus:ring-[#032659]/50 transition-all duration-300 ease-in-out">
               Angebot herunterladen
@@ -397,7 +415,7 @@
   </section>
   <!-- Finanzierungsverlauf -->
   <section class="w-full mt-8">
-    <div class="panel rounded-2xl p-6">
+    <div class="panel rounded-2xl p-6 sm:p-10">
       <button id="timeline-toggle" class="w-full flex justify-between items-center text-left">
         <h2 class="text-xl font-bold text-slate-800">Finanzierungsverlauf</h2>
         <span id="timeline-icon" class="text-3xl text-slate-800 select-none">+</span>
@@ -438,6 +456,25 @@
     </div>
   </section>
 </div>
+
+<!-- History Modal -->
+<div id="history-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 opacity-0 pointer-events-none">
+    <div id="history-panel" class="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[80vh] flex flex-col transform -translate-y-10">
+        <div class="flex justify-between items-center p-4 border-b">
+            <h2 class="text-xl font-bold text-slate-800">Verlauf der Berechnungen</h2>
+            <button id="close-history-button" class="p-2 rounded-full hover:bg-gray-200">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+        <div id="history-list" class="overflow-y-auto p-4 space-y-3">
+            <!-- History items will be injected here -->
+        </div>
+    </div>
+</div>
+
+
 <script>
   // Hilfsfunktionen
   const unformat = (str) => {
@@ -450,10 +487,9 @@
   }
   function formatInput(event) {
     const el = event.target;
+    // Don't format if the input is empty or just a comma/period
+    if (!el.value || el.value === ',' || el.value === '.') return;
     const numericValue = unformat(el.value);
-    if (el.value === '') {
-      return;
-    }
     el.value = formatLocale(numericValue, { maximumFractionDigits: 2 });
   }
   // Finanzierungsformeln
@@ -517,8 +553,20 @@
   const infoButton = document.getElementById('info-button');
   const infoTooltip = document.getElementById('info-tooltip');
 
+  // History Functionality
+  const historyButton = document.getElementById('history-button');
+  const historyModal = document.getElementById('history-modal');
+  const historyPanel = document.getElementById('history-panel');
+  const closeHistoryButton = document.getElementById('close-history-button');
+  const historyList = document.getElementById('history-list');
+
   // Hauptberechnung
-  function performCalculation() {
+  function performCalculation(isRestoring = false) {
+    // Hide results initially if not restoring from history
+     if (!isRestoring && resultContainer.classList.contains('hidden')) {
+        placeholderContainer.classList.remove('hidden');
+    }
+
     const av = unformat(document.getElementById('anschaffungswert').value);
     const lz = parseInt(document.getElementById('laufzeit').value) || 0;
     const bz = unformat(document.getElementById('basiszins').value);
@@ -528,24 +576,63 @@
     const az = anzahlungToggle.checked ? (azInput / 100) * av : azInput;
     const rw = restwertToggle.checked ? (rwInput / 100) * av : rwInput;
     const marge = margeToggle.checked ? (margeInput / 100) * av : margeInput;
+
     if (av <= 0 || lz <= 0) {
-      showError("Anschaffungswert und Laufzeit müssen größer als 0 sein.");
+      if (!isRestoring) { // Only show error if calculation was triggered by user action
+          showError("Anschaffungswert und Laufzeit müssen größer als 0 sein.");
+          // Clear previous results on error after calculation attempt
+          clearResultsOnError();
+      } else {
+         // If restoring invalid data, just show placeholder
+         showPlaceholder();
+      }
       return;
     }
-    hideError();
+
+    hideError(); // Clear previous errors
     const finanzierungsbetrag = av - az;
     const principal = av - az + marge;
     const monRate = bz / 100 / 12;
     const leasingInternal = PMT(monRate, lz, principal, -rw);
     const leasingRate = -leasingInternal;
+
+    // Only save if it's a new calculation (not restoring) and valid
+    if (!isRestoring && av > 0 && lz > 0) {
+        saveCalculationToHistory(leasingRate);
+    }
+
     displayResult(leasingRate, az, rw, av, lz);
     const indZins = RATE(lz, leasingInternal, finanzierungsbetrag, -rw);
     indikativerZinsEl.value = formatLocale(indZins * 100, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' %';
     if (timelineContainer.classList.contains('open-timeline')) {
       generateTimelineChart(finanzierungsbetrag, leasingRate, lz, indZins);
+      // Ensure max-height is recalculated if timeline was already open
       timelineContainer.style.maxHeight = timelineContainer.scrollHeight + 'px';
     }
   }
+
+  function clearResultsOnError() {
+     if (costChart) { costChart.destroy(); costChart = null; }
+     resultText.textContent = '';
+     indikativerZinsEl.value = '';
+     leasingfaktorEl.value = '';
+     gesamtkostenEl.value = '';
+     resultContainer.classList.add('hidden');
+     placeholderContainer.classList.remove('hidden');
+  }
+
+   function showPlaceholder() {
+        if (costChart) { costChart.destroy(); costChart = null; }
+        resultText.textContent = '';
+        indikativerZinsEl.value = '';
+        leasingfaktorEl.value = '';
+        gesamtkostenEl.value = '';
+        resultContainer.classList.add('hidden');
+        placeholderContainer.classList.remove('hidden');
+        hideError(); // Also hide any potential error messages
+    }
+
+
   function displayResult(rate, anzahlung, restwert, av, monate) {
     resultContainer.classList.remove('hidden');
     resultContainer.classList.add('fade-in');
@@ -612,6 +699,7 @@
         }
       }
     });
+    // Ensure Gesamtkosten reflects initial visible sum
     gesamtkostenEl.value = formatLocale(total, { style: 'currency', currency: 'EUR' });
   }
   function generateTimelineChart(startkapital, rate, monate, jahreszins) {
@@ -673,7 +761,7 @@
         ]
       },
       options: {
-        plugins: { legend: { display: false } },
+        plugins: { legend: { display: false } }, // Hide default legend
         responsive: true,
         maintainAspectRatio: false,
         scales: {
@@ -690,22 +778,17 @@
             beginAtZero: true,
             display: true,
             title: { display: true, text: 'Restschuld (€)' },
-            grid: { drawOnChartArea: false }
+            grid: { drawOnChartArea: false } // Only show axis line
           }
         },
-        interaction: { mode: 'index', intersect: false }
+        interaction: { mode: 'index', intersect: false },
+        tooltips: { mode: 'index', intersect: false }
       }
     });
   }
   function showError(msg) {
-    resultText.textContent = '';
+    // Only show the error message, clearing results is handled separately or within performCalculation
     errorText.textContent = msg;
-    indikativerZinsEl.value = '';
-    leasingfaktorEl.value = '';
-    gesamtkostenEl.value = '';
-    resultContainer.classList.add('hidden');
-    if (costChart) { costChart.destroy(); costChart = null; }
-    if (timelineChart) { timelineChart.destroy(); timelineChart = null; }
   }
   function hideError() {
     errorText.textContent = '';
@@ -714,33 +797,45 @@
     toggleEl.addEventListener('change', () => {
       const av = unformat(document.getElementById('anschaffungswert').value);
       const currentVal = unformat(inputEl.value);
+       // Just update the unit and value formatting, don't trigger full calculation
       if (toggleEl.checked) {
         unitEl.textContent = '(%)';
         if (av > 0) {
           inputEl.value = formatLocale((currentVal / av) * 100, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        } else {
+             inputEl.value = formatLocale(currentVal, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); // Format as percentage even if AV is 0
         }
       } else {
         unitEl.textContent = '(€)';
         if (av > 0) {
           inputEl.value = formatLocale((currentVal / 100) * av, { maximumFractionDigits: 0 });
+        } else {
+             inputEl.value = formatLocale(currentVal, { maximumFractionDigits: 0 }); // Format as currency even if AV is 0
         }
       }
-      performCalculation();
+      // Re-apply formatting after potential conversion
+      formatInput({ target: inputEl });
     });
   }
+
+  // --- Initial Setup & Event Listeners ---
   setupToggle(anzahlungToggle, document.getElementById('anzahlung'), anzahlungUnit);
   setupToggle(restwertToggle, document.getElementById('restwert'), restwertUnit);
   setupToggle(margeToggle, document.getElementById('margegesamt'), margeUnit);
-  document.querySelectorAll('.numeric-input').forEach(input => {
-    input.addEventListener('input', performCalculation);
+
+  // Format inputs on blur
+  document.querySelectorAll('.numeric-input, #laufzeit').forEach(input => {
     input.addEventListener('blur', formatInput);
   });
-  document.getElementById('laufzeit').addEventListener('input', performCalculation);
-  calculateBtn.addEventListener('click', performCalculation);
-  
+
+  // Calculate only on button click
+  calculateBtn.addEventListener('click', () => performCalculation());
+
+  // Info Tooltip
   infoButton.addEventListener('mouseenter', () => infoTooltip.classList.remove('hidden'));
   infoButton.addEventListener('mouseleave', () => infoTooltip.classList.add('hidden'));
 
+  // Accordion Toggles
   offerToggleBtn.addEventListener('click', () => {
     const isOpen = offerContainer.classList.toggle('open-offer');
     offerIcon.style.transform = isOpen ? 'rotate(45deg)' : 'rotate(0deg)';
@@ -750,13 +845,28 @@
     const isOpen = timelineContainer.classList.toggle('open-timeline');
     timelineIcon.style.transform = isOpen ? 'rotate(45deg)' : 'rotate(0deg)';
     if (isOpen) {
-      performCalculation();
-      timelineContainer.style.maxHeight = timelineContainer.scrollHeight + 'px';
+       // Perform calculation only if valid data exists, otherwise just open
+       const av = unformat(document.getElementById('anschaffungswert').value);
+       const lz = parseInt(document.getElementById('laufzeit').value) || 0;
+       if (av > 0 && lz > 0 && !errorText.textContent) {
+           performCalculation(true); // Don't save history again just for opening timeline
+       } else {
+           // If no valid calc exists, just open the container
+            timelineContainer.style.maxHeight = timelineContainer.scrollHeight + 'px';
+            // Optionally clear or hide the timeline chart if invalid
+            if(timelineChart) timelineChart.destroy(); timelineChart = null;
+            // Clear timeline summary data
+            if(tlRateEl) tlRateEl.textContent = '–';
+            if(tlZinsSumEl) tlZinsSumEl.textContent = '–';
+            if(tlTilgSumEl) tlTilgSumEl.textContent = '–';
+       }
+
     } else {
       timelineContainer.style.maxHeight = null;
     }
   });
 
+   // PDF Download Logic (including validation)
   pdfButton.addEventListener('click', () => {
     const offerErrorMessage = document.getElementById('offer-error-message');
     const requiredFields = Array.from(offerContainer.querySelectorAll('[required]'));
@@ -765,7 +875,7 @@
     // Reset previous errors
     requiredFields.forEach(field => {
         const parent = field.closest('.relative');
-        const icon = parent.querySelector('.error-icon');
+        const icon = parent?.querySelector('.error-icon'); // Use optional chaining
         field.classList.remove('has-error');
         if (icon) icon.classList.add('hidden');
     });
@@ -775,20 +885,26 @@
       if (!field.value.trim()) {
         isFormValid = false;
         const parent = field.closest('.relative');
-        const icon = parent.querySelector('.error-icon');
+        const icon = parent?.querySelector('.error-icon'); // Use optional chaining
         field.classList.add('has-error');
         if (icon) icon.classList.remove('hidden');
       }
     });
-    
+
     if (!isFormValid) {
         offerErrorMessage.textContent = 'Bitte füllen Sie alle markierten Felder aus, um das Angebot herunterzuladen.';
         offerErrorMessage.classList.remove('hidden');
+        // Scroll to the first error field for better UX
+        const firstError = offerContainer.querySelector('.has-error');
+        if (firstError) {
+            firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
         return;
     }
-    
-    offerErrorMessage.classList.add('hidden');
 
+    offerErrorMessage.classList.add('hidden'); // Hide error message if valid
+
+    // --- PDF Generation ---
     const values = {
       anschaffungswert: document.getElementById('anschaffungswert').value,
       laufzeit: document.getElementById('laufzeit').value,
@@ -799,6 +915,7 @@
       indikativerZins: indikativerZinsEl.value,
       leasingfaktor: leasingfaktorEl.value,
       gesamtkosten: gesamtkostenEl.value,
+      // Offer form fields
       finanzierungsart: document.getElementById('finanzierungsart').value,
       anrede: document.getElementById('anrede').value,
       vorname: document.getElementById('vorname').value,
@@ -813,7 +930,22 @@
       telefon: document.getElementById('telefon').value,
       objektart: document.getElementById('objektart').value
     };
-    const chartURL = costChartCanvas.toDataURL('image/png');
+
+     // Check if cost chart exists before trying to get data URL
+    let chartURL = null;
+    try {
+        if (costChart && costChartCanvas) {
+             chartURL = costChartCanvas.toDataURL('image/png');
+        } else {
+             console.warn("Cost chart canvas not ready or chart not initialized for PDF generation.");
+             // Optional: Create a placeholder image or skip adding the image
+        }
+    } catch (e) {
+        console.error("Error getting chart data URL:", e);
+        // Handle error, maybe skip adding the image
+    }
+
+
     const { jsPDF } = window.jspdf;
     const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
     pdf.setFontSize(18);
@@ -822,18 +954,23 @@
     pdf.setFontSize(12);
     let y = 35;
     const addLine = (label, val) => {
-      pdf.text(`${label}: ${val}`, 15, y);
-      y += 6;
+        if (val) { // Only add line if value exists
+             pdf.text(`${label}: ${val}`, 15, y);
+             y += 6;
+        }
     };
-    addLine('Anschaffungswert', values.anschaffungswert + ' €');
-    addLine('Laufzeit', values.laufzeit + ' Monate');
+    // Add Calculation Data
+    addLine('Anschaffungswert', values.anschaffungswert ? values.anschaffungswert + ' €' : '');
+    addLine('Laufzeit', values.laufzeit ? values.laufzeit + ' Monate' : '');
     addLine('Anzahlung', values.anzahlung);
     addLine('Restwert', values.restwert);
     addLine('Marge Gesamt', values.marge);
-    addLine('Basiszins', values.basiszins + ' % p.a.');
+    addLine('Basiszins', values.basiszins ? values.basiszins + ' % p.a.' : '');
     addLine('Indikativer Zins', values.indikativerZins);
     addLine('Leasingfaktor', values.leasingfaktor);
     addLine('Gesamtkosten', values.gesamtkosten);
+
+    // Add Customer Data if any exists
     if (values.finanzierungsart || values.vorname || values.email) {
       y += 4;
       pdf.setFontSize(14);
@@ -845,21 +982,40 @@
       addLine('Vorname', values.vorname);
       addLine('Nachname', values.nachname);
       addLine('Firma', values.firma);
-      addLine('Adresse', `${values.adresse}, ${values.plz} ${values.ort}`);
+      addLine('Adresse', `${values.adresse || ''}, ${values.plz || ''} ${values.ort || ''}`.replace(/^, /, '').trim()); // Clean up address string
       addLine('Objekt', values.objekt);
       addLine('Hersteller', values.hersteller);
       addLine('E-Mail', values.email);
       addLine('Telefon', values.telefon);
       addLine('Objektart', values.objektart);
     }
-    const imgProps = pdf.getImageProperties(chartURL);
-    const imgWidth = 100;
-    const imgHeight = (imgProps.height / imgProps.width) * imgWidth;
-    pdf.addImage(chartURL, 'PNG', 15, y + 10, imgWidth, imgHeight);
+
+    // Add Chart Image if available
+     if (chartURL) {
+        try {
+            const imgProps = pdf.getImageProperties(chartURL);
+            const imgWidth = 100;
+            const imgHeight = (imgProps.height / imgProps.width) * imgWidth;
+             // Check if image would go off page, add new page if necessary
+            if (y + 10 + imgHeight > pdf.internal.pageSize.getHeight() - 15) { // 15mm margin bottom
+                 pdf.addPage();
+                 y = 15; // Reset y position on new page
+            }
+            pdf.addImage(chartURL, 'PNG', 15, y + 10, imgWidth, imgHeight);
+        } catch (e) {
+             console.error("Error adding image to PDF:", e);
+        }
+     } else {
+         y += 10; // Add some space even if no chart
+         pdf.text("Kostengrafik konnte nicht geladen werden.", 15, y);
+     }
+
+
     pdf.save(offerTitle + 'angebot.pdf');
   });
-  
-  // ADDED: Logic for placeholder styling of select elements
+
+
+  // Placeholder styling for select elements
   document.querySelectorAll('select.is-placeholder').forEach(select => {
     select.addEventListener('change', (e) => {
         if (e.target.value) {
@@ -868,9 +1024,165 @@
             e.target.classList.add('is-placeholder');
         }
     });
+    // Initial check in case a value is pre-filled (e.g., browser autofill)
+    if (select.value) {
+        select.classList.remove('is-placeholder');
+    }
   });
 
-  window.addEventListener('load', performCalculation);
+
+  // --- History Modal ---
+  const openHistoryModal = () => {
+      loadHistory();
+      historyModal.classList.remove('opacity-0', 'pointer-events-none');
+      historyPanel.classList.remove('-translate-y-10');
+  };
+
+  const closeHistoryModal = () => {
+      historyModal.classList.add('opacity-0', 'pointer-events-none');
+      historyPanel.classList.add('-translate-y-10');
+  };
+
+  historyButton.addEventListener('click', openHistoryModal);
+  closeHistoryButton.addEventListener('click', closeHistoryModal);
+  historyModal.addEventListener('click', (e) => {
+      // Close only if clicking directly on the background overlay
+      if (e.target === historyModal) {
+          closeHistoryModal();
+      }
+  });
+
+  const saveCalculationToHistory = (rate) => {
+      const historyEntry = {
+          timestamp: new Date().toISOString(),
+          anschaffungswert: document.getElementById('anschaffungswert').value,
+          laufzeit: document.getElementById('laufzeit').value,
+          anzahlung: document.getElementById('anzahlung').value,
+          anzahlungToggle: document.getElementById('anzahlung-toggle').checked,
+          restwert: document.getElementById('restwert').value,
+          restwertToggle: document.getElementById('restwert-toggle').checked,
+          basiszins: document.getElementById('basiszins').value,
+          margegesamt: document.getElementById('margegesamt').value,
+          margeToggle: document.getElementById('marge-toggle').checked,
+          monatlicheRate: formatLocale(rate, { style: 'currency', currency: 'EUR' }) // Store formatted rate
+      };
+
+      let history = JSON.parse(localStorage.getItem('financingHistory')) || [];
+      // Prevent saving duplicates if inputs haven't changed substantially
+      if (history.length > 0) {
+          const lastEntry = history[0];
+          const keysToCompare = ['anschaffungswert', 'laufzeit', 'anzahlung', 'restwert', 'basiszins', 'margegesamt'];
+          const isDuplicate = keysToCompare.every(key => historyEntry[key] === lastEntry[key]) &&
+                              historyEntry.anzahlungToggle === lastEntry.anzahlungToggle &&
+                              historyEntry.restwertToggle === lastEntry.restwertToggle &&
+                              historyEntry.margeToggle === lastEntry.margeToggle;
+          if (isDuplicate) {
+             console.log("Skipping duplicate history entry.");
+             return; // Don't save if it looks like a duplicate
+          }
+      }
+
+
+      history.unshift(historyEntry); // Add new entry to the beginning
+      if (history.length > 10) {
+          history = history.slice(0, 10); // Keep only the last 10
+      }
+      localStorage.setItem('financingHistory', JSON.stringify(history));
+      console.log("Calculation saved to history.");
+  };
+
+  const loadHistory = () => {
+      historyList.innerHTML = ''; // Clear previous list
+      const history = JSON.parse(localStorage.getItem('financingHistory')) || [];
+
+      if (history.length === 0) {
+          historyList.innerHTML = `<p class="text-slate-500 text-center py-8">Noch keine Berechnungen gespeichert.</p>`;
+          return;
+      }
+
+      history.forEach((entry, index) => {
+          const date = new Date(entry.timestamp);
+          // Format date and time clearly
+          const formattedDate = date.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
+          const formattedTime = date.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+
+          const item = document.createElement('div');
+          item.className = 'p-4 border border-gray-200 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors group'; // Added group for potential hover effects on children
+          item.innerHTML = `
+              <div class="flex justify-between items-start gap-4">
+                  <div class="flex-grow">
+                      <p class="font-semibold text-lg text-[#032659] mb-1">${entry.monatlicheRate || 'N/A'}</p>
+                      <p class="text-sm text-slate-600">
+                          <span title="Anschaffungswert">AW: ${formatLocale(unformat(entry.anschaffungswert), { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 })}</span> |
+                          <span title="Laufzeit">LZ: ${entry.laufzeit} M</span> |
+                          <span title="Anzahlung">${entry.anzahlungToggle ? '%' : '€'}: ${entry.anzahlung}</span> |
+                          <span title="Restwert">${entry.restwertToggle ? '%' : '€'}: ${entry.restwert}</span> |
+                          <span title="Basiszinssatz">BZ: ${entry.basiszins}%</span> |
+                          <span title="Marge">${entry.margeToggle ? '%' : '€'}: ${entry.margegesamt}</span>
+                      </p>
+                  </div>
+                  <div class="text-right flex-shrink-0">
+                     <p class="text-xs text-slate-400">${formattedDate}</p>
+                     <p class="text-xs text-slate-400">${formattedTime} Uhr</p>
+                  </div>
+              </div>
+          `;
+          item.addEventListener('click', () => {
+              restoreFromHistory(entry);
+          });
+          historyList.appendChild(item);
+      });
+  };
+
+  const restoreFromHistory = (entry) => {
+    console.log("Restoring from history:", entry);
+    // Set values directly
+    document.getElementById('anschaffungswert').value = entry.anschaffungswert;
+    document.getElementById('laufzeit').value = entry.laufzeit;
+    document.getElementById('basiszins').value = entry.basiszins;
+    document.getElementById('anzahlung').value = entry.anzahlung;
+    document.getElementById('restwert').value = entry.restwert;
+    document.getElementById('margegesamt').value = entry.margegesamt;
+
+    // Set toggle states *before* setting values might be more reliable
+    document.getElementById('anzahlung-toggle').checked = entry.anzahlungToggle;
+    document.getElementById('restwert-toggle').checked = entry.restwertToggle;
+    document.getElementById('marge-toggle').checked = entry.margeToggle;
+
+    // Manually update unit labels based on restored toggle state
+    document.getElementById('anzahlung-unit').textContent = entry.anzahlungToggle ? '(%)' : '(€)';
+    document.getElementById('restwert-unit').textContent = entry.restwertToggle ? '(%)' : '(€)';
+    document.getElementById('marge-unit').textContent = entry.margeToggle ? '(%)' : '(€)';
+
+    // Apply formatting to restored values
+    document.querySelectorAll('.numeric-input').forEach(input => formatInput({ target: input }));
+
+    performCalculation(true); // Recalculate, passing true to prevent re-saving
+    closeHistoryModal();
+  };
+
+
+   // Initial setup on page load
+   document.addEventListener('DOMContentLoaded', (event) => {
+        // Show placeholder initially
+        showPlaceholder();
+
+        // Add blur listener for formatting numeric inputs initially
+        document.querySelectorAll('.numeric-input').forEach(input => {
+            input.addEventListener('blur', formatInput);
+        });
+         // Add blur listener for laufzeit as well if desired
+        document.getElementById('laufzeit').addEventListener('blur', formatInput); // Assuming Laufzeit should also be formatted
+
+        // Set initial state for select placeholders
+        document.querySelectorAll('select.is-placeholder').forEach(select => {
+             if (!select.value) {
+                 select.classList.add('is-placeholder');
+             }
+        });
+    });
+
+
 </script>
 </body>
 </html>
