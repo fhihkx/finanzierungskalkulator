@@ -116,6 +116,22 @@
     #history-panel {
         transition: transform 0.3s ease-in-out;
     }
+     /* Style Search Input */
+    #history-search {
+        border: 1px solid #d1d5db; /* gray-300 */
+        border-radius: 0.375rem; /* rounded-md */
+        padding: 0.5rem 0.75rem;
+        width: 100%;
+        margin-top: 0.5rem; /* Add some space below title */
+        margin-bottom: 1rem;
+        font-size: 0.875rem; /* text-sm */
+    }
+     #history-search:focus {
+        outline: 2px solid transparent;
+        outline-offset: 2px;
+        border-color: #032659;
+        box-shadow: 0 0 0 2px rgba(3, 38, 89, 0.3);
+     }
   </style>
 </head>
 <body class="text-slate-800 min-h-screen p-4 py-16">
@@ -284,6 +300,7 @@
       </button>
       <div id="offer-container" class="toggle-section">
         <form class="space-y-8" novalidate>
+           <!-- Form content (unchanged from previous version) -->
            <!-- Finanzierungsart & Anrede -->
            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8">
              <div>
@@ -468,7 +485,11 @@
                 </svg>
             </button>
         </div>
-        <div id="history-list" class="overflow-y-auto p-4 space-y-3">
+         <!-- Search Input -->
+        <div class="p-4 border-b">
+             <input type="search" id="history-search" placeholder="Suche nach Name, Firma, Objekt, Wert..." class="form-input-underline w-full !border !border-gray-300 rounded-md text-sm" />
+        </div>
+        <div id="history-list" class="overflow-y-auto p-4 space-y-3 flex-grow">
             <!-- History items will be injected here -->
         </div>
     </div>
@@ -476,20 +497,22 @@
 
 
 <script>
-  // Hilfsfunktionen
-  const unformat = (str) => {
+  // Hilfsfunktionen (unformat, formatLocale, formatInput - unchanged)
+ const unformat = (str) => {
     if (typeof str !== 'string' || !str) return 0;
-    return parseFloat(str.replace(/\./g, '').replace(',', '.')) || 0;
-  };
-  function formatLocale(value, options = {}) {
+    // Handle potential spaces within the number string after formatting
+    return parseFloat(str.replace(/\./g, '').replace(',', '.').replace(/\s/g, '')) || 0;
+ };
+ function formatLocale(value, options = {}) {
     if (value === null || value === undefined || value === '') return '';
     // Ensure value is a number before formatting
     const numValue = Number(value);
     if (isNaN(numValue)) return ''; // Return empty if not a valid number
-    return numValue.toLocaleString('de-DE', options);
-  }
-
-  function formatInput(event) {
+    // Default to currency style if not specified
+    const defaultOptions = { style: 'currency', currency: 'EUR', ...options };
+    return numValue.toLocaleString('de-DE', defaultOptions);
+ }
+ function formatInput(event) {
     const el = event.target;
     // Don't format if the input is empty or just a comma/period
     if (!el.value || el.value === ',' || el.value === '.') return;
@@ -498,7 +521,7 @@
          const numericValue = unformat(el.value);
           // Check if numericValue is a valid number before formatting
          if (!isNaN(numericValue)) {
-            el.value = formatLocale(numericValue, { maximumFractionDigits: 2 });
+            el.value = formatLocale(numericValue, { style: 'decimal', minimumFractionDigits: 2, maximumFractionDigits: 2 }); // Use decimal style for input
          } else {
              el.value = ''; // Clear if invalid
          }
@@ -507,15 +530,15 @@
          const intValue = parseInt(el.value.replace(/\D/g, '')); // Remove non-digits
          el.value = isNaN(intValue) ? '' : intValue.toString();
     }
-    // Add other specific formatting if needed
-  }
-  // Finanzierungsformeln
-  function PMT(rate, nper, pv, fv = 0) {
+ }
+
+  // Finanzierungsformeln (PMT, RATE - unchanged)
+ function PMT(rate, nper, pv, fv = 0) {
     if (rate === 0) return -(pv + fv) / nper;
     const pvFactor = Math.pow(1 + rate, nper);
     return -(rate * (fv + pv * pvFactor)) / (pvFactor - 1);
   }
-  function RATE(nper, pmt, pv, fv = 0) {
+ function RATE(nper, pmt, pv, fv = 0) {
     const precision = 1e-7;
     const maxIter = 100;
     let low = -0.99, high = 5; // Start high range higher
@@ -548,12 +571,29 @@
      let fLow = f(low);
      let fHigh = f(high);
 
+     if (isNaN(fLow) || isNaN(fHigh)) {
+        console.error("Initial bounds yield NaN for RATE function", {fLow, fHigh});
+        return NaN; // Cannot proceed
+     }
+
+
      // Adjust bounds if necessary if the function doesn't cross zero within initial range
-     // This part can be complex and might need more robust root-finding logic if issues persist
      if (fLow * fHigh >= 0) {
           console.warn("RATE function might not have a root in the initial range [-0.99, 5]. Result might be inaccurate.");
-         // Try extending the range or return an estimate/error
-         // For simplicity, we'll proceed but acknowledge potential inaccuracy.
+         // Basic attempt to extend range if both positive or both negative, could be improved
+         if (fLow > 0 && fHigh > 0) {
+             low = -0.9999; // Try closer to -1
+             fLow = f(low);
+         } else if (fLow < 0 && fHigh < 0) {
+             high = 10; // Try much higher rate
+             fHigh = f(high);
+         }
+          if (isNaN(fLow) || isNaN(fHigh) || fLow * fHigh >= 0) {
+             console.error("Could not find suitable bounds for RATE function.");
+             // Return NaN or best guess depending on desired behavior
+             return NaN;
+         }
+
      }
 
 
@@ -567,14 +607,17 @@
       const mid = (low + high) / 2;
 
        // Prevent infinite loop if mid calculation gets stuck
-       if (mid === low || mid === high) break;
+       if (mid === low || mid === high) {
+            console.warn("RATE stuck in loop, returning current estimate.");
+            break;
+       }
 
       const fMid = f(mid);
 
       if (isNaN(fMid)) {
            console.error("f(mid) resulted in NaN in RATE iteration", { mid, i });
-           // Adjust bounds differently, maybe push away from the problematic mid
-           if (Math.random() > 0.5) high = mid - precision; else low = mid + precision;
+           // Adjust bounds away from the problematic mid, this is heuristic
+            if (fLow < 0) high = mid; else low = mid; // Assume it failed on one side
            continue; // Try next iteration
        }
 
@@ -586,6 +629,7 @@
       // Update bounds based on sign change
       fLow = f(low); // Re-evaluate f(low) in case it changed due to bound adjustment
        if (isNaN(fLow)){
+            console.error("f(low) resulted in NaN during RATE update", {low, i});
            // If f(low) fails, the lower bound might be the issue
            low = mid; // Try moving lower bound up
            continue;
@@ -599,8 +643,8 @@
     }
      console.warn("RATE did not converge within max iterations. Returning best estimate.");
     return ((low + high) / 2) * 12; // Return best estimate
-  }
-  // Globale Variablen und DOM-Elemente
+ }
+  // Globale Variablen und DOM-Elemente (unchanged)
   let costChart = null;
   let timelineChart = null;
   const anzahlungToggle = document.getElementById('anzahlung-toggle');
@@ -638,9 +682,11 @@
   const historyPanel = document.getElementById('history-panel');
   const closeHistoryButton = document.getElementById('close-history-button');
   const historyList = document.getElementById('history-list');
+  const historySearchInput = document.getElementById('history-search');
 
-  // Hauptberechnung
-  function performCalculation(isRestoring = false) {
+
+  // Hauptberechnung (calls save function with offerData)
+ function performCalculation(isRestoring = false) {
     // Hide results initially if calculation wasn't triggered and not restoring
     if (!calculateBtn.dataset.clicked && !isRestoring) {
         showPlaceholder();
@@ -696,7 +742,23 @@
 
     // Only save if it's a new calculation (not restoring) triggered by the button
     if (!isRestoring && calculateBtn.dataset.clicked === "true" && av > 0 && lz > 0) {
-        saveCalculationToHistory(leasingRate);
+         // Get offer data when saving calculation
+        const offerData = {
+            finanzierungsart: document.getElementById('finanzierungsart').value || '',
+            anrede: document.getElementById('anrede').value || '',
+            vorname: document.getElementById('vorname').value || '',
+            nachname: document.getElementById('nachname').value || '',
+            firma: document.getElementById('firma').value || '',
+            adresse: document.getElementById('adresse').value || '',
+            plz: document.getElementById('plz').value || '',
+            ort: document.getElementById('ort').value || '',
+            objekt: document.getElementById('objekt').value || '',
+            hersteller: document.getElementById('hersteller').value || '',
+            email: document.getElementById('email').value || '',
+            telefon: document.getElementById('telefon').value || '',
+            objektart: document.getElementById('objektart').value || ''
+        };
+        saveCalculationToHistory(leasingRate, offerData);
     }
 
     displayResult(leasingRate, az, rw, av, lz);
@@ -704,7 +766,7 @@
     // Calculate Indikativer Zins (RATE function)
     const indZins = RATE(lz, leasingInternal, finanzierungsbetrag, -rw);
     if (!isNaN(indZins)) {
-         indikativerZinsEl.value = formatLocale(indZins * 100, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' %';
+         indikativerZinsEl.value = formatLocale(indZins * 100, { style:'decimal', minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' %'; // Use decimal style for display consistency
     } else {
          indikativerZinsEl.value = 'N/A'; // Show N/A if RATE calculation failed
          console.error("RATE calculation failed.");
@@ -718,7 +780,7 @@
     }
     // Reset clicked flag after calculation
     calculateBtn.dataset.clicked = "false";
-  }
+ }
 
   function clearResultsOnError() {
      if (costChart) { costChart.destroy(); costChart = null; }
@@ -750,10 +812,11 @@
     const kosten = anzahlung + rate * (monate || 0) + restwert;
     gesamtkostenEl.value = formatLocale(kosten, { style: 'currency', currency: 'EUR' });
     const faktor = av > 0 ? (rate / av) * 100 : 0;
-    leasingfaktorEl.value = formatLocale(faktor, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' %';
+    leasingfaktorEl.value = formatLocale(faktor, { style:'decimal', minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' %'; // Use decimal style
     updateCostChart(anzahlung, rate * (monate || 0), restwert);
   }
-  function updateCostChart(anzahlung, summeRaten, restwert) {
+  // updateCostChart, generateTimelineChart, showError, hideError, setupToggle (unchanged)
+ function updateCostChart(anzahlung, summeRaten, restwert) {
     if (costChart) costChart.destroy();
     const ctx = costChartCanvas.getContext('2d');
     const values = [anzahlung, summeRaten, restwert].map(v => Math.max(0, v)); // Ensure non-negative values for chart
@@ -821,8 +884,8 @@
     });
     // Ensure Gesamtkosten reflects initial visible sum
     gesamtkostenEl.value = formatLocale(total, { style: 'currency', currency: 'EUR' });
-  }
-  function generateTimelineChart(startkapital, rate, monate, jahreszins) {
+ }
+ function generateTimelineChart(startkapital, rate, monate, jahreszins) {
     if (timelineChart) timelineChart.destroy();
 
      // Validate inputs for timeline chart
@@ -979,15 +1042,15 @@
         }
       }
     });
-  }
-  function showError(msg) {
+ }
+ function showError(msg) {
     // Only show the error message, clearing results is handled separately or within performCalculation
     errorText.textContent = msg;
-  }
-  function hideError() {
+ }
+ function hideError() {
     errorText.textContent = '';
-  }
-  function setupToggle(toggleEl, inputEl, unitEl) {
+ }
+ function setupToggle(toggleEl, inputEl, unitEl) {
     toggleEl.addEventListener('change', () => {
       const av = unformat(document.getElementById('anschaffungswert').value);
       const currentVal = unformat(inputEl.value);
@@ -995,46 +1058,44 @@
       if (toggleEl.checked) {
         unitEl.textContent = '(%)';
         if (av > 0) {
-          inputEl.value = formatLocale((currentVal / av) * 100, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+          inputEl.value = formatLocale((currentVal / av) * 100, { style:'decimal', minimumFractionDigits: 2, maximumFractionDigits: 2 });
         } else {
-             inputEl.value = formatLocale(currentVal, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); // Format as percentage even if AV is 0
+             inputEl.value = formatLocale(currentVal, { style:'decimal', minimumFractionDigits: 2, maximumFractionDigits: 2 }); // Format as percentage even if AV is 0
         }
       } else {
         unitEl.textContent = '(€)';
         if (av > 0) {
-          inputEl.value = formatLocale((currentVal / 100) * av, { maximumFractionDigits: 0 });
+          inputEl.value = formatLocale((currentVal / 100) * av, { style:'decimal', maximumFractionDigits: 0 });
         } else {
-             inputEl.value = formatLocale(currentVal, { maximumFractionDigits: 0 }); // Format as currency even if AV is 0
+             inputEl.value = formatLocale(currentVal, { style:'decimal', maximumFractionDigits: 0 }); // Format as currency even if AV is 0
         }
       }
       // Re-apply formatting after potential conversion
       formatInput({ target: inputEl });
     });
-  }
+ }
 
-  // --- Initial Setup & Event Listeners ---
+
+  // --- Initial Setup & Event Listeners --- (unchanged toggle setup, blur listeners)
   setupToggle(anzahlungToggle, document.getElementById('anzahlung'), anzahlungUnit);
   setupToggle(restwertToggle, document.getElementById('restwert'), restwertUnit);
   setupToggle(margeToggle, document.getElementById('margegesamt'), margeUnit);
 
-  // Format inputs on blur
   document.querySelectorAll('.numeric-input, #laufzeit').forEach(input => {
     input.addEventListener('blur', formatInput);
-     // Trigger initial formatting in case of prefilled values (e.g. browser back)
      formatInput({ target: input });
   });
 
-  // Calculate only on button click
   calculateBtn.addEventListener('click', () => {
       calculateBtn.dataset.clicked = "true"; // Mark button as clicked
       performCalculation();
   });
 
-  // Info Tooltip
+  // Info Tooltip (unchanged)
   infoButton.addEventListener('mouseenter', () => infoTooltip.classList.remove('hidden'));
   infoButton.addEventListener('mouseleave', () => infoTooltip.classList.add('hidden'));
 
-  // Accordion Toggles
+  // Accordion Toggles (unchanged)
   offerToggleBtn.addEventListener('click', () => {
     const isOpen = offerContainer.classList.toggle('open-offer');
     offerIcon.style.transform = isOpen ? 'rotate(45deg)' : 'rotate(0deg)';
@@ -1044,19 +1105,15 @@
     const isOpen = timelineContainer.classList.toggle('open-timeline');
     timelineIcon.style.transform = isOpen ? 'rotate(45deg)' : 'rotate(0deg)';
     if (isOpen) {
-       // Perform calculation only if valid data exists *and results are currently shown*, otherwise just open
        const av = unformat(document.getElementById('anschaffungswert').value);
        const lz = parseInt(document.getElementById('laufzeit').value) || 0;
        const resultsVisible = !resultContainer.classList.contains('hidden');
 
        if (resultsVisible && av > 0 && lz > 0 && !errorText.textContent) {
-           performCalculation(true); // Don't save history again just for opening timeline
+           performCalculation(true);
        } else {
-           // If no valid calc exists or results aren't shown, just open the container
             timelineContainer.style.maxHeight = timelineContainer.scrollHeight + 'px';
-            // Clear or hide the timeline chart if invalid/no results
             if(timelineChart) timelineChart.destroy(); timelineChart = null;
-            // Clear timeline summary data
             if(tlRateEl) tlRateEl.textContent = '–';
             if(tlZinsSumEl) tlZinsSumEl.textContent = '–';
             if(tlTilgSumEl) tlTilgSumEl.textContent = '–';
@@ -1067,8 +1124,8 @@
     }
   });
 
-   // PDF Download Logic (including validation)
-  pdfButton.addEventListener('click', () => {
+   // PDF Download Logic (unchanged validation, uses updated PDF generation)
+   pdfButton.addEventListener('click', () => {
     const offerErrorMessage = document.getElementById('offer-error-message');
     const requiredFields = Array.from(offerContainer.querySelectorAll('[required]'));
     let isFormValid = true;
@@ -1076,51 +1133,44 @@
     // Reset previous errors
     requiredFields.forEach(field => {
         const parent = field.closest('.relative');
-        const icon = parent?.querySelector('.error-icon'); // Use optional chaining
+        const icon = parent?.querySelector('.error-icon');
         field.classList.remove('has-error');
         if (icon) icon.classList.add('hidden');
     });
 
     // Validate fields
     requiredFields.forEach(field => {
-      // Trim value and check if it's empty
       if (!field.value.trim()) {
         isFormValid = false;
         const parent = field.closest('.relative');
-        const icon = parent?.querySelector('.error-icon'); // Use optional chaining
+        const icon = parent?.querySelector('.error-icon');
         field.classList.add('has-error');
         if (icon) icon.classList.remove('hidden');
       }
     });
 
-    // Also check if calculation results are available
+    // Check if calculation results are available
     if (!resultText.textContent || resultContainer.classList.contains('hidden')) {
          offerErrorMessage.textContent = 'Bitte führen Sie zuerst eine gültige Berechnung durch.';
          offerErrorMessage.classList.remove('hidden');
          isFormValid = false;
-         // Optionally scroll to the calculate button or the result area
          if (calculateBtn) calculateBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 
-
     if (!isFormValid) {
-        if (!offerErrorMessage.textContent) { // Show general error if no specific calculation error
+        if (!offerErrorMessage.textContent) {
              offerErrorMessage.textContent = 'Bitte füllen Sie alle markierten Felder aus, um das Angebot herunterzuladen.';
              offerErrorMessage.classList.remove('hidden');
         }
-        // Scroll to the first error field for better UX
         const firstError = offerContainer.querySelector('.has-error');
         if (firstError) {
-            // Use scrollIntoView with options for better control
             firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            firstError.focus({ preventScroll: true }); // Optionally focus after scrolling
-        } else if (!resultText.textContent || resultContainer.classList.contains('hidden')) {
-            // If the error is missing calculation, don't scroll to form field
+            firstError.focus({ preventScroll: true });
         }
         return;
     }
 
-    offerErrorMessage.classList.add('hidden'); // Hide error message if valid
+    offerErrorMessage.classList.add('hidden');
 
     // --- PDF Generation ---
     const values = {
@@ -1154,19 +1204,17 @@
     const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
     pdf.setFont('helvetica', 'normal'); // Use a standard font like helvetica
     pdf.setTextColor(0); // Set default text color to black
+    pdf.setFontSize(10); // Set default font size smaller for better fit
 
     let y = 25; // Start position adjusted
     const leftMargin = 20; // Margin from left (ca. 2cm)
-    const rightMargin = 20; // Margin from right (ca. 2cm)
-    const valueXPos = leftMargin + 50; // X position for the start of the value text, increased indent
+    const valueXPos = 70;   // X position for the start of the value text
     const pageWidth = pdf.internal.pageSize.getWidth();
-    const contentWidth = pageWidth - leftMargin - rightMargin;
+    const contentWidth = pageWidth - leftMargin * 2; // Width available between margins
     const lineSpacing = 6; // Adjusted line spacing
     const sectionSpacing = 10; // Adjusted section spacing
-    const closingMargin = leftMargin; // Use same margin for closing text
 
     // Address Block (Top Left)
-    pdf.setFontSize(10);
     const addressStartY = y;
     if (values.firma) { pdf.text(values.firma, leftMargin, y); y += 5; }
     if (values.anrede || values.nachname) { pdf.text(`${values.anrede || ''} ${values.nachname || ''}`.trim(), leftMargin, y); y += 5; }
@@ -1176,7 +1224,7 @@
     y = Math.max(y, addressStartY) + sectionSpacing * 1.5; // Ensure space after address block
 
     // Subject Line (Bold)
-    pdf.setFontSize(11);
+    pdf.setFontSize(11); // Slightly larger for subject
     pdf.setFont('helvetica', 'bold');
     if(values.objekt || values.hersteller) {
         pdf.text(`Finanzierungsangebot: ${values.objekt || ''} ${values.hersteller || ''}`.trim(), leftMargin, y);
@@ -1196,10 +1244,10 @@
     pdf.text(`wir danken für Ihre ${requestType} und bieten wie folgt unverbindlich an:`, leftMargin, y);
     y += sectionSpacing * 1.5; // More space before details
 
-    // Financial Details Function (Label left bold, Value right normal)
+    // Financial Details Function (Label left bold, Value right normal) - Updated Spacing
     const addDetailLinePDF = (label, value) => {
-        if (value || value === 0 || String(value).replace(/€\s*/, '').trim() !== '') {
-             pdf.setFontSize(11);
+        if (value || value === 0 || String(value).replace(/[€\s]/g, '').trim() !== '') { // Improved check for empty/zero values
+             pdf.setFontSize(10); // Consistent size
              pdf.setFont('helvetica', 'bold');
              pdf.text(`${label}:`, leftMargin, y);
              pdf.setFont('helvetica', 'normal');
@@ -1221,9 +1269,9 @@
         pdf.setFontSize(9);
         pdf.setFont('helvetica', 'bold'); // Set font to bold
         pdf.setTextColor(0); // Ensure black text
-        pdf.text('Hinweis: Die gesetzl. Mehrwertsteuer fällt vorab auf die Summe aller Zahlungen an.', leftMargin, y);
+        y = addWrappedTextPDF('Hinweis: Die gesetzl. Mehrwertsteuer fällt vorab auf die Summe aller Zahlungen an.', y, leftMargin, contentWidth, 1.0, true); // Use wrapper, mark as bold
         pdf.setFont('helvetica', 'normal'); // Reset font weight
-        y += lineSpacing * 1.5;
+        y += lineSpacing * 0.5; // Adjust spacing after note
     }
 
     // General Notes & Closing (Adjusted Margins and Font)
@@ -1232,14 +1280,23 @@
 
     // Function to add wrapped text with specified left margin and width
     const addWrappedTextPDF = (text, startY, margin, width, lineSpacingScale = 1.0, isBold = false) => {
+         const currentSize = pdf.getFontSize(); // Store current size
+         const currentStyle = pdf.getFont().fontStyle; // Store current style
+
          if (isBold) pdf.setFont('helvetica', 'bold');
+         else pdf.setFont('helvetica', 'normal');
+
          const lines = pdf.splitTextToSize(text, width);
          pdf.text(lines, margin, startY);
-          if (isBold) pdf.setFont('helvetica', 'normal'); // Reset font style after printing bold text
-         return startY + (lines.length * lineSpacing * lineSpacingScale); // Calculate next y position based on number of lines
+
+         // Reset font style and size after printing
+         pdf.setFont('helvetica', currentStyle);
+         pdf.setFontSize(currentSize);
+
+         return startY + (lines.length * (lineSpacing * 0.8) * lineSpacingScale); // Calculate next y using slightly smaller spacing for wrapped text
     };
 
-    // Use leftMargin and contentWidth for the bottom block to align with details section
+    // Use leftMargin and contentWidth for alignment
     y = addWrappedTextPDF('Die oben genannten Preise verstehen sich netto, zuzüglich der gesetzlichen Mehrwertsteuer.', y, leftMargin, contentWidth);
     const formattedEntgelt = formatLocale(entgeltEuro, { style: 'currency', currency: 'EUR' });
     y = addWrappedTextPDF(`Bei Vertragsabschluss berechnet die Leasinggesellschaft Ihnen einmalig ein Entgelt in Höhe von ${formattedEntgelt}.`, y, leftMargin, contentWidth);
@@ -1260,7 +1317,7 @@
   });
 
 
-  // Placeholder styling for select elements
+  // Placeholder styling for select elements (unchanged)
   document.querySelectorAll('select.is-placeholder').forEach(select => {
     select.addEventListener('change', (e) => {
         if (e.target.value) {
@@ -1276,11 +1333,13 @@
   });
 
 
-  // --- History Modal ---
+  // --- History Modal & Functionality ---
   const openHistoryModal = () => {
-      loadHistory();
+      loadHistory(); // Load unfiltered history first
+      historySearchInput.value = ''; // Clear search on open
       historyModal.classList.remove('opacity-0', 'pointer-events-none');
       historyPanel.classList.remove('-translate-y-10');
+      historySearchInput.focus(); // Focus search input when modal opens
   };
 
   const closeHistoryModal = () => {
@@ -1297,7 +1356,13 @@
       }
   });
 
-  const saveCalculationToHistory = (rate) => {
+  // Search functionality
+  historySearchInput.addEventListener('input', (e) => {
+      loadHistory(e.target.value); // Reload history list with the search term
+  });
+
+
+  const saveCalculationToHistory = (rate, offerData) => {
       // Check if rate is valid before saving
        if (isNaN(rate) || !isFinite(rate)) {
            console.warn("Invalid rate calculated, not saving to history.");
@@ -1306,6 +1371,7 @@
 
       const historyEntry = {
           timestamp: new Date().toISOString(),
+          // Calculation Data
           anschaffungswert: document.getElementById('anschaffungswert').value,
           laufzeit: document.getElementById('laufzeit').value,
           anzahlung: document.getElementById('anzahlung').value,
@@ -1315,39 +1381,98 @@
           basiszins: document.getElementById('basiszins').value,
           margegesamt: document.getElementById('margegesamt').value,
           margeToggle: document.getElementById('marge-toggle').checked,
-          monatlicheRate: formatLocale(rate, { style: 'currency', currency: 'EUR' }) // Store formatted rate
+          monatlicheRate: formatLocale(rate, { style: 'currency', currency: 'EUR' }), // Store formatted rate
+          // Offer Data (passed as argument)
+          finanzierungsart: offerData.finanzierungsart || '',
+          anrede: offerData.anrede || '',
+          vorname: offerData.vorname || '',
+          nachname: offerData.nachname || '',
+          firma: offerData.firma || '',
+          adresse: offerData.adresse || '',
+          plz: offerData.plz || '',
+          ort: offerData.ort || '',
+          objekt: offerData.objekt || '',
+          hersteller: offerData.hersteller || '',
+          email: offerData.email || '',
+          telefon: offerData.telefon || '',
+          objektart: offerData.objektart || ''
       };
 
       let history = JSON.parse(localStorage.getItem('financingHistory')) || [];
       // Prevent saving duplicates if inputs haven't changed substantially
       if (history.length > 0) {
           const lastEntry = history[0];
-          const keysToCompare = ['anschaffungswert', 'laufzeit', 'anzahlung', 'restwert', 'basiszins', 'margegesamt'];
-          const isDuplicate = keysToCompare.every(key => historyEntry[key] === lastEntry[key]) &&
-                              historyEntry.anzahlungToggle === lastEntry.anzahlungToggle &&
-                              historyEntry.restwertToggle === lastEntry.restwertToggle &&
-                              historyEntry.margeToggle === lastEntry.margeToggle;
-          if (isDuplicate) {
-             // console.log("Skipping duplicate history entry."); // Less verbose
+          const calcKeysToCompare = ['anschaffungswert', 'laufzeit', 'anzahlung', 'restwert', 'basiszins', 'margegesamt'];
+          const offerKeysToCompare = ['finanzierungsart', 'anrede', 'vorname', 'nachname', 'firma', 'adresse', 'plz', 'ort', 'objekt', 'hersteller', 'email', 'telefon', 'objektart'];
+
+
+          const calcIsDuplicate = calcKeysToCompare.every(key => historyEntry[key] === lastEntry[key]) &&
+                                  historyEntry.anzahlungToggle === lastEntry.anzahlungToggle &&
+                                  historyEntry.restwertToggle === lastEntry.restwertToggle &&
+                                  historyEntry.margeToggle === lastEntry.margeToggle;
+
+          // Only consider offer data duplicate if calc data is also duplicate
+          const offerIsDuplicate = offerKeysToCompare.every(key => historyEntry[key] === lastEntry[key]);
+
+
+          if (calcIsDuplicate && offerIsDuplicate) {
+             // console.log("Skipping duplicate history entry.");
              return; // Don't save if it looks like a duplicate
           }
       }
 
 
       history.unshift(historyEntry); // Add new entry to the beginning
-      if (history.length > 10) {
-          history = history.slice(0, 10); // Keep only the last 10
+      if (history.length > 50) { // Keep only the last 50
+          history = history.slice(0, 50);
       }
       localStorage.setItem('financingHistory', JSON.stringify(history));
       console.log("Calculation saved to history.");
   };
 
-  const loadHistory = () => {
+  const loadHistory = (searchTerm = '') => {
       historyList.innerHTML = ''; // Clear previous list
-      const history = JSON.parse(localStorage.getItem('financingHistory')) || [];
+      let history = JSON.parse(localStorage.getItem('financingHistory')) || [];
+      const lowerSearchTerm = searchTerm.toLowerCase().trim();
+
+      // Filter history based on search term
+      if (lowerSearchTerm) {
+          history = history.filter(entry => {
+               // Function to check if any value in the entry contains the search term
+               const checkEntry = (obj) => {
+                   for (const key in obj) {
+                       if (Object.prototype.hasOwnProperty.call(obj, key)) {
+                            const value = obj[key];
+                            // Check strings and numbers (convert numbers to string for includes check)
+                           if (typeof value === 'string' && value.toLowerCase().includes(lowerSearchTerm)) {
+                               return true;
+                           } else if (typeof value === 'number' && String(value).toLowerCase().includes(lowerSearchTerm)) {
+                               return true;
+                           }
+                           // Don't search boolean toggles directly, search their corresponding value fields
+                            if (key === 'anschaffungswert' && entry.anschaffungswert?.replace(/[.,€\s]/g, '').includes(lowerSearchTerm)) return true;
+                            if (key === 'monatlicheRate' && entry.monatlicheRate?.replace(/[.,€\s]/g, '').includes(lowerSearchTerm)) return true;
+                            if (key === 'anzahlung' && entry.anzahlung?.replace(/[.,€%\s]/g, '').includes(lowerSearchTerm)) return true;
+                            if (key === 'restwert' && entry.restwert?.replace(/[.,€%\s]/g, '').includes(lowerSearchTerm)) return true;
+                            if (key === 'basiszins' && entry.basiszins?.replace(/[%.,\s]/g, '').includes(lowerSearchTerm)) return true;
+                            if (key === 'margegesamt' && entry.margegesamt?.replace(/[.,€%\s]/g, '').includes(lowerSearchTerm)) return true;
+
+                       }
+                   }
+                   return false;
+               };
+               return checkEntry(entry);
+           });
+
+      }
+
 
       if (history.length === 0) {
-          historyList.innerHTML = `<p class="text-slate-500 text-center py-8">Noch keine Berechnungen gespeichert.</p>`;
+          if(lowerSearchTerm) {
+               historyList.innerHTML = `<p class="text-slate-500 text-center py-8">Keine Einträge für "${searchTerm}" gefunden.</p>`;
+          } else {
+               historyList.innerHTML = `<p class="text-slate-500 text-center py-8">Noch keine Berechnungen gespeichert.</p>`;
+          }
           return;
       }
 
@@ -1357,19 +1482,32 @@
           const formattedDate = date.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
           const formattedTime = date.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
 
+           // Determine display name based on priority
+           let displayName = 'N/A';
+           if (entry.nachname) {
+               displayName = entry.nachname;
+           } else if (entry.firma) {
+               displayName = entry.firma;
+           } else if (entry.vorname) {
+               displayName = entry.vorname;
+           } else if (entry.objekt) {
+               displayName = entry.objekt;
+           }
+
+
           const item = document.createElement('div');
           item.className = 'p-4 border border-gray-200 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors group'; // Added group for potential hover effects on children
           item.innerHTML = `
               <div class="flex justify-between items-start gap-4">
                   <div class="flex-grow min-w-0"> <!-- Added min-w-0 for flex truncation -->
-                      <p class="font-semibold text-lg text-[#032659] mb-1 truncate">${entry.monatlicheRate || 'N/A'}</p> <!-- Added truncate -->
+                      <p class="font-semibold text-lg text-[#032659] mb-1 truncate">${entry.monatlicheRate || 'N/A'} <span class="text-sm font-normal text-slate-500 ml-2">(${displayName})</span></p> <!-- Added truncate -->
                       <p class="text-sm text-slate-600 truncate"> <!-- Added truncate -->
                           <span title="Anschaffungswert">AW: ${formatLocale(unformat(entry.anschaffungswert), { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 })}</span> |
                           <span title="Laufzeit">LZ: ${entry.laufzeit} M</span> |
-                          <span title="Anzahlung">${entry.anzahlungToggle ? '%' : '€'}: ${entry.anzahlung}</span> |
-                          <span title="Restwert">${entry.restwertToggle ? '%' : '€'}: ${entry.restwert}</span> |
+                          <span title="Anzahlung">A${entry.anzahlungToggle ? '%' : '€'}: ${entry.anzahlung}</span> |
+                          <span title="Restwert">R${entry.restwertToggle ? '%' : '€'}: ${entry.restwert}</span> |
                           <span title="Basiszinssatz">BZ: ${entry.basiszins}%</span> |
-                          <span title="Marge">${entry.margeToggle ? '%' : '€'}: ${entry.margegesamt}</span>
+                          <span title="Marge">M${entry.margeToggle ? '%' : '€'}: ${entry.margegesamt}</span>
                       </p>
                   </div>
                   <div class="text-right flex-shrink-0">
@@ -1387,7 +1525,7 @@
 
   const restoreFromHistory = (entry) => {
     console.log("Restoring from history:", entry);
-    // Set values directly
+    // Set calculation values directly
     document.getElementById('anschaffungswert').value = entry.anschaffungswert;
     document.getElementById('laufzeit').value = entry.laufzeit;
     document.getElementById('basiszins').value = entry.basiszins;
@@ -1395,7 +1533,7 @@
     document.getElementById('restwert').value = entry.restwert;
     document.getElementById('margegesamt').value = entry.margegesamt;
 
-    // Set toggle states *before* setting values might be more reliable
+    // Set toggle states
     document.getElementById('anzahlung-toggle').checked = entry.anzahlungToggle;
     document.getElementById('restwert-toggle').checked = entry.restwertToggle;
     document.getElementById('marge-toggle').checked = entry.margeToggle;
@@ -1405,7 +1543,32 @@
     document.getElementById('restwert-unit').textContent = entry.restwertToggle ? '(%)' : '(€)';
     document.getElementById('marge-unit').textContent = entry.margeToggle ? '(%)' : '(€)';
 
-    // Apply formatting to restored values
+    // Restore ALL offer data fields
+    document.getElementById('finanzierungsart').value = entry.finanzierungsart || '';
+    document.getElementById('anrede').value = entry.anrede || '';
+    document.getElementById('vorname').value = entry.vorname || '';
+    document.getElementById('nachname').value = entry.nachname || '';
+    document.getElementById('firma').value = entry.firma || '';
+    document.getElementById('adresse').value = entry.adresse || '';
+    document.getElementById('plz').value = entry.plz || '';
+    document.getElementById('ort').value = entry.ort || '';
+    document.getElementById('objekt').value = entry.objekt || '';
+    document.getElementById('hersteller').value = entry.hersteller || '';
+    document.getElementById('email').value = entry.email || '';
+    document.getElementById('telefon').value = entry.telefon || '';
+    document.getElementById('objektart').value = entry.objektart || '';
+
+     // Update placeholder class for select elements after restoring
+    document.querySelectorAll('select.is-placeholder').forEach(select => {
+        if (select.value) {
+            select.classList.remove('is-placeholder');
+        } else {
+            select.classList.add('is-placeholder');
+        }
+    });
+
+
+    // Apply formatting to restored calculation values
     document.querySelectorAll('.numeric-input, #laufzeit').forEach(input => formatInput({ target: input }));
 
     // Mark that a calculation should happen
