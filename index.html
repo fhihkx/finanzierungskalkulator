@@ -483,8 +483,12 @@
   };
   function formatLocale(value, options = {}) {
     if (value === null || value === undefined || value === '') return '';
-    return Number(value).toLocaleString('de-DE', options);
+    // Ensure value is a number before formatting
+    const numValue = Number(value);
+    if (isNaN(numValue)) return ''; // Return empty if not a valid number
+    return numValue.toLocaleString('de-DE', options);
   }
+
   function formatInput(event) {
     const el = event.target;
     // Don't format if the input is empty or just a comma/period
@@ -492,10 +496,15 @@
     // Check if it's a numeric input or Laufzeit
     if (el.classList.contains('numeric-input') || el.id === 'basiszins') {
          const numericValue = unformat(el.value);
-         el.value = formatLocale(numericValue, { maximumFractionDigits: 2 });
+          // Check if numericValue is a valid number before formatting
+         if (!isNaN(numericValue)) {
+            el.value = formatLocale(numericValue, { maximumFractionDigits: 2 });
+         } else {
+             el.value = ''; // Clear if invalid
+         }
     } else if (el.id === 'laufzeit') {
         // Laufzeit should likely be an integer
-         const intValue = parseInt(el.value.replace(/\./g, '')); // Remove dots just in case
+         const intValue = parseInt(el.value.replace(/\D/g, '')); // Remove non-digits
          el.value = isNaN(intValue) ? '' : intValue.toString();
     }
     // Add other specific formatting if needed
@@ -509,25 +518,87 @@
   function RATE(nper, pmt, pv, fv = 0) {
     const precision = 1e-7;
     const maxIter = 100;
-    let low = -0.99, high = 5;
+    let low = -0.99, high = 5; // Start high range higher
+    // Ensure inputs are numbers and reasonable
+    nper = Number(nper); pmt = Number(pmt); pv = Number(pv); fv = Number(fv);
+    if (isNaN(nper) || isNaN(pmt) || isNaN(pv) || isNaN(fv) || nper <= 0) {
+        console.error("Invalid input for RATE function");
+        return NaN; // Indicate error
+    }
+
+    // Check edge case for zero rate possibility
+    if (Math.abs(pv + pmt * nper + fv) < precision) {
+        return 0;
+    }
+
     const f = (rate) => {
-      if (rate === 0) return pv + pmt * nper + fv;
-      return pv * Math.pow(1 + rate, nper) + pmt * ((Math.pow(1 + rate, nper) - 1) / rate) + fv;
+      if (rate === 0) return pv + pmt * nper + fv; // Handle zero rate case separately
+       // Add check for rate being close to -1 which causes issues with pow
+       if (rate <= -1) return Infinity; // Or some large number indicating invalid rate
+       try {
+           const factor = Math.pow(1 + rate, nper);
+           return pv * factor + pmt * ((factor - 1) / rate) + fv;
+       } catch (e) {
+           console.error("Error in RATE calculation function:", e);
+           return Infinity; // Indicate error
+       }
     };
+
+     // Initial check of bounds
+     let fLow = f(low);
+     let fHigh = f(high);
+
+     // Adjust bounds if necessary if the function doesn't cross zero within initial range
+     // This part can be complex and might need more robust root-finding logic if issues persist
+     if (fLow * fHigh >= 0) {
+          console.warn("RATE function might not have a root in the initial range [-0.99, 5]. Result might be inaccurate.");
+         // Try extending the range or return an estimate/error
+         // For simplicity, we'll proceed but acknowledge potential inaccuracy.
+     }
+
+
     for (let i = 0; i < maxIter; i++) {
-      if (low >= high) break;
-      const mid = (low + high) / 2;
-      const fMid = f(mid);
-      if (Math.abs(fMid) < precision) {
-        return mid * 12;
+       // Check if bounds are valid numbers
+      if (isNaN(low) || isNaN(high) || low >= high) {
+           console.error("Invalid bounds in RATE iteration", { low, high, i });
+           return NaN; // Error state
       }
-      if (f(low) * fMid < 0) {
+
+      const mid = (low + high) / 2;
+
+       // Prevent infinite loop if mid calculation gets stuck
+       if (mid === low || mid === high) break;
+
+      const fMid = f(mid);
+
+      if (isNaN(fMid)) {
+           console.error("f(mid) resulted in NaN in RATE iteration", { mid, i });
+           // Adjust bounds differently, maybe push away from the problematic mid
+           if (Math.random() > 0.5) high = mid - precision; else low = mid + precision;
+           continue; // Try next iteration
+       }
+
+
+      if (Math.abs(fMid) < precision) {
+        return mid * 12; // Annual rate
+      }
+
+      // Update bounds based on sign change
+      fLow = f(low); // Re-evaluate f(low) in case it changed due to bound adjustment
+       if (isNaN(fLow)){
+           // If f(low) fails, the lower bound might be the issue
+           low = mid; // Try moving lower bound up
+           continue;
+       }
+
+      if (fLow * fMid < 0) {
         high = mid;
       } else {
         low = mid;
       }
     }
-    return ((low + high) / 2) * 12;
+     console.warn("RATE did not converge within max iterations. Returning best estimate.");
+    return ((low + high) / 2) * 12; // Return best estimate
   }
   // Globale Variablen und DOM-Elemente
   let costChart = null;
@@ -596,9 +667,31 @@
 
     hideError(); // Clear previous errors if inputs are valid
     const finanzierungsbetrag = av - az;
+     // Ensure principal (PV for PMT) is reasonable
     const principal = av - az + marge;
+    if (principal < 0 && rw <= 0) {
+        // Handle cases where financing amount is negative and no positive future value exists
+        console.warn("Calculation might be invalid: Negative principal with non-positive residual value.");
+        // Optionally show a specific error or default results
+    }
+
     const monRate = bz / 100 / 12;
+
+     // Add checks before calling PMT
+     if (isNaN(monRate) || isNaN(lz) || isNaN(principal) || isNaN(rw)) {
+         showError("Ungültige Eingabe für Zinsberechnung.");
+         clearResultsOnError();
+         return;
+     }
+
     const leasingInternal = PMT(monRate, lz, principal, -rw);
+     // Check if PMT result is valid
+     if (isNaN(leasingInternal) || !isFinite(leasingInternal)) {
+         showError("Berechnung der Rate fehlgeschlagen. Prüfen Sie die Eingaben.");
+         clearResultsOnError();
+         return;
+     }
+
     const leasingRate = -leasingInternal;
 
     // Only save if it's a new calculation (not restoring) triggered by the button
@@ -607,8 +700,17 @@
     }
 
     displayResult(leasingRate, az, rw, av, lz);
+
+    // Calculate Indikativer Zins (RATE function)
     const indZins = RATE(lz, leasingInternal, finanzierungsbetrag, -rw);
-    indikativerZinsEl.value = formatLocale(indZins * 100, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' %';
+    if (!isNaN(indZins)) {
+         indikativerZinsEl.value = formatLocale(indZins * 100, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' %';
+    } else {
+         indikativerZinsEl.value = 'N/A'; // Show N/A if RATE calculation failed
+         console.error("RATE calculation failed.");
+    }
+
+
     if (timelineContainer.classList.contains('open-timeline')) {
       generateTimelineChart(finanzierungsbetrag, leasingRate, lz, indZins);
       // Ensure max-height is recalculated if timeline was already open
@@ -722,8 +824,20 @@
   }
   function generateTimelineChart(startkapital, rate, monate, jahreszins) {
     if (timelineChart) timelineChart.destroy();
+
+     // Validate inputs for timeline chart
+    if (isNaN(startkapital) || isNaN(rate) || isNaN(monate) || isNaN(jahreszins) || monate <= 0) {
+        console.error("Invalid inputs for generateTimelineChart.");
+        // Optionally clear the timeline display elements
+        if (tlRateEl) tlRateEl.textContent = '–';
+        if (tlZinsSumEl) tlZinsSumEl.textContent = '–';
+        if (tlTilgSumEl) tlTilgSumEl.textContent = '–';
+        return;
+    }
+
+
     let restschuld = startkapital;
-    const monZins = jahreszins / 12;
+    const monZins = jahreszins / 12; // Annual rate to monthly
     const labels = [];
     const zinsAnteile = [];
     const tilgAnteile = [];
@@ -747,7 +861,18 @@
       // Ensure Zins calculation doesn't go below zero if restschuld is already 0
       const zins = Math.max(0, restschuld * monZins);
       // Ensure Tilgung doesn't make restschuld negative unnecessarily large
-      const tilg = Math.min(rate - zins, restschuld); // Tilgung cannot be more than remaining restschuld
+      // Tilgung is the portion of the rate that reduces principal
+      let tilg = rate - zins;
+
+      // Adjust tilg if it exceeds remaining restschuld (e.g., last payment)
+      if (tilg > restschuld) {
+          tilg = restschuld;
+           // If tilg needed adjustment, the actual payment might be lower (rate - zins vs restschuld + zins)
+           // However, for chart simplicity, we often show the calculated rate components
+      }
+      // Ensure tilg is not negative if zins > rate (can happen with very low startkapital or high initial interest)
+      tilg = Math.max(0, tilg);
+
 
       restschuld = restschuld - tilg;
       // Clamp restschuld at 0
@@ -759,11 +884,19 @@
       totalZins += zins;
       totalTilgung += tilg;
 
-       // Safety break if restschuld somehow becomes negative significantly
+       // Safety break if restschuld somehow becomes negative significantly (shouldn't happen with clamping)
        if (restschuld < -0.01) {
-           console.warn("Restschuld became negative during timeline calculation, stopping early.");
+           console.warn("Restschuld became significantly negative during timeline calculation, stopping early.");
            break;
        }
+        // Break early if restschuld hits 0 precisely
+       if (restschuld === 0 && i < monate) {
+            console.log("Restschuld reached 0 early at month", i);
+           // Fill remaining months with 0s if needed, or just stop
+           // For simplicity, we can stop here. The chart will just end.
+           // break; // Uncomment if you want the chart to stop early
+       }
+
     }
     // Update summary fields
     tlRateEl.textContent = formatLocale(rate, { style: 'currency', currency: 'EUR' });
@@ -834,8 +967,11 @@
                     if (label) {
                         label += ': ';
                     }
-                    if (context.parsed.y !== null) {
+                    // Ensure context.parsed and context.parsed.y exist and are numbers
+                    if (context.parsed && typeof context.parsed.y === 'number') {
                         label += formatLocale(context.parsed.y, { style: 'currency', currency: 'EUR' });
+                    } else {
+                         label += 'N/A'; // Indicate if value is missing
                     }
                     return label;
                 }
@@ -957,15 +1093,29 @@
       }
     });
 
+    // Also check if calculation results are available
+    if (!resultText.textContent || resultContainer.classList.contains('hidden')) {
+         offerErrorMessage.textContent = 'Bitte führen Sie zuerst eine gültige Berechnung durch.';
+         offerErrorMessage.classList.remove('hidden');
+         isFormValid = false;
+         // Optionally scroll to the calculate button or the result area
+         if (calculateBtn) calculateBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+
     if (!isFormValid) {
-        offerErrorMessage.textContent = 'Bitte füllen Sie alle markierten Felder aus, um das Angebot herunterzuladen.';
-        offerErrorMessage.classList.remove('hidden');
+        if (!offerErrorMessage.textContent) { // Show general error if no specific calculation error
+             offerErrorMessage.textContent = 'Bitte füllen Sie alle markierten Felder aus, um das Angebot herunterzuladen.';
+             offerErrorMessage.classList.remove('hidden');
+        }
         // Scroll to the first error field for better UX
         const firstError = offerContainer.querySelector('.has-error');
         if (firstError) {
             // Use scrollIntoView with options for better control
             firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
             firstError.focus({ preventScroll: true }); // Optionally focus after scrolling
+        } else if (!resultText.textContent || resultContainer.classList.contains('hidden')) {
+            // If the error is missing calculation, don't scroll to form field
         }
         return;
     }
@@ -975,19 +1125,16 @@
     // --- PDF Generation ---
     const values = {
       // Calculator values
-      anschaffungswert: document.getElementById('anschaffungswert').value,
+      anschaffungswertRaw: unformat(document.getElementById('anschaffungswert').value),
       laufzeit: document.getElementById('laufzeit').value,
-      anzahlungRaw: unformat(document.getElementById('anzahlung').value), // Get raw value for Entgelt
-      anzahlung: document.getElementById('anzahlung').value + (anzahlungToggle.checked ? ' %' : ' €'),
-      restwertRaw: unformat(document.getElementById('restwert').value), // Get raw value for Entgelt
-      restwert: document.getElementById('restwert').value + (restwertToggle.checked ? ' %' : ' €'),
-      marge: document.getElementById('margegesamt').value + (margeToggle.checked ? ' %' : ' €'),
-      basiszins: document.getElementById('basiszins').value,
+      anzahlungRaw: unformat(document.getElementById('anzahlung').value),
+      anzahlungToggle: anzahlungToggle.checked,
+      restwertRaw: unformat(document.getElementById('restwert').value),
+      restwertToggle: restwertToggle.checked,
       monatlicheRate: resultText.textContent, // Get calculated rate directly
       // Offer form fields
       finanzierungsart: document.getElementById('finanzierungsart').value,
       anrede: document.getElementById('anrede').value,
-      vorname: document.getElementById('vorname').value,
       nachname: document.getElementById('nachname').value,
       firma: document.getElementById('firma').value,
       adresse: document.getElementById('adresse').value,
@@ -995,104 +1142,118 @@
       ort: document.getElementById('ort').value,
       objekt: document.getElementById('objekt').value,
       hersteller: document.getElementById('hersteller').value,
-      email: document.getElementById('email').value,
-      telefon: document.getElementById('telefon').value,
-      objektart: document.getElementById('objektart').value
     };
 
-     // Check if cost chart exists before trying to get data URL
-    let chartURL = null;
-    try {
-        if (costChart && costChartCanvas && resultContainer && !resultContainer.classList.contains('hidden')) { // Check if results are visible
-             chartURL = costChartCanvas.toDataURL('image/png');
-        } else {
-             console.warn("Cost chart canvas not ready, chart not initialized, or results not visible for PDF generation.");
-        }
-    } catch (e) {
-        console.error("Error getting chart data URL:", e);
-    }
-
+    // --- Calculate absolute Euro values ---
+    const avNum = values.anschaffungswertRaw;
+    const anzahlungEuro = values.anzahlungToggle ? (values.anzahlungRaw / 100) * avNum : values.anzahlungRaw;
+    const restwertEuro = values.restwertToggle ? (values.restwertRaw / 100) * avNum : values.restwertRaw;
+    const entgeltEuro = restwertEuro; // Entgelt is based on the absolute Restwert in Euro
 
     const { jsPDF } = window.jspdf;
     const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-    pdf.setFont('helvetica', 'normal'); // Use a standard font
+    pdf.setFont('helvetica', 'normal'); // Use a standard font like helvetica
+    pdf.setTextColor(0); // Set default text color to black
 
-    let y = 20; // Start position
-    const leftMargin = 15;
-    const lineSpacing = 6;
-    const sectionSpacing = 10;
+    let y = 25; // Start position adjusted
+    const leftMargin = 20; // Margin from left (ca. 2cm)
+    const rightMargin = 20; // Margin from right (ca. 2cm)
+    const valueXPos = leftMargin + 50; // X position for the start of the value text, increased indent
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const contentWidth = pageWidth - leftMargin - rightMargin;
+    const lineSpacing = 6; // Adjusted line spacing
+    const sectionSpacing = 10; // Adjusted section spacing
+    const closingMargin = leftMargin; // Use same margin for closing text
 
-    // Address Block
+    // Address Block (Top Left)
     pdf.setFontSize(10);
-    if (values.firma) { pdf.text(values.firma, leftMargin, y); y += lineSpacing; }
-    if (values.anrede || values.nachname) { pdf.text(`${values.anrede || ''} ${values.nachname || ''}`.trim(), leftMargin, y); y += lineSpacing; }
-    if (values.adresse) { pdf.text(values.adresse, leftMargin, y); y += lineSpacing; }
-    if (values.plz || values.ort) { pdf.text(`${values.plz || ''} ${values.ort || ''}`.trim(), leftMargin, y); y += lineSpacing; }
+    const addressStartY = y;
+    if (values.firma) { pdf.text(values.firma, leftMargin, y); y += 5; }
+    if (values.anrede || values.nachname) { pdf.text(`${values.anrede || ''} ${values.nachname || ''}`.trim(), leftMargin, y); y += 5; }
+    if (values.adresse) { pdf.text(values.adresse, leftMargin, y); y += 5; }
+    if (values.plz || values.ort) { pdf.text(`${values.plz || ''} ${values.ort || ''}`.trim(), leftMargin, y); y += 5; }
 
-    y += sectionSpacing; // Space before greeting
+    y = Math.max(y, addressStartY) + sectionSpacing * 1.5; // Ensure space after address block
+
+    // Subject Line (Bold)
+    pdf.setFontSize(11);
+    pdf.setFont('helvetica', 'bold');
+    if(values.objekt || values.hersteller) {
+        pdf.text(`Finanzierungsangebot: ${values.objekt || ''} ${values.hersteller || ''}`.trim(), leftMargin, y);
+    } else {
+         pdf.text(`Finanzierungsangebot`, leftMargin, y);
+    }
+    y += lineSpacing * 2; // More space after subject
 
     // Greeting
-    pdf.setFontSize(12);
-    pdf.text(`Sehr ${values.anrede === 'Frau' ? 'geehrte' : 'geehrter'} ${values.anrede || ''} ${values.nachname || ''},`, leftMargin, y);
+    pdf.setFont('helvetica', 'normal'); // Reset font weight
+    pdf.setFontSize(11);
+    pdf.text(`Sehr ${values.anrede === 'Frau' ? 'geehrte Frau' : 'geehrter Herr'} ${values.nachname || ''},`, leftMargin, y);
     y += lineSpacing * 1.5;
 
     // Intro Text
     const requestType = values.finanzierungsart === 'Mietkauf' ? 'Mietkaufanfrage' : 'Leasinganfrage';
     pdf.text(`wir danken für Ihre ${requestType} und bieten wie folgt unverbindlich an:`, leftMargin, y);
-    y += sectionSpacing;
+    y += sectionSpacing * 1.5; // More space before details
 
-    // Financial Details Function
-    const addDetailLine = (label, value) => {
-        if (value || value === 0) { // Check if value exists or is zero
-            pdf.setFont('helvetica', 'bold');
-            pdf.text(`${label}:`, leftMargin, y);
-            pdf.setFont('helvetica', 'normal');
-            pdf.text(String(value), leftMargin + 45, y); // Adjust alignment as needed
-            y += lineSpacing * 1.5; // Slightly more space for details
+    // Financial Details Function (Label left bold, Value right normal)
+    const addDetailLinePDF = (label, value) => {
+        if (value || value === 0 || String(value).replace(/€\s*/, '').trim() !== '') {
+             pdf.setFontSize(11);
+             pdf.setFont('helvetica', 'bold');
+             pdf.text(`${label}:`, leftMargin, y);
+             pdf.setFont('helvetica', 'normal');
+             pdf.text(String(value), valueXPos, y); // Align value at fixed position
+             y += lineSpacing; // Use defined line spacing
         }
     };
 
-    pdf.setFontSize(11);
-    addDetailLine('Anschaffungspreis', values.anschaffungswert ? formatLocale(unformat(values.anschaffungswert), { style: 'currency', currency: 'EUR'}) : 'N/A');
-    addDetailLine('Laufzeit', values.laufzeit ? `${values.laufzeit} Monate` : 'N/A');
-    addDetailLine('Mietsonderzahlung', values.anzahlung); // Already includes unit
-    addDetailLine('Monatliche Rate', values.monatlicheRate); // Already formatted
-    addDetailLine('Restwert', values.restwert); // Already includes unit
+    addDetailLinePDF('Anschaffungspreis', formatLocale(avNum, { style: 'currency', currency: 'EUR'}));
+    addDetailLinePDF('Laufzeit', values.laufzeit ? `${values.laufzeit} Monate` : 'N/A');
+    addDetailLinePDF('Mietsonderzahlung', formatLocale(anzahlungEuro, { style: 'currency', currency: 'EUR'}));
+    addDetailLinePDF('Monatliche Rate', values.monatlicheRate); // Already formatted €
+    addDetailLinePDF('Restwert', formatLocale(restwertEuro, { style: 'currency', currency: 'EUR'}));
 
-    y += lineSpacing / 2; // Small space before notes
+    y += lineSpacing * 0.5; // Small gap before notes
 
-    // Conditional Mietkauf Note
+    // Conditional Mietkauf Note (Bold and Black)
     if (values.finanzierungsart === 'Mietkauf') {
         pdf.setFontSize(9);
+        pdf.setFont('helvetica', 'bold'); // Set font to bold
+        pdf.setTextColor(0); // Ensure black text
         pdf.text('Hinweis: Die gesetzl. Mehrwertsteuer fällt vorab auf die Summe aller Zahlungen an.', leftMargin, y);
-        y += lineSpacing;
+        pdf.setFont('helvetica', 'normal'); // Reset font weight
+        y += lineSpacing * 1.5;
     }
 
-    // General Notes & Closing
-    pdf.setFontSize(10);
-    pdf.text('Die oben genannten Preise verstehen sich netto, zuzüglich der gesetzlichen Mehrwertsteuer.', leftMargin, y);
-    y += lineSpacing;
-    // Calculate Entgelt value based on Restwert (assuming it's the EUR value)
-    let entgeltValue = values.restwertRaw;
-    if (restwertToggle.checked && unformat(values.anschaffungswert) > 0) {
-        entgeltValue = (values.restwertRaw / 100) * unformat(values.anschaffungswert);
-    }
-    pdf.text(`Bei Vertragsabschluss berechnet die Leasinggesellschaft Ihnen einmalig ein Entgelt in Höhe von ${formatLocale(entgeltValue, { style: 'currency', currency: 'EUR' })}.`, leftMargin, y);
+    // General Notes & Closing (Adjusted Margins and Font)
+    pdf.setFontSize(9); // Consistent smaller font for notes
+    pdf.setTextColor(0); // Ensure black text
+
+    // Function to add wrapped text with specified left margin and width
+    const addWrappedTextPDF = (text, startY, margin, width, lineSpacingScale = 1.0, isBold = false) => {
+         if (isBold) pdf.setFont('helvetica', 'bold');
+         const lines = pdf.splitTextToSize(text, width);
+         pdf.text(lines, margin, startY);
+          if (isBold) pdf.setFont('helvetica', 'normal'); // Reset font style after printing bold text
+         return startY + (lines.length * lineSpacing * lineSpacingScale); // Calculate next y position based on number of lines
+    };
+
+    // Use leftMargin and contentWidth for the bottom block to align with details section
+    y = addWrappedTextPDF('Die oben genannten Preise verstehen sich netto, zuzüglich der gesetzlichen Mehrwertsteuer.', y, leftMargin, contentWidth);
+    const formattedEntgelt = formatLocale(entgeltEuro, { style: 'currency', currency: 'EUR' });
+    y = addWrappedTextPDF(`Bei Vertragsabschluss berechnet die Leasinggesellschaft Ihnen einmalig ein Entgelt in Höhe von ${formattedEntgelt}.`, y, leftMargin, contentWidth);
     y += sectionSpacing;
 
-    pdf.text('Gerne begleiten wir Sie auch bei weiteren Investitionen in Ihren Betrieb. Kommen Sie ganz unverbindlich auf uns zu.', leftMargin, y);
-    y += lineSpacing * 1.5;
-    pdf.text('Wir freuen uns, für Sie tätig werden zu können und sichern Ihnen bereits jetzt eine faire, schnelle und unbürokratische', leftMargin, y);
-    y += lineSpacing;
-    pdf.text('Abwicklung zu.', leftMargin, y);
+    pdf.setFontSize(10); // Slightly larger font for closing remarks
+    y = addWrappedTextPDF('Gerne begleiten wir Sie auch bei weiteren Investitionen in Ihren Betrieb. Kommen Sie ganz unverbindlich auf uns zu.', y, leftMargin, contentWidth, 1.2); // More spacing
+    y = addWrappedTextPDF('Wir freuen uns, für Sie tätig werden zu können und sichern Ihnen bereits jetzt eine faire, schnelle und unbürokratische Abwicklung zu.', y, leftMargin, contentWidth, 1.2);
     y += sectionSpacing * 1.5;
 
     pdf.text('Mit freundlichen Grüßen', leftMargin, y);
 
-    // Add Chart Image - Consider adding on a new page if needed
-    // Removed chart addition for simplicity now, focus on text structure.
-
-    const pdfTitle = `${requestType.replace('anfrage', '')}angebot (${values.nachname || 'Kunde'}).pdf`;
+    // --- Filename ---
+    const pdfTitle = `${values.finanzierungsart || 'Finanzierung'}svertrag (${values.nachname || 'Kunde'}).pdf`;
     pdf.save(pdfTitle);
 
     // --- End PDF Generation ---
@@ -1167,7 +1328,7 @@
                               historyEntry.restwertToggle === lastEntry.restwertToggle &&
                               historyEntry.margeToggle === lastEntry.margeToggle;
           if (isDuplicate) {
-             console.log("Skipping duplicate history entry.");
+             // console.log("Skipping duplicate history entry."); // Less verbose
              return; // Don't save if it looks like a duplicate
           }
       }
