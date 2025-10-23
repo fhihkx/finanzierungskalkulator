@@ -284,132 +284,132 @@
       </button>
       <div id="offer-container" class="toggle-section">
         <form class="space-y-8" novalidate>
-          <!-- Finanzierungsart & Anrede -->
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8">
-            <div>
-              <label for="finanzierungsart" class="block text-sm font-medium text-slate-600 mb-1">Finanzierungsart</label>
-              <div class="relative">
-                <select id="finanzierungsart" class="w-full form-input-underline text-lg is-placeholder" required>
-                  <option value="">Bitte wählen</option>
-                  <option>Leasing</option>
-                  <option>Mietkauf</option>
-                </select>
-                <svg class="error-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
-              </div>
-            </div>
-            <div>
-              <label for="anrede" class="block text-sm font-medium text-slate-600 mb-1">Anrede</label>
-              <div class="relative">
-                <select id="anrede" class="w-full form-input-underline text-lg is-placeholder" required>
-                  <option value="">Bitte wählen</option>
-                  <option>Herr</option>
-                  <option>Frau</option>
-                </select>
-                <svg class="error-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
-              </div>
-            </div>
-          </div>
-          <!-- Vorname & Nachname -->
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8">
-            <div>
-              <label for="vorname" class="block text-sm font-medium text-slate-600 mb-1">Vorname</label>
-              <div class="relative">
-                <input type="text" id="vorname" class="w-full form-input-underline text-lg" required />
-                <svg class="error-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
-              </div>
-            </div>
-            <div>
-              <label for="nachname" class="block text-sm font-medium text-slate-600 mb-1">Nachname</label>
-              <div class="relative">
-                <input type="text" id="nachname" class="w-full form-input-underline text-lg" required />
-                <svg class="error-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
-              </div>
-            </div>
-          </div>
-          <!-- Firma -->
-          <div>
-            <label for="firma" class="block text-sm font-medium text-slate-600 mb-1">Firma</label>
-            <div class="relative">
-                <input type="text" id="firma" class="w-full form-input-underline text-lg" required />
-                <svg class="error-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
-            </div>
-          </div>
-          <!-- Adresse, PLZ, Ort -->
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-x-10 gap-y-8">
-            <div>
-              <label for="adresse" class="block text-sm font-medium text-slate-600 mb-1">Adresse &amp; Hausnummer</label>
-              <div class="relative">
-                <input type="text" id="adresse" class="w-full form-input-underline text-lg" required />
-                <svg class="error-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
-              </div>
-            </div>
-            <div>
-              <label for="plz" class="block text-sm font-medium text-slate-600 mb-1">Postleitzahl</label>
-              <div class="relative">
-                <input type="text" id="plz" class="w-full form-input-underline text-lg" required />
-                <svg class="error-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
-              </div>
-            </div>
-            <div>
-              <label for="ort" class="block text-sm font-medium text-slate-600 mb-1">Ort</label>
-              <div class="relative">
-                <input type="text" id="ort" class="w-full form-input-underline text-lg" required />
-                <svg class="error-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
-              </div>
-            </div>
-          </div>
-          <!-- Objekt & Hersteller -->
-          <div>
-            <label for="objekt" class="block text-sm font-medium text-slate-600 mb-1">Objekt</label>
-            <div class="relative">
-                <input type="text" id="objekt" class="w-full form-input-underline text-lg" required />
-                <svg class="error-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
-            </div>
-          </div>
-          <div>
-            <label for="hersteller" class="block text-sm font-medium text-slate-600 mb-1">Hersteller</label>
-            <div class="relative">
-                <input type="text" id="hersteller" class="w-full form-input-underline text-lg" required />
-                <svg class="error-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
-            </div>
-          </div>
-          <!-- E-Mail & Telefon -->
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8">
-            <div>
-              <label for="email" class="block text-sm font-medium text-slate-600 mb-1">E-Mail</label>
-                <div class="relative">
-                    <input type="email" id="email" class="w-full form-input-underline text-lg" required />
-                    <svg class="error-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
-                </div>
-            </div>
-            <div>
-              <label for="telefon" class="block text-sm font-medium text-slate-600 mb-1">Telefonnummer</label>
-                <div class="relative">
-                    <input type="text" id="telefon" class="w-full form-input-underline text-lg" required />
-                    <svg class="error-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
-                </div>
-            </div>
-          </div>
-          <!-- Objektart -->
-          <div>
-            <label for="objektart" class="block text-sm font-medium text-slate-600 mb-1">Objektart</label>
-            <div class="relative">
-                <select id="objektart" class="w-full form-input-underline text-lg is-placeholder" required>
-                  <option value="">Bitte wählen</option>
-                  <option>Neu</option>
-                  <option>Gebraucht</option>
-                </select>
-                <svg class="error-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
-            </div>
-          </div>
-          <!-- Container für Fehlermeldung und Button -->
-          <div class="mt-8 text-center min-h-[7rem] flex flex-col justify-end pb-2">
-            <p id="offer-error-message" class="text-red-600 text-sm mb-4 hidden"></p>
-            <button type="button" id="download-pdf-btn" class="w-full md:w-1/2 mx-auto bg-[#032659] text-white font-bold py-4 px-4 rounded-lg hover:bg-opacity-90 focus:outline-none focus:ring-4 focus:ring-[#032659]/50 transition-all duration-300 ease-in-out">
-              Angebot herunterladen
-            </button>
-          </div>
-        </form>
+           <!-- Finanzierungsart & Anrede -->
+           <div class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8">
+             <div>
+               <label for="finanzierungsart" class="block text-sm font-medium text-slate-600 mb-1">Finanzierungsart</label>
+               <div class="relative">
+                 <select id="finanzierungsart" class="w-full form-input-underline text-lg is-placeholder" required>
+                   <option value="">Bitte wählen</option>
+                   <option>Leasing</option>
+                   <option>Mietkauf</option>
+                 </select>
+                 <svg class="error-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+               </div>
+             </div>
+             <div>
+               <label for="anrede" class="block text-sm font-medium text-slate-600 mb-1">Anrede</label>
+               <div class="relative">
+                 <select id="anrede" class="w-full form-input-underline text-lg is-placeholder" required>
+                   <option value="">Bitte wählen</option>
+                   <option>Herr</option>
+                   <option>Frau</option>
+                 </select>
+                 <svg class="error-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+               </div>
+             </div>
+           </div>
+           <!-- Vorname & Nachname -->
+           <div class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8">
+             <div>
+               <label for="vorname" class="block text-sm font-medium text-slate-600 mb-1">Vorname</label>
+               <div class="relative">
+                 <input type="text" id="vorname" class="w-full form-input-underline text-lg" required />
+                 <svg class="error-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+               </div>
+             </div>
+             <div>
+               <label for="nachname" class="block text-sm font-medium text-slate-600 mb-1">Nachname</label>
+               <div class="relative">
+                 <input type="text" id="nachname" class="w-full form-input-underline text-lg" required />
+                 <svg class="error-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+               </div>
+             </div>
+           </div>
+           <!-- Firma -->
+           <div>
+             <label for="firma" class="block text-sm font-medium text-slate-600 mb-1">Firma</label>
+             <div class="relative">
+                 <input type="text" id="firma" class="w-full form-input-underline text-lg" required />
+                 <svg class="error-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+             </div>
+           </div>
+           <!-- Adresse, PLZ, Ort -->
+           <div class="grid grid-cols-1 md:grid-cols-3 gap-x-10 gap-y-8">
+             <div>
+               <label for="adresse" class="block text-sm font-medium text-slate-600 mb-1">Adresse &amp; Hausnummer</label>
+               <div class="relative">
+                 <input type="text" id="adresse" class="w-full form-input-underline text-lg" required />
+                 <svg class="error-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+               </div>
+             </div>
+             <div>
+               <label for="plz" class="block text-sm font-medium text-slate-600 mb-1">Postleitzahl</label>
+               <div class="relative">
+                 <input type="text" id="plz" class="w-full form-input-underline text-lg" required />
+                 <svg class="error-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+               </div>
+             </div>
+             <div>
+               <label for="ort" class="block text-sm font-medium text-slate-600 mb-1">Ort</label>
+               <div class="relative">
+                 <input type="text" id="ort" class="w-full form-input-underline text-lg" required />
+                 <svg class="error-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+               </div>
+             </div>
+           </div>
+           <!-- Objekt & Hersteller -->
+           <div>
+             <label for="objekt" class="block text-sm font-medium text-slate-600 mb-1">Objekt</label>
+             <div class="relative">
+                 <input type="text" id="objekt" class="w-full form-input-underline text-lg" required />
+                 <svg class="error-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+             </div>
+           </div>
+           <div>
+             <label for="hersteller" class="block text-sm font-medium text-slate-600 mb-1">Hersteller</label>
+             <div class="relative">
+                 <input type="text" id="hersteller" class="w-full form-input-underline text-lg" required />
+                 <svg class="error-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+             </div>
+           </div>
+           <!-- E-Mail & Telefon -->
+           <div class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8">
+             <div>
+               <label for="email" class="block text-sm font-medium text-slate-600 mb-1">E-Mail</label>
+                 <div class="relative">
+                     <input type="email" id="email" class="w-full form-input-underline text-lg" required />
+                     <svg class="error-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+                 </div>
+             </div>
+             <div>
+               <label for="telefon" class="block text-sm font-medium text-slate-600 mb-1">Telefonnummer</label>
+                 <div class="relative">
+                     <input type="text" id="telefon" class="w-full form-input-underline text-lg" required />
+                     <svg class="error-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+                 </div>
+             </div>
+           </div>
+           <!-- Objektart -->
+           <div>
+             <label for="objektart" class="block text-sm font-medium text-slate-600 mb-1">Objektart</label>
+             <div class="relative">
+                 <select id="objektart" class="w-full form-input-underline text-lg is-placeholder" required>
+                   <option value="">Bitte wählen</option>
+                   <option>Neu</option>
+                   <option>Gebraucht</option>
+                 </select>
+                 <svg class="error-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+             </div>
+           </div>
+           <!-- Container für Fehlermeldung und Button -->
+           <div class="mt-8 text-center min-h-[7rem] flex flex-col justify-end pb-2">
+             <p id="offer-error-message" class="text-red-600 text-sm mb-4 hidden"></p>
+             <button type="button" id="download-pdf-btn" class="w-full md:w-1/2 mx-auto bg-[#032659] text-white font-bold py-4 px-4 rounded-lg hover:bg-opacity-90 focus:outline-none focus:ring-4 focus:ring-[#032659]/50 transition-all duration-300 ease-in-out">
+               Angebot herunterladen
+             </button>
+           </div>
+         </form>
       </div>
     </div>
   </section>
@@ -489,8 +489,16 @@
     const el = event.target;
     // Don't format if the input is empty or just a comma/period
     if (!el.value || el.value === ',' || el.value === '.') return;
-    const numericValue = unformat(el.value);
-    el.value = formatLocale(numericValue, { maximumFractionDigits: 2 });
+    // Check if it's a numeric input or Laufzeit
+    if (el.classList.contains('numeric-input') || el.id === 'basiszins') {
+         const numericValue = unformat(el.value);
+         el.value = formatLocale(numericValue, { maximumFractionDigits: 2 });
+    } else if (el.id === 'laufzeit') {
+        // Laufzeit should likely be an integer
+         const intValue = parseInt(el.value.replace(/\./g, '')); // Remove dots just in case
+         el.value = isNaN(intValue) ? '' : intValue.toString();
+    }
+    // Add other specific formatting if needed
   }
   // Finanzierungsformeln
   function PMT(rate, nper, pv, fv = 0) {
@@ -562,10 +570,12 @@
 
   // Hauptberechnung
   function performCalculation(isRestoring = false) {
-    // Hide results initially if not restoring from history
-     if (!isRestoring && resultContainer.classList.contains('hidden')) {
-        placeholderContainer.classList.remove('hidden');
+    // Hide results initially if calculation wasn't triggered and not restoring
+    if (!calculateBtn.dataset.clicked && !isRestoring) {
+        showPlaceholder();
+        return; // Don't proceed if calculate wasn't clicked
     }
+
 
     const av = unformat(document.getElementById('anschaffungswert').value);
     const lz = parseInt(document.getElementById('laufzeit').value) || 0;
@@ -578,26 +588,21 @@
     const marge = margeToggle.checked ? (margeInput / 100) * av : margeInput;
 
     if (av <= 0 || lz <= 0) {
-      if (!isRestoring) { // Only show error if calculation was triggered by user action
-          showError("Anschaffungswert und Laufzeit müssen größer als 0 sein.");
-          // Clear previous results on error after calculation attempt
-          clearResultsOnError();
-      } else {
-         // If restoring invalid data, just show placeholder
-         showPlaceholder();
-      }
+      // Show error only if triggered by button click or restoring invalid data
+      showError("Anschaffungswert und Laufzeit müssen größer als 0 sein.");
+      clearResultsOnError(); // Clear results when showing error
       return;
     }
 
-    hideError(); // Clear previous errors
+    hideError(); // Clear previous errors if inputs are valid
     const finanzierungsbetrag = av - az;
     const principal = av - az + marge;
     const monRate = bz / 100 / 12;
     const leasingInternal = PMT(monRate, lz, principal, -rw);
     const leasingRate = -leasingInternal;
 
-    // Only save if it's a new calculation (not restoring) and valid
-    if (!isRestoring && av > 0 && lz > 0) {
+    // Only save if it's a new calculation (not restoring) triggered by the button
+    if (!isRestoring && calculateBtn.dataset.clicked === "true" && av > 0 && lz > 0) {
         saveCalculationToHistory(leasingRate);
     }
 
@@ -609,6 +614,8 @@
       // Ensure max-height is recalculated if timeline was already open
       timelineContainer.style.maxHeight = timelineContainer.scrollHeight + 'px';
     }
+    // Reset clicked flag after calculation
+    calculateBtn.dataset.clicked = "false";
   }
 
   function clearResultsOnError() {
@@ -647,7 +654,7 @@
   function updateCostChart(anzahlung, summeRaten, restwert) {
     if (costChart) costChart.destroy();
     const ctx = costChartCanvas.getContext('2d');
-    const values = [anzahlung, summeRaten, restwert];
+    const values = [anzahlung, summeRaten, restwert].map(v => Math.max(0, v)); // Ensure non-negative values for chart
     const total = values.reduce((a, b) => a + b, 0);
     costChart = new Chart(ctx, {
       type: 'doughnut',
@@ -680,20 +687,31 @@
             onClick: (e, legendItem, legend) => {
               const idx = legendItem.index;
               const chart = legend.chart;
+              const alreadyHidden = !chart.getDataVisibility(idx);
+
+              // Toggle visibility
               chart.toggleDataVisibility(idx);
               chart.update();
+
+              // Recalculate sum of visible segments
               let visibleSum = 0;
               chart.getDatasetMeta(0).data.forEach((arc, i) => {
                 if (chart.getDataVisibility(i)) {
                   visibleSum += chart.data.datasets[0].data[i];
                 }
               });
-              gesamtkostenEl.value = formatLocale(visibleSum, { style: 'currency', currency: 'EUR' });
+               gesamtkostenEl.value = formatLocale(visibleSum, { style: 'currency', currency: 'EUR' });
             }
           },
           tooltip: {
             callbacks: {
-              label: ctx => ctx.label + ': ' + formatLocale(ctx.parsed, { style: 'currency', currency: 'EUR' })
+              label: ctx => {
+                  // Ensure label exists and value is a number
+                  if (ctx.label && typeof ctx.parsed === 'number') {
+                     return `${ctx.label}: ${formatLocale(ctx.parsed, { style: 'currency', currency: 'EUR' })}`;
+                  }
+                  return ''; // Return empty string if data is invalid
+              }
             }
           }
         }
@@ -712,21 +730,46 @@
     const restSchulden = [];
     let totalZins = 0;
     let totalTilgung = 0;
+
+    // Check for invalid rate which might cause infinite loop or weird results
+    if (isNaN(rate) || rate <= 0 || isNaN(monZins)) {
+        console.error("Invalid rate or interest for timeline chart calculation.");
+        // Clear previous chart and data if invalid
+         if(tlRateEl) tlRateEl.textContent = '–';
+         if(tlZinsSumEl) tlZinsSumEl.textContent = '–';
+         if(tlTilgSumEl) tlTilgSumEl.textContent = '–';
+        return;
+    }
+
+
     for (let i = 1; i <= monate; i++) {
       labels.push(`M ${i}`);
-      const zins = restschuld * monZins;
-      const tilg = rate - zins;
+      // Ensure Zins calculation doesn't go below zero if restschuld is already 0
+      const zins = Math.max(0, restschuld * monZins);
+      // Ensure Tilgung doesn't make restschuld negative unnecessarily large
+      const tilg = Math.min(rate - zins, restschuld); // Tilgung cannot be more than remaining restschuld
+
       restschuld = restschuld - tilg;
-      if (restschuld < 0) restschuld = 0;
+      // Clamp restschuld at 0
+      restschuld = Math.max(0, restschuld);
+
       zinsAnteile.push(zins);
       tilgAnteile.push(tilg);
       restSchulden.push(restschuld);
       totalZins += zins;
       totalTilgung += tilg;
+
+       // Safety break if restschuld somehow becomes negative significantly
+       if (restschuld < -0.01) {
+           console.warn("Restschuld became negative during timeline calculation, stopping early.");
+           break;
+       }
     }
+    // Update summary fields
     tlRateEl.textContent = formatLocale(rate, { style: 'currency', currency: 'EUR' });
     tlZinsSumEl.textContent = formatLocale(totalZins, { style: 'currency', currency: 'EUR' });
     tlTilgSumEl.textContent = formatLocale(totalTilgung, { style: 'currency', currency: 'EUR' });
+
     const ctx = timelineChartCanvas.getContext('2d');
     timelineChart = new Chart(ctx, {
       type: 'bar',
@@ -782,7 +825,22 @@
           }
         },
         interaction: { mode: 'index', intersect: false },
-        tooltips: { mode: 'index', intersect: false }
+         tooltip: { // Corrected from tooltips
+            mode: 'index',
+            intersect: false,
+            callbacks: {
+                 label: function(context) {
+                    let label = context.dataset.label || '';
+                    if (label) {
+                        label += ': ';
+                    }
+                    if (context.parsed.y !== null) {
+                        label += formatLocale(context.parsed.y, { style: 'currency', currency: 'EUR' });
+                    }
+                    return label;
+                }
+            }
+        }
       }
     });
   }
@@ -826,10 +884,15 @@
   // Format inputs on blur
   document.querySelectorAll('.numeric-input, #laufzeit').forEach(input => {
     input.addEventListener('blur', formatInput);
+     // Trigger initial formatting in case of prefilled values (e.g. browser back)
+     formatInput({ target: input });
   });
 
   // Calculate only on button click
-  calculateBtn.addEventListener('click', () => performCalculation());
+  calculateBtn.addEventListener('click', () => {
+      calculateBtn.dataset.clicked = "true"; // Mark button as clicked
+      performCalculation();
+  });
 
   // Info Tooltip
   infoButton.addEventListener('mouseenter', () => infoTooltip.classList.remove('hidden'));
@@ -845,15 +908,17 @@
     const isOpen = timelineContainer.classList.toggle('open-timeline');
     timelineIcon.style.transform = isOpen ? 'rotate(45deg)' : 'rotate(0deg)';
     if (isOpen) {
-       // Perform calculation only if valid data exists, otherwise just open
+       // Perform calculation only if valid data exists *and results are currently shown*, otherwise just open
        const av = unformat(document.getElementById('anschaffungswert').value);
        const lz = parseInt(document.getElementById('laufzeit').value) || 0;
-       if (av > 0 && lz > 0 && !errorText.textContent) {
+       const resultsVisible = !resultContainer.classList.contains('hidden');
+
+       if (resultsVisible && av > 0 && lz > 0 && !errorText.textContent) {
            performCalculation(true); // Don't save history again just for opening timeline
        } else {
-           // If no valid calc exists, just open the container
+           // If no valid calc exists or results aren't shown, just open the container
             timelineContainer.style.maxHeight = timelineContainer.scrollHeight + 'px';
-            // Optionally clear or hide the timeline chart if invalid
+            // Clear or hide the timeline chart if invalid/no results
             if(timelineChart) timelineChart.destroy(); timelineChart = null;
             // Clear timeline summary data
             if(tlRateEl) tlRateEl.textContent = '–';
@@ -882,6 +947,7 @@
 
     // Validate fields
     requiredFields.forEach(field => {
+      // Trim value and check if it's empty
       if (!field.value.trim()) {
         isFormValid = false;
         const parent = field.closest('.relative');
@@ -897,7 +963,9 @@
         // Scroll to the first error field for better UX
         const firstError = offerContainer.querySelector('.has-error');
         if (firstError) {
+            // Use scrollIntoView with options for better control
             firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            firstError.focus({ preventScroll: true }); // Optionally focus after scrolling
         }
         return;
     }
@@ -906,15 +974,16 @@
 
     // --- PDF Generation ---
     const values = {
+      // Calculator values
       anschaffungswert: document.getElementById('anschaffungswert').value,
       laufzeit: document.getElementById('laufzeit').value,
+      anzahlungRaw: unformat(document.getElementById('anzahlung').value), // Get raw value for Entgelt
       anzahlung: document.getElementById('anzahlung').value + (anzahlungToggle.checked ? ' %' : ' €'),
+      restwertRaw: unformat(document.getElementById('restwert').value), // Get raw value for Entgelt
       restwert: document.getElementById('restwert').value + (restwertToggle.checked ? ' %' : ' €'),
       marge: document.getElementById('margegesamt').value + (margeToggle.checked ? ' %' : ' €'),
       basiszins: document.getElementById('basiszins').value,
-      indikativerZins: indikativerZinsEl.value,
-      leasingfaktor: leasingfaktorEl.value,
-      gesamtkosten: gesamtkostenEl.value,
+      monatlicheRate: resultText.textContent, // Get calculated rate directly
       // Offer form fields
       finanzierungsart: document.getElementById('finanzierungsart').value,
       anrede: document.getElementById('anrede').value,
@@ -934,84 +1003,99 @@
      // Check if cost chart exists before trying to get data URL
     let chartURL = null;
     try {
-        if (costChart && costChartCanvas) {
+        if (costChart && costChartCanvas && resultContainer && !resultContainer.classList.contains('hidden')) { // Check if results are visible
              chartURL = costChartCanvas.toDataURL('image/png');
         } else {
-             console.warn("Cost chart canvas not ready or chart not initialized for PDF generation.");
-             // Optional: Create a placeholder image or skip adding the image
+             console.warn("Cost chart canvas not ready, chart not initialized, or results not visible for PDF generation.");
         }
     } catch (e) {
         console.error("Error getting chart data URL:", e);
-        // Handle error, maybe skip adding the image
     }
 
 
     const { jsPDF } = window.jspdf;
     const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-    pdf.setFontSize(18);
-    const offerTitle = values.finanzierungsart || 'Finanzierungs';
-    pdf.text(offerTitle + 'angebot', 15, 20);
+    pdf.setFont('helvetica', 'normal'); // Use a standard font
+
+    let y = 20; // Start position
+    const leftMargin = 15;
+    const lineSpacing = 6;
+    const sectionSpacing = 10;
+
+    // Address Block
+    pdf.setFontSize(10);
+    if (values.firma) { pdf.text(values.firma, leftMargin, y); y += lineSpacing; }
+    if (values.anrede || values.nachname) { pdf.text(`${values.anrede || ''} ${values.nachname || ''}`.trim(), leftMargin, y); y += lineSpacing; }
+    if (values.adresse) { pdf.text(values.adresse, leftMargin, y); y += lineSpacing; }
+    if (values.plz || values.ort) { pdf.text(`${values.plz || ''} ${values.ort || ''}`.trim(), leftMargin, y); y += lineSpacing; }
+
+    y += sectionSpacing; // Space before greeting
+
+    // Greeting
     pdf.setFontSize(12);
-    let y = 35;
-    const addLine = (label, val) => {
-        if (val) { // Only add line if value exists
-             pdf.text(`${label}: ${val}`, 15, y);
-             y += 6;
+    pdf.text(`Sehr ${values.anrede === 'Frau' ? 'geehrte' : 'geehrter'} ${values.anrede || ''} ${values.nachname || ''},`, leftMargin, y);
+    y += lineSpacing * 1.5;
+
+    // Intro Text
+    const requestType = values.finanzierungsart === 'Mietkauf' ? 'Mietkaufanfrage' : 'Leasinganfrage';
+    pdf.text(`wir danken für Ihre ${requestType} und bieten wie folgt unverbindlich an:`, leftMargin, y);
+    y += sectionSpacing;
+
+    // Financial Details Function
+    const addDetailLine = (label, value) => {
+        if (value || value === 0) { // Check if value exists or is zero
+            pdf.setFont('helvetica', 'bold');
+            pdf.text(`${label}:`, leftMargin, y);
+            pdf.setFont('helvetica', 'normal');
+            pdf.text(String(value), leftMargin + 45, y); // Adjust alignment as needed
+            y += lineSpacing * 1.5; // Slightly more space for details
         }
     };
-    // Add Calculation Data
-    addLine('Anschaffungswert', values.anschaffungswert ? values.anschaffungswert + ' €' : '');
-    addLine('Laufzeit', values.laufzeit ? values.laufzeit + ' Monate' : '');
-    addLine('Anzahlung', values.anzahlung);
-    addLine('Restwert', values.restwert);
-    addLine('Marge Gesamt', values.marge);
-    addLine('Basiszins', values.basiszins ? values.basiszins + ' % p.a.' : '');
-    addLine('Indikativer Zins', values.indikativerZins);
-    addLine('Leasingfaktor', values.leasingfaktor);
-    addLine('Gesamtkosten', values.gesamtkosten);
 
-    // Add Customer Data if any exists
-    if (values.finanzierungsart || values.vorname || values.email) {
-      y += 4;
-      pdf.setFontSize(14);
-      pdf.text('Kundendaten', 15, y);
-      y += 6;
-      pdf.setFontSize(12);
-      addLine('Finanzierungsart', values.finanzierungsart);
-      addLine('Anrede', values.anrede);
-      addLine('Vorname', values.vorname);
-      addLine('Nachname', values.nachname);
-      addLine('Firma', values.firma);
-      addLine('Adresse', `${values.adresse || ''}, ${values.plz || ''} ${values.ort || ''}`.replace(/^, /, '').trim()); // Clean up address string
-      addLine('Objekt', values.objekt);
-      addLine('Hersteller', values.hersteller);
-      addLine('E-Mail', values.email);
-      addLine('Telefon', values.telefon);
-      addLine('Objektart', values.objektart);
+    pdf.setFontSize(11);
+    addDetailLine('Anschaffungspreis', values.anschaffungswert ? formatLocale(unformat(values.anschaffungswert), { style: 'currency', currency: 'EUR'}) : 'N/A');
+    addDetailLine('Laufzeit', values.laufzeit ? `${values.laufzeit} Monate` : 'N/A');
+    addDetailLine('Mietsonderzahlung', values.anzahlung); // Already includes unit
+    addDetailLine('Monatliche Rate', values.monatlicheRate); // Already formatted
+    addDetailLine('Restwert', values.restwert); // Already includes unit
+
+    y += lineSpacing / 2; // Small space before notes
+
+    // Conditional Mietkauf Note
+    if (values.finanzierungsart === 'Mietkauf') {
+        pdf.setFontSize(9);
+        pdf.text('Hinweis: Die gesetzl. Mehrwertsteuer fällt vorab auf die Summe aller Zahlungen an.', leftMargin, y);
+        y += lineSpacing;
     }
 
-    // Add Chart Image if available
-     if (chartURL) {
-        try {
-            const imgProps = pdf.getImageProperties(chartURL);
-            const imgWidth = 100;
-            const imgHeight = (imgProps.height / imgProps.width) * imgWidth;
-             // Check if image would go off page, add new page if necessary
-            if (y + 10 + imgHeight > pdf.internal.pageSize.getHeight() - 15) { // 15mm margin bottom
-                 pdf.addPage();
-                 y = 15; // Reset y position on new page
-            }
-            pdf.addImage(chartURL, 'PNG', 15, y + 10, imgWidth, imgHeight);
-        } catch (e) {
-             console.error("Error adding image to PDF:", e);
-        }
-     } else {
-         y += 10; // Add some space even if no chart
-         pdf.text("Kostengrafik konnte nicht geladen werden.", 15, y);
-     }
+    // General Notes & Closing
+    pdf.setFontSize(10);
+    pdf.text('Die oben genannten Preise verstehen sich netto, zuzüglich der gesetzlichen Mehrwertsteuer.', leftMargin, y);
+    y += lineSpacing;
+    // Calculate Entgelt value based on Restwert (assuming it's the EUR value)
+    let entgeltValue = values.restwertRaw;
+    if (restwertToggle.checked && unformat(values.anschaffungswert) > 0) {
+        entgeltValue = (values.restwertRaw / 100) * unformat(values.anschaffungswert);
+    }
+    pdf.text(`Bei Vertragsabschluss berechnet die Leasinggesellschaft Ihnen einmalig ein Entgelt in Höhe von ${formatLocale(entgeltValue, { style: 'currency', currency: 'EUR' })}.`, leftMargin, y);
+    y += sectionSpacing;
 
+    pdf.text('Gerne begleiten wir Sie auch bei weiteren Investitionen in Ihren Betrieb. Kommen Sie ganz unverbindlich auf uns zu.', leftMargin, y);
+    y += lineSpacing * 1.5;
+    pdf.text('Wir freuen uns, für Sie tätig werden zu können und sichern Ihnen bereits jetzt eine faire, schnelle und unbürokratische', leftMargin, y);
+    y += lineSpacing;
+    pdf.text('Abwicklung zu.', leftMargin, y);
+    y += sectionSpacing * 1.5;
 
-    pdf.save(offerTitle + 'angebot.pdf');
+    pdf.text('Mit freundlichen Grüßen', leftMargin, y);
+
+    // Add Chart Image - Consider adding on a new page if needed
+    // Removed chart addition for simplicity now, focus on text structure.
+
+    const pdfTitle = `${requestType.replace('anfrage', '')}angebot (${values.nachname || 'Kunde'}).pdf`;
+    pdf.save(pdfTitle);
+
+    // --- End PDF Generation ---
   });
 
 
@@ -1053,6 +1137,12 @@
   });
 
   const saveCalculationToHistory = (rate) => {
+      // Check if rate is valid before saving
+       if (isNaN(rate) || !isFinite(rate)) {
+           console.warn("Invalid rate calculated, not saving to history.");
+           return;
+       }
+
       const historyEntry = {
           timestamp: new Date().toISOString(),
           anschaffungswert: document.getElementById('anschaffungswert').value,
@@ -1110,9 +1200,9 @@
           item.className = 'p-4 border border-gray-200 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors group'; // Added group for potential hover effects on children
           item.innerHTML = `
               <div class="flex justify-between items-start gap-4">
-                  <div class="flex-grow">
-                      <p class="font-semibold text-lg text-[#032659] mb-1">${entry.monatlicheRate || 'N/A'}</p>
-                      <p class="text-sm text-slate-600">
+                  <div class="flex-grow min-w-0"> <!-- Added min-w-0 for flex truncation -->
+                      <p class="font-semibold text-lg text-[#032659] mb-1 truncate">${entry.monatlicheRate || 'N/A'}</p> <!-- Added truncate -->
+                      <p class="text-sm text-slate-600 truncate"> <!-- Added truncate -->
                           <span title="Anschaffungswert">AW: ${formatLocale(unformat(entry.anschaffungswert), { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 })}</span> |
                           <span title="Laufzeit">LZ: ${entry.laufzeit} M</span> |
                           <span title="Anzahlung">${entry.anzahlungToggle ? '%' : '€'}: ${entry.anzahlung}</span> |
@@ -1155,8 +1245,10 @@
     document.getElementById('marge-unit').textContent = entry.margeToggle ? '(%)' : '(€)';
 
     // Apply formatting to restored values
-    document.querySelectorAll('.numeric-input').forEach(input => formatInput({ target: input }));
+    document.querySelectorAll('.numeric-input, #laufzeit').forEach(input => formatInput({ target: input }));
 
+    // Mark that a calculation should happen
+    calculateBtn.dataset.clicked = "true";
     performCalculation(true); // Recalculate, passing true to prevent re-saving
     closeHistoryModal();
   };
@@ -1170,9 +1262,13 @@
         // Add blur listener for formatting numeric inputs initially
         document.querySelectorAll('.numeric-input').forEach(input => {
             input.addEventListener('blur', formatInput);
+             // Initial format check
+             formatInput({ target: input });
         });
-         // Add blur listener for laufzeit as well if desired
-        document.getElementById('laufzeit').addEventListener('blur', formatInput); // Assuming Laufzeit should also be formatted
+         // Add blur listener for laufzeit as well
+        const laufzeitInput = document.getElementById('laufzeit');
+        laufzeitInput.addEventListener('blur', formatInput);
+        formatInput({ target: laufzeitInput }); // Initial format check
 
         // Set initial state for select placeholders
         document.querySelectorAll('select.is-placeholder').forEach(select => {
