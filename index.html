@@ -132,12 +132,32 @@
         border-color: #032659;
         box-shadow: 0 0 0 2px rgba(3, 38, 89, 0.3);
      }
+    /* Style for the info and reset buttons to ensure consistent padding */
+    .header-button-wrapper {
+        display: inline-flex; /* Use flex to align content within span/button */
+        justify-content: center;
+        align-items: center;
+        background-color: #e2e8f0; /* bg-gray-200 */
+        border-radius: 9999px; /* rounded-full */
+        font-size: 0.875rem; /* text-sm */
+        font-weight: 700; /* font-bold */
+        cursor: pointer;
+        user-select: none;
+        transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform;
+        transition-duration: 150ms;
+        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+        padding: 0.25rem 0.625rem; /* Equivalent to px-2.5 py-0.5 */
+        height: 28px; /* Fixed height for consistent sizing */
+        min-width: 28px; /* Fixed width for consistent sizing */
+    }
+    .header-button-wrapper:hover {
+        background-color: #cbd5e1; /* hover:bg-gray-300 */
+    }
   </style>
 </head>
 <body class="text-slate-800 min-h-screen p-4 py-16">
 <div class="w-full max-w-5xl mx-auto">
-  <!-- Header -->
-  <header class="text-left mt-6 mb-6 flex justify-between items-start">
+  <!-- Header --><header class="text-left mt-6 mb-6 flex justify-between items-start">
     <div>
         <h1 class="text-4xl sm:text-5xl font-bold uppercase" style="color: #032659; letter-spacing: 0.06em;">
         FINANZIERUNGSKALKULATOR
@@ -145,21 +165,25 @@
         <p class="mt-4 text-slate-500 text-lg" style="letter-spacing: 0.072em;">
         Gib deine Werte ein und erhalte die Rate, Kosten und den Zins.
         </p>
-        <!-- Info-Button mit Tooltip -->
-        <div class="flex items-center mt-4">
-        <div class="relative inline-block">
-            <span id="info-button" class="text-slate-600 bg-gray-200 hover:bg-gray-300 rounded-full px-2.5 py-0.5 text-sm font-bold cursor-help select-none">i</span>
-            <div id="info-tooltip" class="absolute left-1/2 -translate-x-1/2 top-full mt-2 w-72 bg-white border border-gray-300 rounded-lg p-3 text-xs text-slate-700 shadow-xl z-20 hidden">
-            <b>1) Werte eingeben:</b> Anschaffungswert, Laufzeit sowie Anzahlung, Restwert und Marge (in € oder % über den Schalter).<br><br>
-            <b>2) „Berechnen“ klicken:</b> Rate, Gesamtkosten und Zins erscheinen; der Ring zeigt die Kostenanteile.<br><br>
-            <b>3) „Finanzierungsverlauf“ öffnen</b> für Zins- und Tilgungsverlauf je Monat.<br><br>
-            <b>4) Angebot erstellen:</b> Kontaktdaten ausfüllen (Leasing/Mietkauf) und PDF herunterladen.
-            </div>
-        </div>
+        <!-- Info-Button & Reset-Button --><div class="flex items-center mt-4">
+          <!-- Info Button --><div class="relative inline-block">
+              <span id="info-button" class="text-slate-600 header-button-wrapper">i</span>
+              <div id="info-tooltip" class="absolute left-1/2 -translate-x-1/2 top-full mt-2 w-72 bg-white border border-gray-300 rounded-lg p-3 text-xs text-slate-700 shadow-xl z-20 hidden">
+              <b>1) Werte eingeben:</b> Anschaffungswert, Laufzeit sowie Anzahlung, Restwert und Marge (in € oder % über den Schalter).<br><br>
+              <b>2) „Berechnen“ klicken:</b> Rate, Gesamtkosten und Zins erscheinen; der Ring zeigt die Kostenanteile.<br><br>
+              <b>3) „Finanzierungsverlauf“ öffnen</b> für Zins- und Tilgungsverlauf je Monat.<br><br>
+              <b>4) Angebot erstellen:</b> Kontaktdaten ausfüllen (Leasing/Mietkauf) und PDF herunterladen.
+              </div>
+          </div>
+          <!-- NEU: Reset Button --><button id="reset-button" title="Eingaben zurücksetzen" class="ml-2 text-[#032659] header-button-wrapper">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <!-- Heroicons: ArrowUturnLeftIcon (Rückgängig) -->
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3" />
+              </svg>
+          </button>
         </div>
     </div>
-    <!-- History Button -->
-    <div class="pt-1">
+    <!-- History Button --><div class="pt-1">
         <button id="history-button" title="Berechnungsverlauf anzeigen" class="p-2 rounded-full hover:bg-gray-200 transition-colors">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -167,15 +191,12 @@
         </button>
     </div>
   </header>
-  <!-- Kalkulator-Panel -->
-  <main class="w-full">
+  <!-- Kalkulator-Panel --><main class="w-full">
     <div class="panel rounded-2xl relative">
       <div class="grid grid-cols-1 lg:grid-cols-2">
-        <!-- Eingabe-Spalte -->
-        <div class="p-6 sm:p-10 flex flex-col h-full">
+        <!-- Eingabe-Spalte --><div class="p-6 sm:p-10 flex flex-col h-full">
           <div class="space-y-8">
-            <!-- Anschaffungswert & Laufzeit -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8">
+            <!-- Anschaffungswert & Laufzeit --><div class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8">
               <div>
                 <label for="anschaffungswert" class="block text-sm font-medium text-slate-600 mb-1">
                   Anschaffungswert (€)
@@ -189,8 +210,7 @@
                 <input type="number" id="laufzeit" value="0" class="w-full form-input-underline text-lg" />
               </div>
             </div>
-            <!-- Anzahlung & Restwert -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8">
+            <!-- Anzahlung & Restwert --><div class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8">
               <div class="flex items-end">
                 <div class="w-full">
                   <label for="anzahlung" class="block text-sm font-medium text-slate-600 mb-1">
@@ -216,8 +236,7 @@
                 </label>
               </div>
             </div>
-            <!-- Basiszins & Marge -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8">
+            <!-- Basiszins & Marge --><div class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8">
               <div class="flex items-end">
                 <div class="w-full">
                   <label for="basiszins" class="block text-sm font-medium text-slate-600 mb-1">
@@ -240,15 +259,15 @@
               </div>
             </div>
           </div>
-          <div class="mt-auto">
-            <div class="mt-16">
-              <button id="calculate-btn" class="w-full bg-[#032659] text-white font-bold py-4 px-4 rounded-lg hover:bg-opacity-90 focus:outline-none focus:ring-4 focus:ring-[#032659]/50 transition-all duration-300 ease-in-out">
-                Berechnen
-              </button>
-            </div>
-            <div class="mt-12 pt-8 border-t border-[#ced4da]">
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-6">
-                <div>
+          <!-- ANPASSUNG: mt-auto Wrapper entfernt -->
+          <div class="mt-16">
+            <button id="calculate-btn" class="w-full bg-[#032659] text-white font-bold py-4 px-4 rounded-lg hover:bg-opacity-90 focus:outline-none focus:ring-4 focus:ring-[#032659]/50 transition-all duration-300 ease-in-out">
+              Berechnen
+            </button>
+          </div>
+          <div class="mt-12 pt-8 border-t border-[#ced4da]">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-6">
+              <div>
                   <label for="indikativer-zins" class="block text-sm font-medium text-slate-600">
                     Indikativer Zins (% p.a.)
                   </label>
@@ -259,13 +278,13 @@
                     Leasingfaktor (%)
                   </label>
                   <input type="text" id="leasingfaktor" class="w-full result-field" readonly />
-                </div>
               </div>
             </div>
           </div>
+          <!-- NEU: Spacer am Ende, um Layout nach oben zu drücken -->
+          <div class="mt-auto"></div>
         </div>
-        <!-- Ergebnis-Spalte (Chart & Werte) -->
-        <div class="p-6 sm:p-10 flex flex-col border-t lg:border-t-0 border-gray-200/50">
+        <!-- Ergebnis-Spalte (Chart & Werte) --><div class="p-6 sm:p-10 flex flex-col border-t lg:border-t-0 border-gray-200/50">
           <div class="h-[7.5rem] flex items-start justify-center pt-1 text-center">
             <div>
               <label class="block text-sm font-medium text-slate-600">Monatliche Leasingrate</label>
@@ -291,8 +310,7 @@
       </div>
     </div>
   </main>
-  <!-- Angebot erstellen -->
-  <section class="w-full mt-8">
+  <!-- Angebot erstellen --><section class="w-full mt-8">
     <div class="panel rounded-2xl p-6 sm:p-10">
       <button id="offer-toggle" class="w-full flex justify-between items-center text-left">
         <h2 class="text-xl font-bold text-slate-800">Angebot erstellen</h2>
@@ -300,138 +318,102 @@
       </button>
       <div id="offer-container" class="toggle-section">
         <form class="space-y-8" novalidate>
-           <!-- Form content (unchanged from previous version) -->
-           <!-- Finanzierungsart & Anrede -->
-           <div class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8">
-             <div>
-               <label for="finanzierungsart" class="block text-sm font-medium text-slate-600 mb-1">Finanzierungsart</label>
-               <div class="relative">
-                 <select id="finanzierungsart" class="w-full form-input-underline text-lg is-placeholder" required>
-                   <option value="">Bitte wählen</option>
-                   <option>Leasing</option>
-                   <option>Mietkauf</option>
-                 </select>
-                 <svg class="error-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
-               </div>
-             </div>
-             <div>
-               <label for="anrede" class="block text-sm font-medium text-slate-600 mb-1">Anrede</label>
-               <div class="relative">
-                 <select id="anrede" class="w-full form-input-underline text-lg is-placeholder" required>
-                   <option value="">Bitte wählen</option>
-                   <option>Herr</option>
-                   <option>Frau</option>
-                 </select>
-                 <svg class="error-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
-               </div>
-             </div>
-           </div>
-           <!-- Vorname & Nachname -->
-           <div class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8">
-             <div>
-               <label for="vorname" class="block text-sm font-medium text-slate-600 mb-1">Vorname</label>
-               <div class="relative">
-                 <input type="text" id="vorname" class="w-full form-input-underline text-lg" required />
-                 <svg class="error-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
-               </div>
-             </div>
-             <div>
-               <label for="nachname" class="block text-sm font-medium text-slate-600 mb-1">Nachname</label>
-               <div class="relative">
-                 <input type="text" id="nachname" class="w-full form-input-underline text-lg" required />
-                 <svg class="error-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
-               </div>
-             </div>
-           </div>
-           <!-- Firma -->
-           <div>
-             <label for="firma" class="block text-sm font-medium text-slate-600 mb-1">Firma</label>
-             <div class="relative">
-                 <input type="text" id="firma" class="w-full form-input-underline text-lg" required />
-                 <svg class="error-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
-             </div>
-           </div>
-           <!-- Adresse, PLZ, Ort -->
-           <div class="grid grid-cols-1 md:grid-cols-3 gap-x-10 gap-y-8">
-             <div>
-               <label for="adresse" class="block text-sm font-medium text-slate-600 mb-1">Adresse &amp; Hausnummer</label>
-               <div class="relative">
-                 <input type="text" id="adresse" class="w-full form-input-underline text-lg" required />
-                 <svg class="error-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
-               </div>
-             </div>
-             <div>
-               <label for="plz" class="block text-sm font-medium text-slate-600 mb-1">Postleitzahl</label>
-               <div class="relative">
-                 <input type="text" id="plz" class="w-full form-input-underline text-lg" required />
-                 <svg class="error-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
-               </div>
-             </div>
-             <div>
-               <label for="ort" class="block text-sm font-medium text-slate-600 mb-1">Ort</label>
-               <div class="relative">
-                 <input type="text" id="ort" class="w-full form-input-underline text-lg" required />
-                 <svg class="error-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
-               </div>
-             </div>
-           </div>
-           <!-- Objekt & Hersteller -->
-           <div>
-             <label for="objekt" class="block text-sm font-medium text-slate-600 mb-1">Objekt</label>
-             <div class="relative">
-                 <input type="text" id="objekt" class="w-full form-input-underline text-lg" required />
-                 <svg class="error-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
-             </div>
-           </div>
-           <div>
-             <label for="hersteller" class="block text-sm font-medium text-slate-600 mb-1">Hersteller</label>
-             <div class="relative">
-                 <input type="text" id="hersteller" class="w-full form-input-underline text-lg" required />
-                 <svg class="error-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
-             </div>
-           </div>
-           <!-- E-Mail & Telefon -->
-           <div class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8">
-             <div>
-               <label for="email" class="block text-sm font-medium text-slate-600 mb-1">E-Mail</label>
-                 <div class="relative">
-                     <input type="email" id="email" class="w-full form-input-underline text-lg" required />
-                     <svg class="error-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
-                 </div>
-             </div>
-             <div>
-               <label for="telefon" class="block text-sm font-medium text-slate-600 mb-1">Telefonnummer</label>
-                 <div class="relative">
-                     <input type="text" id="telefon" class="w-full form-input-underline text-lg" required />
-                     <svg class="error-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
-                 </div>
-             </div>
-           </div>
-           <!-- Objektart -->
-           <div>
-             <label for="objektart" class="block text-sm font-medium text-slate-600 mb-1">Objektart</label>
-             <div class="relative">
-                 <select id="objektart" class="w-full form-input-underline text-lg is-placeholder" required>
-                   <option value="">Bitte wählen</option>
-                   <option>Neu</option>
-                   <option>Gebraucht</option>
-                 </select>
-                 <svg class="error-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
-             </div>
-           </div>
-           <!-- Container für Fehlermeldung und Button -->
-           <div class="mt-8 text-center min-h-[7rem] flex flex-col justify-end pb-2">
-             <p id="offer-error-message" class="text-red-600 text-sm mb-4 hidden"></p>
-             <button type="button" id="download-pdf-btn" class="w-full md:w-1/2 mx-auto bg-[#032659] text-white font-bold py-4 px-4 rounded-lg hover:bg-opacity-90 focus:outline-none focus:ring-4 focus:ring-[#032659]/50 transition-all duration-300 ease-in-out">
-               Angebot herunterladen
-             </button>
-           </div>
-         </form>
+          <!-- Finanzierungsart & Anrede --><div class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8">
+            <div>
+              <label for="finanzierungsart" class="block text-sm font-medium text-slate-600 mb-1">Finanzierungsart</label>
+              <div class="relative">
+                <select id="finanzierungsart" class="w-full form-input-underline text-lg is-placeholder" required>
+                  <option value="">Bitte wählen</option>
+                  <option>Leasing</option>
+                  <option>Mietkauf</option>
+                </select>
+                <svg class="error-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+              </div>
+            </div>
+            <div>
+              <label for="anrede" class="block text-sm font-medium text-slate-600 mb-1">Anrede</label>
+              <div class="relative">
+                <select id="anrede" class="w-full form-input-underline text-lg is-placeholder" required>
+                  <option value="">Bitte wählen</option>
+                  <option>Herr</option>
+                  <option>Frau</option>
+                </select>
+                <svg class="error-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+              </div>
+            </div>
+          </div>
+          <!-- Vorname & Nachname --><div class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8">
+            <div>
+              <label for="vorname" class="block text-sm font-medium text-slate-600 mb-1">Vorname</label>
+              <div class="relative">
+                <input type="text" id="vorname" class="w-full form-input-underline text-lg" required />
+                <svg class="error-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+              </div>
+            </div>
+            <div>
+              <label for="nachname" class="block text-sm font-medium text-slate-600 mb-1">Nachname</label>
+              <div class="relative">
+                <input type="text" id="nachname" class="w-full form-input-underline text-lg" required />
+                <svg class="error-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+              </div>
+            </div>
+          </div>
+          <!-- Firma --><div>
+            <label for="firma" class="block text-sm font-medium text-slate-600 mb-1">Firma</label>
+            <div class="relative">
+                <input type="text" id="firma" class="w-full form-input-underline text-lg" required />
+                <svg class="error-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+            </div>
+          </div>
+          <!-- Adresse, PLZ, Ort --><div class="grid grid-cols-1 md:grid-cols-3 gap-x-10 gap-y-8">
+            <div>
+              <label for="adresse" class="block text-sm font-medium text-slate-600 mb-1">Adresse &amp; Hausnummer</label>
+              <div class="relative">
+                <input type="text" id="adresse" class="w-full form-input-underline text-lg" required />
+                <svg class="error-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+              </div>
+            </div>
+            <div>
+              <label for="plz" class="block text-sm font-medium text-slate-600 mb-1">Postleitzahl</label>
+              <div class="relative">
+                <input type="text" id="plz" class="w-full form-input-underline text-lg" required />
+                <svg class="error-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+              </div>
+            </div>
+            <div>
+              <label for="ort" class="block text-sm font-medium text-slate-600 mb-1">Ort</label>
+              <div class="relative">
+                <input type="text" id="ort" class="w-full form-input-underline text-lg" required />
+                <svg class="error-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+              </div>
+            </div>
+          </div>
+          <!-- Objekt & Hersteller --><div>
+            <label for="objekt" class="block text-sm font-medium text-slate-600 mb-1">Objekt</label>
+            <div class="relative">
+                <input type="text" id="objekt" class="w-full form-input-underline text-lg" required />
+                <svg class="error-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+            </div>
+          </div>
+          <div>
+            <label for="hersteller" class="block text-sm font-medium text-slate-600 mb-1">Hersteller</label>
+            <div class="relative">
+                <input type="text" id="hersteller" class="w-full form-input-underline text-lg" required />
+                <svg class="error-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+            </div>
+          </div>
+          
+          <!-- GELÖSCHT: E-Mail & Telefon --><!-- GELÖSCHT: Objektart --><!-- Container für Fehlermeldung und Button --><div class="mt-8 text-center min-h-[7rem] flex flex-col justify-end pb-2">
+            <p id="offer-error-message" class="text-red-600 text-sm mb-4 hidden"></p>
+            <button type="button" id="download-pdf-btn" class="w-full md:w-1/2 mx-auto bg-[#032659] text-white font-bold py-4 px-4 rounded-lg hover:bg-opacity-90 focus:outline-none focus:ring-4 focus:ring-[#032659]/50 transition-all duration-300 ease-in-out">
+              Angebot herunterladen
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   </section>
-  <!-- Finanzierungsverlauf -->
-  <section class="w-full mt-8">
+  <!-- Finanzierungsverlauf --><section class="w-full mt-8">
     <div class="panel rounded-2xl p-6 sm:p-10">
       <button id="timeline-toggle" class="w-full flex justify-between items-center text-left">
         <h2 class="text-xl font-bold text-slate-800">Finanzierungsverlauf</h2>
@@ -474,8 +456,7 @@
   </section>
 </div>
 
-<!-- History Modal -->
-<div id="history-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 opacity-0 pointer-events-none">
+<!-- History Modal --><div id="history-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 opacity-0 pointer-events-none">
     <div id="history-panel" class="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[80vh] flex flex-col transform -translate-y-10">
         <div class="flex justify-between items-center p-4 border-b">
             <h2 class="text-xl font-bold text-slate-800">Verlauf der Berechnungen</h2>
@@ -485,13 +466,11 @@
                 </svg>
             </button>
         </div>
-         <!-- Search Input -->
-        <div class="p-4 border-b">
+         <!-- Search Input --><div class="p-4 border-b">
              <input type="search" id="history-search" placeholder="Suche nach Name, Firma, Objekt, Wert..." class="form-input-underline w-full !border !border-gray-300 rounded-md text-sm" />
         </div>
         <div id="history-list" class="overflow-y-auto p-4 space-y-3 flex-grow">
-            <!-- History items will be injected here -->
-        </div>
+            <!-- History items will be injected here --></div>
     </div>
 </div>
 
@@ -519,11 +498,11 @@
     // Check if it's a numeric input or Laufzeit
     if (el.classList.contains('numeric-input') || el.id === 'basiszins') {
          const numericValue = unformat(el.value);
-          // Check if numericValue is a valid number before formatting
+         // Check if numericValue is a valid number before formatting
          if (!isNaN(numericValue)) {
-            el.value = formatLocale(numericValue, { style: 'decimal', minimumFractionDigits: 2, maximumFractionDigits: 2 }); // Use decimal style for input
+           el.value = formatLocale(numericValue, { style: 'decimal', minimumFractionDigits: 2, maximumFractionDigits: 2 }); // Use decimal style for input
          } else {
-             el.value = ''; // Clear if invalid
+            el.value = ''; // Clear if invalid
          }
     } else if (el.id === 'laufzeit') {
         // Laufzeit should likely be an integer
@@ -559,11 +538,11 @@
        // Add check for rate being close to -1 which causes issues with pow
        if (rate <= -1) return Infinity; // Or some large number indicating invalid rate
        try {
-           const factor = Math.pow(1 + rate, nper);
-           return pv * factor + pmt * ((factor - 1) / rate) + fv;
+          const factor = Math.pow(1 + rate, nper);
+          return pv * factor + pmt * ((factor - 1) / rate) + fv;
        } catch (e) {
-           console.error("Error in RATE calculation function:", e);
-           return Infinity; // Indicate error
+          console.error("Error in RATE calculation function:", e);
+          return Infinity; // Indicate error
        }
     };
 
@@ -582,17 +561,17 @@
           console.warn("RATE function might not have a root in the initial range [-0.99, 5]. Result might be inaccurate.");
          // Basic attempt to extend range if both positive or both negative, could be improved
          if (fLow > 0 && fHigh > 0) {
-             low = -0.9999; // Try closer to -1
-             fLow = f(low);
+            low = -0.9999; // Try closer to -1
+            fLow = f(low);
          } else if (fLow < 0 && fHigh < 0) {
-             high = 10; // Try much higher rate
-             fHigh = f(high);
+            high = 10; // Try much higher rate
+            fHigh = f(high);
          }
           if (isNaN(fLow) || isNaN(fHigh) || fLow * fHigh >= 0) {
              console.error("Could not find suitable bounds for RATE function.");
              // Return NaN or best guess depending on desired behavior
              return NaN;
-         }
+          }
 
      }
 
@@ -617,7 +596,7 @@
       if (isNaN(fMid)) {
            console.error("f(mid) resulted in NaN in RATE iteration", { mid, i });
            // Adjust bounds away from the problematic mid, this is heuristic
-            if (fLow < 0) high = mid; else low = mid; // Assume it failed on one side
+           if (fLow < 0) high = mid; else low = mid; // Assume it failed on one side
            continue; // Try next iteration
        }
 
@@ -644,7 +623,7 @@
      console.warn("RATE did not converge within max iterations. Returning best estimate.");
     return ((low + high) / 2) * 12; // Return best estimate
  }
-  // Globale Variablen und DOM-Elemente (unchanged)
+  // Globale Variablen und DOM-Elemente
   let costChart = null;
   let timelineChart = null;
   const anzahlungToggle = document.getElementById('anzahlung-toggle');
@@ -675,6 +654,7 @@
   const calculateBtn = document.getElementById('calculate-btn');
   const infoButton = document.getElementById('info-button');
   const infoTooltip = document.getElementById('info-tooltip');
+  const resetButton = document.getElementById('reset-button'); // NEU
 
   // History Functionality
   const historyButton = document.getElementById('history-button');
@@ -689,8 +669,8 @@
  function performCalculation(isRestoring = false) {
     // Hide results initially if calculation wasn't triggered and not restoring
     if (!calculateBtn.dataset.clicked && !isRestoring) {
-        showPlaceholder();
-        return; // Don't proceed if calculate wasn't clicked
+         showPlaceholder();
+         return; // Don't proceed if calculate wasn't clicked
     }
 
 
@@ -716,26 +696,26 @@
      // Ensure principal (PV for PMT) is reasonable
     const principal = av - az + marge;
     if (principal < 0 && rw <= 0) {
-        // Handle cases where financing amount is negative and no positive future value exists
-        console.warn("Calculation might be invalid: Negative principal with non-positive residual value.");
-        // Optionally show a specific error or default results
+         // Handle cases where financing amount is negative and no positive future value exists
+         console.warn("Calculation might be invalid: Negative principal with non-positive residual value.");
+         // Optionally show a specific error or default results
     }
 
     const monRate = bz / 100 / 12;
 
      // Add checks before calling PMT
      if (isNaN(monRate) || isNaN(lz) || isNaN(principal) || isNaN(rw)) {
-         showError("Ungültige Eingabe für Zinsberechnung.");
-         clearResultsOnError();
-         return;
+          showError("Ungültige Eingabe für Zinsberechnung.");
+          clearResultsOnError();
+          return;
      }
 
     const leasingInternal = PMT(monRate, lz, principal, -rw);
      // Check if PMT result is valid
      if (isNaN(leasingInternal) || !isFinite(leasingInternal)) {
-         showError("Berechnung der Rate fehlgeschlagen. Prüfen Sie die Eingaben.");
-         clearResultsOnError();
-         return;
+          showError("Berechnung der Rate fehlgeschlagen. Prüfen Sie die Eingaben.");
+          clearResultsOnError();
+          return;
      }
 
     const leasingRate = -leasingInternal;
@@ -744,19 +724,17 @@
     if (!isRestoring && calculateBtn.dataset.clicked === "true" && av > 0 && lz > 0) {
          // Get offer data when saving calculation
         const offerData = {
-            finanzierungsart: document.getElementById('finanzierungsart').value || '',
-            anrede: document.getElementById('anrede').value || '',
-            vorname: document.getElementById('vorname').value || '',
-            nachname: document.getElementById('nachname').value || '',
-            firma: document.getElementById('firma').value || '',
-            adresse: document.getElementById('adresse').value || '',
-            plz: document.getElementById('plz').value || '',
-            ort: document.getElementById('ort').value || '',
-            objekt: document.getElementById('objekt').value || '',
-            hersteller: document.getElementById('hersteller').value || '',
-            email: document.getElementById('email').value || '',
-            telefon: document.getElementById('telefon').value || '',
-            objektart: document.getElementById('objektart').value || ''
+           finanzierungsart: document.getElementById('finanzierungsart').value || '',
+           anrede: document.getElementById('anrede').value || '',
+           vorname: document.getElementById('vorname').value || '',
+           nachname: document.getElementById('nachname').value || '',
+           firma: document.getElementById('firma').value || '',
+           adresse: document.getElementById('adresse').value || '',
+           plz: document.getElementById('plz').value || '',
+           ort: document.getElementById('ort').value || '',
+           objekt: document.getElementById('objekt').value || '',
+           hersteller: document.getElementById('hersteller').value || '',
+           // GELÖSCHT: email, telefon, objektart
         };
         saveCalculationToHistory(leasingRate, offerData);
     }
@@ -782,6 +760,79 @@
     calculateBtn.dataset.clicked = "false";
  }
 
+  // NEU: Funktion zum Zurücksetzen aller Eingaben
+  function resetAllInputs() {
+      // 1. Reset Calculator Inputs
+      document.getElementById('anschaffungswert').value = '0';
+      document.getElementById('laufzeit').value = '0';
+      document.getElementById('basiszins').value = '0';
+      document.getElementById('anzahlung').value = '0';
+      document.getElementById('restwert').value = '0';
+      document.getElementById('margegesamt').value = '0';
+
+      // 2. Reset Toggles
+      if (anzahlungToggle.checked) anzahlungToggle.checked = false;
+      if (restwertToggle.checked) restwertToggle.checked = false;
+      if (margeToggle.checked) margeToggle.checked = false;
+      anzahlungUnit.textContent = '(€)';
+      restwertUnit.textContent = '(€)';
+      margeUnit.textContent = '(€)';
+
+      // 3. Format Inputs
+      document.querySelectorAll('.numeric-input, #laufzeit').forEach(input => formatInput({ target: input }));
+
+      // 4. Reset Offer Form Inputs
+      document.getElementById('finanzierungsart').value = '';
+      document.getElementById('anrede').value = '';
+      document.getElementById('vorname').value = '';
+      document.getElementById('nachname').value = '';
+      document.getElementById('firma').value = '';
+      document.getElementById('adresse').value = '';
+      document.getElementById('plz').value = '';
+      document.getElementById('ort').value = '';
+      document.getElementById('objekt').value = '';
+      document.getElementById('hersteller').value = '';
+      // Removed fields (email, telefon, objektart) are already gone
+
+      // 5. Reset Select Placeholders
+      document.querySelectorAll('select.is-placeholder').forEach(select => {
+          select.classList.add('is-placeholder');
+          // Also clear validation state
+          const parent = select.closest('.relative');
+          const icon = parent?.querySelector('.error-icon');
+          select.classList.remove('has-error');
+          if (icon) icon.classList.add('hidden');
+      });
+
+      // 6. Clear Offer Form Errors
+      const offerErrorMessage = document.getElementById('offer-error-message');
+      offerErrorMessage.classList.add('hidden');
+      offerErrorMessage.textContent = '';
+      offerContainer.querySelectorAll('input[required]').forEach(field => {
+          const parent = field.closest('.relative');
+          const icon = parent?.querySelector('.error-icon');
+          field.classList.remove('has-error');
+          if (icon) icon.classList.add('hidden');
+      });
+
+
+      // 7. Reset Results
+      showPlaceholder(); // This handles chart, result fields, and error text
+
+      // 8. Reset Timeline Chart
+      if (timelineChart) {
+          timelineChart.destroy();
+          timelineChart = null;
+      }
+      tlRateEl.textContent = '–';
+      tlZinsSumEl.textContent = '–';
+      tlTilgSumEl.textContent = '–';
+
+      // 9. Reset calculate button clicked state
+      calculateBtn.dataset.clicked = "false";
+  }
+
+
   function clearResultsOnError() {
      if (costChart) { costChart.destroy(); costChart = null; }
      resultText.textContent = '';
@@ -792,16 +843,16 @@
      placeholderContainer.classList.remove('hidden');
   }
 
-   function showPlaceholder() {
-        if (costChart) { costChart.destroy(); costChart = null; }
-        resultText.textContent = '';
-        indikativerZinsEl.value = '';
-        leasingfaktorEl.value = '';
-        gesamtkostenEl.value = '';
-        resultContainer.classList.add('hidden');
-        placeholderContainer.classList.remove('hidden');
-        hideError(); // Also hide any potential error messages
-    }
+  function showPlaceholder() {
+       if (costChart) { costChart.destroy(); costChart = null; }
+       resultText.textContent = '';
+       indikativerZinsEl.value = '';
+       leasingfaktorEl.value = '';
+       gesamtkostenEl.value = '';
+       resultContainer.classList.add('hidden');
+       placeholderContainer.classList.remove('hidden');
+       hideError(); // Also hide any potential error messages
+   }
 
 
   function displayResult(rate, anzahlung, restwert, av, monate) {
@@ -929,7 +980,7 @@
 
       // Adjust tilg if it exceeds remaining restschuld (e.g., last payment)
       if (tilg > restschuld) {
-          tilg = restschuld;
+           tilg = restschuld;
            // If tilg needed adjustment, the actual payment might be lower (rate - zins vs restschuld + zins)
            // However, for chart simplicity, we often show the calculated rate components
       }
@@ -1022,24 +1073,24 @@
         },
         interaction: { mode: 'index', intersect: false },
          tooltip: { // Corrected from tooltips
-            mode: 'index',
-            intersect: false,
-            callbacks: {
-                 label: function(context) {
-                    let label = context.dataset.label || '';
-                    if (label) {
-                        label += ': ';
-                    }
-                    // Ensure context.parsed and context.parsed.y exist and are numbers
-                    if (context.parsed && typeof context.parsed.y === 'number') {
-                        label += formatLocale(context.parsed.y, { style: 'currency', currency: 'EUR' });
-                    } else {
-                         label += 'N/A'; // Indicate if value is missing
-                    }
-                    return label;
-                }
-            }
-        }
+           mode: 'index',
+           intersect: false,
+           callbacks: {
+               label: function(context) {
+                   let label = context.dataset.label || '';
+                   if (label) {
+                       label += ': ';
+                   }
+                   // Ensure context.parsed and context.parsed.y exist and are numbers
+                   if (context.parsed && typeof context.parsed.y === 'number') {
+                       label += formatLocale(context.parsed.y, { style: 'currency', currency: 'EUR' });
+                   } else {
+                        label += 'N/A'; // Indicate if value is missing
+                   }
+                   return label;
+               }
+           }
+      }
       }
     });
  }
@@ -1060,14 +1111,14 @@
         if (av > 0) {
           inputEl.value = formatLocale((currentVal / av) * 100, { style:'decimal', minimumFractionDigits: 2, maximumFractionDigits: 2 });
         } else {
-             inputEl.value = formatLocale(currentVal, { style:'decimal', minimumFractionDigits: 2, maximumFractionDigits: 2 }); // Format as percentage even if AV is 0
+           inputEl.value = formatLocale(currentVal, { style:'decimal', minimumFractionDigits: 2, maximumFractionDigits: 2 }); // Format as percentage even if AV is 0
         }
       } else {
         unitEl.textContent = '(€)';
         if (av > 0) {
           inputEl.value = formatLocale((currentVal / 100) * av, { style:'decimal', maximumFractionDigits: 0 });
         } else {
-             inputEl.value = formatLocale(currentVal, { style:'decimal', maximumFractionDigits: 0 }); // Format as currency even if AV is 0
+           inputEl.value = formatLocale(currentVal, { style:'decimal', maximumFractionDigits: 0 }); // Format as currency even if AV is 0
         }
       }
       // Re-apply formatting after potential conversion
@@ -1087,9 +1138,12 @@
   });
 
   calculateBtn.addEventListener('click', () => {
-      calculateBtn.dataset.clicked = "true"; // Mark button as clicked
-      performCalculation();
+       calculateBtn.dataset.clicked = "true"; // Mark button as clicked
+       performCalculation();
   });
+
+  // NEU: Reset Button Listener
+  resetButton.addEventListener('click', resetAllInputs);
 
   // Info Tooltip (unchanged)
   infoButton.addEventListener('mouseenter', () => infoTooltip.classList.remove('hidden'));
@@ -1110,13 +1164,13 @@
        const resultsVisible = !resultContainer.classList.contains('hidden');
 
        if (resultsVisible && av > 0 && lz > 0 && !errorText.textContent) {
-           performCalculation(true);
+          performCalculation(true);
        } else {
-            timelineContainer.style.maxHeight = timelineContainer.scrollHeight + 'px';
-            if(timelineChart) timelineChart.destroy(); timelineChart = null;
-            if(tlRateEl) tlRateEl.textContent = '–';
-            if(tlZinsSumEl) tlZinsSumEl.textContent = '–';
-            if(tlTilgSumEl) tlTilgSumEl.textContent = '–';
+           timelineContainer.style.maxHeight = timelineContainer.scrollHeight + 'px';
+           if(timelineChart) timelineChart.destroy(); timelineChart = null;
+           if(tlRateEl) tlRateEl.textContent = '–';
+           if(tlZinsSumEl) tlZinsSumEl.textContent = '–';
+           if(tlTilgSumEl) tlTilgSumEl.textContent = '–';
        }
 
     } else {
@@ -1132,10 +1186,10 @@
 
     // Reset previous errors
     requiredFields.forEach(field => {
-        const parent = field.closest('.relative');
-        const icon = parent?.querySelector('.error-icon');
-        field.classList.remove('has-error');
-        if (icon) icon.classList.add('hidden');
+         const parent = field.closest('.relative');
+         const icon = parent?.querySelector('.error-icon');
+         field.classList.remove('has-error');
+         if (icon) icon.classList.add('hidden');
     });
 
     // Validate fields
@@ -1158,16 +1212,16 @@
     }
 
     if (!isFormValid) {
-        if (!offerErrorMessage.textContent) {
-             offerErrorMessage.textContent = 'Bitte füllen Sie alle markierten Felder aus, um das Angebot herunterzuladen.';
-             offerErrorMessage.classList.remove('hidden');
-        }
-        const firstError = offerContainer.querySelector('.has-error');
-        if (firstError) {
-            firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            firstError.focus({ preventScroll: true });
-        }
-        return;
+         if (!offerErrorMessage.textContent) {
+              offerErrorMessage.textContent = 'Bitte füllen Sie alle markierten Felder aus, um das Angebot herunterzuladen.';
+              offerErrorMessage.classList.remove('hidden');
+         }
+         const firstError = offerContainer.querySelector('.has-error');
+         if (firstError) {
+             firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+             firstError.focus({ preventScroll: true });
+         }
+         return;
     }
 
     offerErrorMessage.classList.add('hidden');
@@ -1208,7 +1262,7 @@
 
     let y = 25; // Start position adjusted
     const leftMargin = 20; // Margin from left (ca. 2cm)
-    const valueXPos = 70;   // X position for the start of the value text
+    const valueXPos = 70;    // X position for the start of the value text
     const pageWidth = pdf.internal.pageSize.getWidth();
     const contentWidth = pageWidth - leftMargin * 2; // Width available between margins
     const lineSpacing = 6; // Adjusted line spacing
@@ -1227,9 +1281,9 @@
     pdf.setFontSize(11); // Slightly larger for subject
     pdf.setFont('helvetica', 'bold');
     if(values.objekt || values.hersteller) {
-        pdf.text(`Finanzierungsangebot: ${values.objekt || ''} ${values.hersteller || ''}`.trim(), leftMargin, y);
+         pdf.text(`Finanzierungsangebot: ${values.objekt || ''} ${values.hersteller || ''}`.trim(), leftMargin, y);
     } else {
-         pdf.text(`Finanzierungsangebot`, leftMargin, y);
+          pdf.text(`Finanzierungsangebot`, leftMargin, y);
     }
     y += lineSpacing * 2; // More space after subject
 
@@ -1246,14 +1300,14 @@
 
     // Financial Details Function (Label left bold, Value right normal) - Updated Spacing
     const addDetailLinePDF = (label, value) => {
-        if (value || value === 0 || String(value).replace(/[€\s]/g, '').trim() !== '') { // Improved check for empty/zero values
-             pdf.setFontSize(10); // Consistent size
-             pdf.setFont('helvetica', 'bold');
-             pdf.text(`${label}:`, leftMargin, y);
-             pdf.setFont('helvetica', 'normal');
-             pdf.text(String(value), valueXPos, y); // Align value at fixed position
-             y += lineSpacing; // Use defined line spacing
-        }
+         if (value || value === 0 || String(value).replace(/[€\s]/g, '').trim() !== '') { // Improved check for empty/zero values
+              pdf.setFontSize(10); // Consistent size
+              pdf.setFont('helvetica', 'bold');
+              pdf.text(`${label}:`, leftMargin, y);
+              pdf.setFont('helvetica', 'normal');
+              pdf.text(String(value), valueXPos, y); // Align value at fixed position
+              y += lineSpacing; // Use defined line spacing
+         }
     };
 
     addDetailLinePDF('Anschaffungspreis', formatLocale(avNum, { style: 'currency', currency: 'EUR'}));
@@ -1264,37 +1318,40 @@
 
     y += lineSpacing * 0.5; // Small gap before notes
 
+    // NEU: Definition von addWrappedTextPDF HIERHER VERSCHOBEN
+    // Function to add wrapped text with specified left margin and width
+    const addWrappedTextPDF = (text, startY, margin, width, lineSpacingScale = 1.0, isBold = false) => {
+          const currentSize = pdf.getFontSize(); // Store current size
+          const currentStyle = pdf.getFont().fontStyle; // Store current style
+
+          if (isBold) pdf.setFont('helvetica', 'bold');
+          else pdf.setFont('helvetica', 'normal');
+
+          const lines = pdf.splitTextToSize(text, width);
+          pdf.text(lines, margin, startY);
+
+          // Reset font style and size after printing
+          pdf.setFont('helvetica', currentStyle);
+          pdf.setFontSize(currentSize);
+
+          return startY + (lines.length * (lineSpacing * 0.8) * lineSpacingScale); // Calculate next y using slightly smaller spacing for wrapped text
+    };
+
     // Conditional Mietkauf Note (Bold and Black)
     if (values.finanzierungsart === 'Mietkauf') {
-        pdf.setFontSize(9);
-        pdf.setFont('helvetica', 'bold'); // Set font to bold
-        pdf.setTextColor(0); // Ensure black text
-        y = addWrappedTextPDF('Hinweis: Die gesetzl. Mehrwertsteuer fällt vorab auf die Summe aller Zahlungen an.', y, leftMargin, contentWidth, 1.0, true); // Use wrapper, mark as bold
-        pdf.setFont('helvetica', 'normal'); // Reset font weight
-        y += lineSpacing * 0.5; // Adjust spacing after note
+         pdf.setFontSize(9);
+         pdf.setFont('helvetica', 'bold'); // Set font to bold
+         pdf.setTextColor(0); // Ensure black text
+         y = addWrappedTextPDF('Hinweis: Die gesetzl. Mehrwertsteuer fällt vorab auf die Summe aller Zahlungen an.', y, leftMargin, contentWidth, 1.0, true); // Use wrapper, mark as bold
+         pdf.setFont('helvetica', 'normal'); // Reset font weight
+         y += lineSpacing * 0.5; // Adjust spacing after note
     }
 
     // General Notes & Closing (Adjusted Margins and Font)
     pdf.setFontSize(9); // Consistent smaller font for notes
     pdf.setTextColor(0); // Ensure black text
 
-    // Function to add wrapped text with specified left margin and width
-    const addWrappedTextPDF = (text, startY, margin, width, lineSpacingScale = 1.0, isBold = false) => {
-         const currentSize = pdf.getFontSize(); // Store current size
-         const currentStyle = pdf.getFont().fontStyle; // Store current style
-
-         if (isBold) pdf.setFont('helvetica', 'bold');
-         else pdf.setFont('helvetica', 'normal');
-
-         const lines = pdf.splitTextToSize(text, width);
-         pdf.text(lines, margin, startY);
-
-         // Reset font style and size after printing
-         pdf.setFont('helvetica', currentStyle);
-         pdf.setFontSize(currentSize);
-
-         return startY + (lines.length * (lineSpacing * 0.8) * lineSpacingScale); // Calculate next y using slightly smaller spacing for wrapped text
-    };
+    // GELÖSCHT: Vormalige Position der Funktion (war hier)
 
     // Use leftMargin and contentWidth for alignment
     y = addWrappedTextPDF('Die oben genannten Preise verstehen sich netto, zuzüglich der gesetzlichen Mehrwertsteuer.', y, leftMargin, contentWidth);
@@ -1320,208 +1377,222 @@
   // Placeholder styling for select elements (unchanged)
   document.querySelectorAll('select.is-placeholder').forEach(select => {
     select.addEventListener('change', (e) => {
-        if (e.target.value) {
-            e.target.classList.remove('is-placeholder');
-        } else {
-            e.target.classList.add('is-placeholder');
-        }
+         if (e.target.value) {
+             e.target.classList.remove('is-placeholder');
+         } else {
+             e.target.classList.add('is-placeholder');
+         }
     });
     // Initial check in case a value is pre-filled (e.g., browser autofill)
     if (select.value) {
-        select.classList.remove('is-placeholder');
+         select.classList.remove('is-placeholder');
     }
   });
 
 
   // --- History Modal & Functionality ---
   const openHistoryModal = () => {
-      loadHistory(); // Load unfiltered history first
-      historySearchInput.value = ''; // Clear search on open
-      historyModal.classList.remove('opacity-0', 'pointer-events-none');
-      historyPanel.classList.remove('-translate-y-10');
-      historySearchInput.focus(); // Focus search input when modal opens
+       loadHistory(); // Load unfiltered history first
+       historySearchInput.value = ''; // Clear search on open
+       historyModal.classList.remove('opacity-0', 'pointer-events-none');
+       historyPanel.classList.remove('-translate-y-10');
+       historySearchInput.focus(); // Focus search input when modal opens
   };
 
   const closeHistoryModal = () => {
-      historyModal.classList.add('opacity-0', 'pointer-events-none');
-      historyPanel.classList.add('-translate-y-10');
+       historyModal.classList.add('opacity-0', 'pointer-events-none');
+       historyPanel.classList.add('-translate-y-10');
   };
 
   historyButton.addEventListener('click', openHistoryModal);
   closeHistoryButton.addEventListener('click', closeHistoryModal);
   historyModal.addEventListener('click', (e) => {
-      // Close only if clicking directly on the background overlay
-      if (e.target === historyModal) {
-          closeHistoryModal();
-      }
+       // Close only if clicking directly on the background overlay
+       if (e.target === historyModal) {
+           closeHistoryModal();
+       }
   });
 
   // Search functionality
   historySearchInput.addEventListener('input', (e) => {
-      loadHistory(e.target.value); // Reload history list with the search term
+       loadHistory(e.target.value); // Reload history list with the search term
   });
 
 
   const saveCalculationToHistory = (rate, offerData) => {
-      // Check if rate is valid before saving
-       if (isNaN(rate) || !isFinite(rate)) {
+       // Check if rate is valid before saving
+        if (isNaN(rate) || !isFinite(rate)) {
            console.warn("Invalid rate calculated, not saving to history.");
            return;
+        }
+
+       const historyEntry = {
+           timestamp: new Date().toISOString(),
+           // Calculation Data
+           anschaffungswert: document.getElementById('anschaffungswert').value,
+           laufzeit: document.getElementById('laufzeit').value,
+           anzahlung: document.getElementById('anzahlung').value,
+           anzahlungToggle: document.getElementById('anzahlung-toggle').checked,
+           restwert: document.getElementById('restwert').value,
+           restwertToggle: document.getElementById('restwert-toggle').checked,
+           basiszins: document.getElementById('basiszins').value,
+           margegesamt: document.getElementById('margegesamt').value,
+           margeToggle: document.getElementById('marge-toggle').checked,
+           monatlicheRate: formatLocale(rate, { style: 'currency', currency: 'EUR' }), // Store formatted rate
+           // Offer Data (passed as argument)
+           finanzierungsart: offerData.finanzierungsart || '',
+           anrede: offerData.anrede || '',
+           vorname: offerData.vorname || '',
+           nachname: offerData.nachname || '',
+           firma: offerData.firma || '',
+           adresse: offerData.adresse || '',
+           plz: offerData.plz || '',
+           ort: offerData.ort || '',
+           objekt: offerData.objekt || '',
+           hersteller: offerData.hersteller || '',
+           // GELÖSCHT: email, telefon, objektart
+       };
+
+       let history = JSON.parse(localStorage.getItem('financingHistory')) || [];
+       // Prevent saving duplicates if inputs haven't changed substantially
+       if (history.length > 0) {
+           const lastEntry = history[0];
+           const calcKeysToCompare = ['anschaffungswert', 'laufzeit', 'anzahlung', 'restwert', 'basiszins', 'margegesamt'];
+           // AKTUALISIERT: offerKeysToCompare (entfernte Felder rausgenommen)
+           const offerKeysToCompare = ['finanzierungsart', 'anrede', 'vorname', 'nachname', 'firma', 'adresse', 'plz', 'ort', 'objekt', 'hersteller'];
+
+
+           const calcIsDuplicate = calcKeysToCompare.every(key => historyEntry[key] === lastEntry[key]) &&
+                                     historyEntry.anzahlungToggle === lastEntry.anzahlungToggle &&
+                                     historyEntry.restwertToggle === lastEntry.restwertToggle &&
+                                     historyEntry.margeToggle === lastEntry.margeToggle;
+
+           // Only consider offer data duplicate if calc data is also duplicate
+           const offerIsDuplicate = offerKeysToCompare.every(key => historyEntry[key] === lastEntry[key]);
+
+
+           if (calcIsDuplicate && offerIsDuplicate) {
+              // console.log("Skipping duplicate history entry.");
+               return; // Don't save if it looks like a duplicate
+           }
        }
 
-      const historyEntry = {
-          timestamp: new Date().toISOString(),
-          // Calculation Data
-          anschaffungswert: document.getElementById('anschaffungswert').value,
-          laufzeit: document.getElementById('laufzeit').value,
-          anzahlung: document.getElementById('anzahlung').value,
-          anzahlungToggle: document.getElementById('anzahlung-toggle').checked,
-          restwert: document.getElementById('restwert').value,
-          restwertToggle: document.getElementById('restwert-toggle').checked,
-          basiszins: document.getElementById('basiszins').value,
-          margegesamt: document.getElementById('margegesamt').value,
-          margeToggle: document.getElementById('marge-toggle').checked,
-          monatlicheRate: formatLocale(rate, { style: 'currency', currency: 'EUR' }), // Store formatted rate
-          // Offer Data (passed as argument)
-          finanzierungsart: offerData.finanzierungsart || '',
-          anrede: offerData.anrede || '',
-          vorname: offerData.vorname || '',
-          nachname: offerData.nachname || '',
-          firma: offerData.firma || '',
-          adresse: offerData.adresse || '',
-          plz: offerData.plz || '',
-          ort: offerData.ort || '',
-          objekt: offerData.objekt || '',
-          hersteller: offerData.hersteller || '',
-          email: offerData.email || '',
-          telefon: offerData.telefon || '',
-          objektart: offerData.objektart || ''
-      };
 
-      let history = JSON.parse(localStorage.getItem('financingHistory')) || [];
-      // Prevent saving duplicates if inputs haven't changed substantially
-      if (history.length > 0) {
-          const lastEntry = history[0];
-          const calcKeysToCompare = ['anschaffungswert', 'laufzeit', 'anzahlung', 'restwert', 'basiszins', 'margegesamt'];
-          const offerKeysToCompare = ['finanzierungsart', 'anrede', 'vorname', 'nachname', 'firma', 'adresse', 'plz', 'ort', 'objekt', 'hersteller', 'email', 'telefon', 'objektart'];
-
-
-          const calcIsDuplicate = calcKeysToCompare.every(key => historyEntry[key] === lastEntry[key]) &&
-                                  historyEntry.anzahlungToggle === lastEntry.anzahlungToggle &&
-                                  historyEntry.restwertToggle === lastEntry.restwertToggle &&
-                                  historyEntry.margeToggle === lastEntry.margeToggle;
-
-          // Only consider offer data duplicate if calc data is also duplicate
-          const offerIsDuplicate = offerKeysToCompare.every(key => historyEntry[key] === lastEntry[key]);
-
-
-          if (calcIsDuplicate && offerIsDuplicate) {
-             // console.log("Skipping duplicate history entry.");
-             return; // Don't save if it looks like a duplicate
-          }
-      }
-
-
-      history.unshift(historyEntry); // Add new entry to the beginning
-      if (history.length > 50) { // Keep only the last 50
-          history = history.slice(0, 50);
-      }
-      localStorage.setItem('financingHistory', JSON.stringify(history));
-      console.log("Calculation saved to history.");
+       history.unshift(historyEntry); // Add new entry to the beginning
+       if (history.length > 50) { // Keep only the last 50
+           history = history.slice(0, 50);
+       }
+       localStorage.setItem('financingHistory', JSON.stringify(history));
+       console.log("Calculation saved to history.");
   };
 
   const loadHistory = (searchTerm = '') => {
-      historyList.innerHTML = ''; // Clear previous list
-      let history = JSON.parse(localStorage.getItem('financingHistory')) || [];
-      const lowerSearchTerm = searchTerm.toLowerCase().trim();
+       historyList.innerHTML = ''; // Clear previous list
+       let history = JSON.parse(localStorage.getItem('financingHistory')) || [];
+       const lowerSearchTerm = searchTerm.toLowerCase().trim();
 
-      // Filter history based on search term
-      if (lowerSearchTerm) {
-          history = history.filter(entry => {
-               // Function to check if any value in the entry contains the search term
-               const checkEntry = (obj) => {
-                   for (const key in obj) {
-                       if (Object.prototype.hasOwnProperty.call(obj, key)) {
-                            const value = obj[key];
-                            // Check strings and numbers (convert numbers to string for includes check)
-                           if (typeof value === 'string' && value.toLowerCase().includes(lowerSearchTerm)) {
-                               return true;
-                           } else if (typeof value === 'number' && String(value).toLowerCase().includes(lowerSearchTerm)) {
-                               return true;
-                           }
-                           // Don't search boolean toggles directly, search their corresponding value fields
-                            if (key === 'anschaffungswert' && entry.anschaffungswert?.replace(/[.,€\s]/g, '').includes(lowerSearchTerm)) return true;
-                            if (key === 'monatlicheRate' && entry.monatlicheRate?.replace(/[.,€\s]/g, '').includes(lowerSearchTerm)) return true;
-                            if (key === 'anzahlung' && entry.anzahlung?.replace(/[.,€%\s]/g, '').includes(lowerSearchTerm)) return true;
-                            if (key === 'restwert' && entry.restwert?.replace(/[.,€%\s]/g, '').includes(lowerSearchTerm)) return true;
-                            if (key === 'basiszins' && entry.basiszins?.replace(/[%.,\s]/g, '').includes(lowerSearchTerm)) return true;
-                            if (key === 'margegesamt' && entry.margegesamt?.replace(/[.,€%\s]/g, '').includes(lowerSearchTerm)) return true;
+       // Filter history based on search term
+       if (lowerSearchTerm) {
+           history = history.filter(entry => {
+                // Function to check if any value in the entry contains the search term
+                 const checkEntry = (obj) => {
+                     for (const key in obj) {
+                         if (Object.prototype.hasOwnProperty.call(obj, key)) {
+                               const value = obj[key];
+                              // Check strings and numbers (convert numbers to string for includes check)
+                             if (typeof value === 'string' && value.toLowerCase().includes(lowerSearchTerm)) {
+                                 return true;
+                             } else if (typeof value === 'number' && String(value).toLowerCase().includes(lowerSearchTerm)) {
+                                 return true;
+                             }
+                             // Don't search boolean toggles directly, search their corresponding value fields
+                              if (key === 'anschaffungswert' && entry.anschaffungswert?.replace(/[.,€\s]/g, '').includes(lowerSearchTerm)) return true;
+                              if (key === 'monatlicheRate' && entry.monatlicheRate?.replace(/[.,€\s]/g, '').includes(lowerSearchTerm)) return true;
+                              if (key === 'anzahlung' && entry.anzahlung?.replace(/[.,€%\s]/g, '').includes(lowerSearchTerm)) return true;
+                              if (key === 'restwert' && entry.restwert?.replace(/[.,€%\s]/g, '').includes(lowerSearchTerm)) return true;
+                              if (key === 'basiszins' && entry.basiszins?.replace(/[%.,\s]/g, '').includes(lowerSearchTerm)) return true;
+                              if (key === 'margegesamt' && entry.margegesamt?.replace(/[.,€%\s]/g, '').includes(lowerSearchTerm)) return true;
 
-                       }
-                   }
-                   return false;
-               };
-               return checkEntry(entry);
-           });
+                         }
+                     }
+                     return false;
+                 };
+                 return checkEntry(entry);
+            });
 
-      }
+       }
 
 
-      if (history.length === 0) {
-          if(lowerSearchTerm) {
-               historyList.innerHTML = `<p class="text-slate-500 text-center py-8">Keine Einträge für "${searchTerm}" gefunden.</p>`;
-          } else {
-               historyList.innerHTML = `<p class="text-slate-500 text-center py-8">Noch keine Berechnungen gespeichert.</p>`;
-          }
-          return;
-      }
-
-      history.forEach((entry, index) => {
-          const date = new Date(entry.timestamp);
-          // Format date and time clearly
-          const formattedDate = date.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
-          const formattedTime = date.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
-
-           // Determine display name based on priority
-           let displayName = 'N/A';
-           if (entry.nachname) {
-               displayName = entry.nachname;
-           } else if (entry.firma) {
-               displayName = entry.firma;
-           } else if (entry.vorname) {
-               displayName = entry.vorname;
-           } else if (entry.objekt) {
-               displayName = entry.objekt;
+       if (history.length === 0) {
+           if(lowerSearchTerm) {
+                historyList.innerHTML = `<p class="text-slate-500 text-center py-8">Keine Einträge für "${searchTerm}" gefunden.</p>`;
+           } else {
+                historyList.innerHTML = `<p class="text-slate-500 text-center py-8">Noch keine Berechnungen gespeichert.</p>`;
            }
+           return;
+       }
+
+       history.forEach((entry, index) => {
+           const date = new Date(entry.timestamp);
+           // Format date and time clearly
+           const formattedDate = date.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
+           const formattedTime = date.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+
+            // Determine display name based on priority
+             let displayName = 'N/A';
+             if (entry.nachname) {
+                 displayName = entry.nachname;
+             } else if (entry.firma) {
+                 displayName = entry.firma;
+             } else if (entry.vorname) {
+                 displayName = entry.vorname;
+             } else if (entry.objekt) {
+                 displayName = entry.objekt;
+             }
 
 
-          const item = document.createElement('div');
-          item.className = 'p-4 border border-gray-200 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors group'; // Added group for potential hover effects on children
-          item.innerHTML = `
-              <div class="flex justify-between items-start gap-4">
-                  <div class="flex-grow min-w-0"> <!-- Added min-w-0 for flex truncation -->
-                      <p class="font-semibold text-lg text-[#032659] mb-1 truncate">${entry.monatlicheRate || 'N/A'} <span class="text-sm font-normal text-slate-500 ml-2">(${displayName})</span></p> <!-- Added truncate -->
-                      <p class="text-sm text-slate-600 truncate"> <!-- Added truncate -->
-                          <span title="Anschaffungswert">AW: ${formatLocale(unformat(entry.anschaffungswert), { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 })}</span> |
-                          <span title="Laufzeit">LZ: ${entry.laufzeit} M</span> |
-                          <span title="Anzahlung">A${entry.anzahlungToggle ? '%' : '€'}: ${entry.anzahlung}</span> |
-                          <span title="Restwert">R${entry.restwertToggle ? '%' : '€'}: ${entry.restwert}</span> |
-                          <span title="Basiszinssatz">BZ: ${entry.basiszins}%</span> |
-                          <span title="Marge">M${entry.margeToggle ? '%' : '€'}: ${entry.margegesamt}</span>
-                      </p>
-                  </div>
-                  <div class="text-right flex-shrink-0">
-                     <p class="text-xs text-slate-400">${formattedDate}</p>
-                     <p class="text-xs text-slate-400">${formattedTime} Uhr</p>
-                  </div>
-              </div>
-          `;
-          item.addEventListener('click', () => {
-              restoreFromHistory(entry);
-          });
-          historyList.appendChild(item);
-      });
+           const item = document.createElement('div');
+           item.className = 'p-4 border border-gray-200 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors group'; // Added group for potential hover effects on children
+           item.innerHTML = `
+               <div class="flex justify-between items-start gap-4">
+                   <div class="flex-grow min-w-0"> <!-- Added min-w-0 for flex truncation --><p class="font-semibold text-lg text-[#032659] mb-1 truncate">${entry.monatlicheRate || 'N/A'} <span class="text-sm font-normal text-slate-500 ml-2">(${displayName})</span></p> <!-- Added truncate --><p class="text-sm text-slate-600 truncate"> <!-- Added truncate --><span title="Anschaffungswert">AW: ${formatLocale(unformat(entry.anschaffungswert), { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 })}</span> |
+                           <span title="Laufzeit">LZ: ${entry.laufzeit} M</span> |
+                           <span title="Anzahlung">A${entry.anzahlungToggle ? '%' : '€'}: ${entry.anzahlung}</span> |
+                           <span title="Restwert">R${entry.restwertToggle ? '%' : '€'}: ${entry.restwert}</span> |
+                           <span title="Basiszinssatz">BZ: ${entry.basiszins}%</span> |
+                           <span title="Marge">M${entry.margeToggle ? '%' : '€'}: ${entry.margegesamt}</span>
+                       </p>
+                   </div>
+                   <div class="text-right flex-shrink-0">
+                       <p class="text-xs text-slate-400">${formattedDate}</p>
+                       <p class="text-xs text-slate-400">${formattedTime} Uhr</p>
+                   </div>
+                    <!-- Delete Button for History Item --><button class="delete-history-item p-1.5 rounded-full hover:bg-red-100 transition-colors self-center flex-shrink-0" data-timestamp="${entry.timestamp}" title="Diesen Eintrag löschen">
+                       <svg class="h-5 w-5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                           <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                       </svg>
+                   </button>
+               </div>
+           `;
+           // Prevent item click event from firing when delete button is clicked
+           item.querySelector('.delete-history-item').addEventListener('click', (e) => {
+               e.stopPropagation(); // Stop propagation to prevent item click
+               deleteHistoryEntry(e.currentTarget.dataset.timestamp);
+           });
+           item.addEventListener('click', () => {
+               restoreFromHistory(entry);
+           });
+           historyList.appendChild(item);
+       });
   };
+
+   const deleteHistoryEntry = (timestampToDelete) => {
+       let history = JSON.parse(localStorage.getItem('financingHistory')) || [];
+       const updatedHistory = history.filter(entry => entry.timestamp !== timestampToDelete);
+       localStorage.setItem('financingHistory', JSON.stringify(updatedHistory));
+       loadHistory(historySearchInput.value); // Reload history with current search term
+   };
+
 
   const restoreFromHistory = (entry) => {
     console.log("Restoring from history:", entry);
@@ -1554,17 +1625,15 @@
     document.getElementById('ort').value = entry.ort || '';
     document.getElementById('objekt').value = entry.objekt || '';
     document.getElementById('hersteller').value = entry.hersteller || '';
-    document.getElementById('email').value = entry.email || '';
-    document.getElementById('telefon').value = entry.telefon || '';
-    document.getElementById('objektart').value = entry.objektart || '';
+    // GELÖSCHT: email, telefon, objektart
 
      // Update placeholder class for select elements after restoring
     document.querySelectorAll('select.is-placeholder').forEach(select => {
-        if (select.value) {
-            select.classList.remove('is-placeholder');
-        } else {
-            select.classList.add('is-placeholder');
-        }
+         if (select.value) {
+             select.classList.remove('is-placeholder');
+         } else {
+             select.classList.add('is-placeholder');
+         }
     });
 
 
@@ -1580,30 +1649,29 @@
 
    // Initial setup on page load
    document.addEventListener('DOMContentLoaded', (event) => {
-        // Show placeholder initially
-        showPlaceholder();
+         // Show placeholder initially
+         showPlaceholder();
 
-        // Add blur listener for formatting numeric inputs initially
-        document.querySelectorAll('.numeric-input').forEach(input => {
-            input.addEventListener('blur', formatInput);
-             // Initial format check
-             formatInput({ target: input });
-        });
-         // Add blur listener for laufzeit as well
-        const laufzeitInput = document.getElementById('laufzeit');
-        laufzeitInput.addEventListener('blur', formatInput);
-        formatInput({ target: laufzeitInput }); // Initial format check
+         // Add blur listener for formatting numeric inputs initially
+         document.querySelectorAll('.numeric-input').forEach(input => {
+             input.addEventListener('blur', formatInput);
+              // Initial format check
+              formatInput({ target: input });
+         });
+          // Add blur listener for laufzeit as well
+         const laufzeitInput = document.getElementById('laufzeit');
+         laufzeitInput.addEventListener('blur', formatInput);
+         formatInput({ target: laufzeitInput }); // Initial format check
 
-        // Set initial state for select placeholders
-        document.querySelectorAll('select.is-placeholder').forEach(select => {
-             if (!select.value) {
-                 select.classList.add('is-placeholder');
-             }
-        });
-    });
+         // Set initial state for select placeholders
+         document.querySelectorAll('select.is-placeholder').forEach(select => {
+              if (!select.value) {
+                  select.classList.add('is-placeholder');
+              }
+         });
+   });
 
 
 </script>
 </body>
 </html>
-
