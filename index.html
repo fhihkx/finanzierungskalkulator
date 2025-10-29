@@ -666,98 +666,119 @@
 
 
   // Hauptberechnung (calls save function with offerData)
- function performCalculation(isRestoring = false) {
-    // Hide results initially if calculation wasn't triggered and not restoring
-    if (!calculateBtn.dataset.clicked && !isRestoring) {
-         showPlaceholder();
-         return; // Don't proceed if calculate wasn't clicked
-    }
+// Berechnung entsprechend Excel: Diskontierung des Restwerts, Barwertmarge und "Fudge"-Abschlag
+function performCalculation(isRestoring = false) {
+  // Placeholder aktiv lassen, solange "Berechnen" nicht geklickt wurde
+  if (!calculateBtn.dataset.clicked && !isRestoring) {
+    showPlaceholder();
+    return;
+  }
 
+  // Werte parsen und in Euro umrechnen
+  const av = unformat(document.getElementById('anschaffungswert').value);
+  const lz = parseInt(document.getElementById('laufzeit').value, 10) || 0;
+  const bz = unformat(document.getElementById('basiszins').value);
+  const azRaw = unformat(document.getElementById('anzahlung').value);
+  const rwRaw = unformat(document.getElementById('restwert').value);
+  const margeRaw = unformat(document.getElementById('margegesamt').value);
 
-    const av = unformat(document.getElementById('anschaffungswert').value);
-    const lz = parseInt(document.getElementById('laufzeit').value) || 0;
-    const bz = unformat(document.getElementById('basiszins').value);
-    const azInput = unformat(document.getElementById('anzahlung').value);
-    const rwInput = unformat(document.getElementById('restwert').value);
-    const margeInput = unformat(document.getElementById('margegesamt').value);
-    const az = anzahlungToggle.checked ? (azInput / 100) * av : azInput;
-    const rw = restwertToggle.checked ? (rwInput / 100) * av : rwInput;
-    const marge = margeToggle.checked ? (margeInput / 100) * av : margeInput;
+  // Prozent‑Schalter berücksichtigen
+  const az = anzahlungToggle.checked ? (azRaw / 100) * av : azRaw;
+  const rw = restwertToggle.checked ? (rwRaw / 100) * av : rwRaw;
+  const marge = margeToggle.checked ? (margeRaw / 100) * av : margeRaw;
 
-    if (av <= 0 || lz <= 0) {
-      // Show error only if triggered by button click or restoring invalid data
-      showError("Anschaffungswert und Laufzeit müssen größer als 0 sein.");
-      clearResultsOnError(); // Clear results when showing error
-      return;
-    }
+  if (av <= 0 || lz <= 0) {
+    showError('Anschaffungswert und Laufzeit müssen größer als 0 sein.');
+    clearResultsOnError();
+    return;
+  }
+  hideError();
 
-    hideError(); // Clear previous errors if inputs are valid
-    const finanzierungsbetrag = av - az;
-     // Ensure principal (PV for PMT) is reasonable
-    const principal = av - az + marge;
-    if (principal < 0 && rw <= 0) {
-         // Handle cases where financing amount is negative and no positive future value exists
-         console.warn("Calculation might be invalid: Negative principal with non-positive residual value.");
-         // Optionally show a specific error or default results
-    }
+  // Monatlicher Zinssatz
+  const monthlyRate = bz / 100 / 12;
+  // Summe der Diskontierungsfaktoren 1/(1+r)^i für i=1..lz
+  const discountSum =
+    monthlyRate === 0 ? lz : (1 - Math.pow(1 + monthlyRate, -lz)) / monthlyRate;
+  // Diskontierter Restwert (Barwert des Endwerts)
+  const discRest = rw / Math.pow(1 + monthlyRate, lz);
+  // Finanzierungsbarwert: Anschaffungswert – Anzahlung + Barwertmarge – diskontierter Restwert
+  const pvFinanced = av - az + marge - discRest;
+  // Barwertfaktor (Grundrate vor Fudge)
+  const paymentX = discountSum !== 0 ? pvFinanced / discountSum : pvFinanced / lz;
+  // „Fudge“-Abschlag laut Excel (0,01 % des Anschaffungswerts)
+  const fudge = av * 0.0001;
+  // Tatsächliche Leasingrate (für die Anzeige)
+  const leasingRate = paymentX - fudge;
 
-    const monRate = bz / 100 / 12;
+  // Nur bei echtem Klick in den Verlauf speichern
+  if (!isRestoring && calculateBtn.dataset.clicked === 'true' && av > 0 && lz > 0) {
+    const offerData = {
+      finanzierungsart: document.getElementById('finanzierungsart').value || '',
+      anrede: document.getElementById('anrede').value || '',
+      vorname: document.getElementById('vorname').value || '',
+      nachname: document.getElementById('nachname').value || '',
+      firma: document.getElementById('firma').value || '',
+      adresse: document.getElementById('adresse').value || '',
+      plz: document.getElementById('plz').value || '',
+      ort: document.getElementById('ort').value || '',
+      objekt: document.getElementById('objekt').value || '',
+      hersteller: document.getElementById('hersteller').value || '',
+    };
+    saveCalculationToHistory(leasingRate, offerData);
+  }
 
-     // Add checks before calling PMT
-     if (isNaN(monRate) || isNaN(lz) || isNaN(principal) || isNaN(rw)) {
-          showError("Ungültige Eingabe für Zinsberechnung.");
-          clearResultsOnError();
-          return;
-     }
+  // Ergebnis anzeigen, paymentX für Kostenberechnung übergeben
+  displayResult(leasingRate, az, rw, av, lz, paymentX);
 
-    const leasingInternal = PMT(monRate, lz, principal, -rw);
-     // Check if PMT result is valid
-     if (isNaN(leasingInternal) || !isFinite(leasingInternal)) {
-          showError("Berechnung der Rate fehlgeschlagen. Prüfen Sie die Eingaben.");
-          clearResultsOnError();
-          return;
-     }
+  // Indikativer Jahreszins: IRR für PV = AV – Anzahlung, Rate = paymentX (ohne Fudge), Restwert am Ende
+  const pvLoan = av - az;
+  const indRate = RATE(lz, -paymentX, pvLoan, -rw); // RATE liefert Monatszins*12
+  if (!isNaN(indRate)) {
+    indikativerZinsEl.value =
+      formatLocale(indRate * 100, {
+        style: 'decimal',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }) + ' %';
+  } else {
+    indikativerZinsEl.value = 'N/A';
+  }
 
-    const leasingRate = -leasingInternal;
+  calculateBtn.dataset.clicked = 'false';
+}
 
-    // Only save if it's a new calculation (not restoring) triggered by the button
-    if (!isRestoring && calculateBtn.dataset.clicked === "true" && av > 0 && lz > 0) {
-         // Get offer data when saving calculation
-        const offerData = {
-           finanzierungsart: document.getElementById('finanzierungsart').value || '',
-           anrede: document.getElementById('anrede').value || '',
-           vorname: document.getElementById('vorname').value || '',
-           nachname: document.getElementById('nachname').value || '',
-           firma: document.getElementById('firma').value || '',
-           adresse: document.getElementById('adresse').value || '',
-           plz: document.getElementById('plz').value || '',
-           ort: document.getElementById('ort').value || '',
-           objekt: document.getElementById('objekt').value || '',
-           hersteller: document.getElementById('hersteller').value || '',
-           // GELÖSCHT: email, telefon, objektart
-        };
-        saveCalculationToHistory(leasingRate, offerData);
-    }
+// Anzeige der Ergebnisse und Gesamtkosten; nutzt paymentX für Summe der Raten
+function displayResult(rate, anzahlung, restwert, av, monate, paymentX) {
+  resultContainer.classList.remove('hidden');
+  resultContainer.classList.add('fade-in');
+  placeholderContainer.classList.add('hidden');
 
-    displayResult(leasingRate, az, rw, av, lz);
+  // Monatsrate
+  resultText.textContent = formatLocale(rate, {
+    style: 'currency',
+    currency: 'EUR',
+  });
 
-    // Calculate Indikativer Zins (RATE function)
-    const indZins = RATE(lz, leasingInternal, finanzierungsbetrag, -rw);
-    if (!isNaN(indZins)) {
-         indikativerZinsEl.value = formatLocale(indZins * 100, { style:'decimal', minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' %'; // Use decimal style for display consistency
-    } else {
-         indikativerZinsEl.value = 'N/A'; // Show N/A if RATE calculation failed
-         console.error("RATE calculation failed.");
-    }
+  // Summe der Raten basiert auf paymentX (nicht auf der angezeigten Rate)
+  const sumRaten = (paymentX || 0) * (monate || 0);
+  const gesamt = anzahlung + sumRaten + restwert;
+  gesamtkostenEl.value = formatLocale(gesamt, {
+    style: 'currency',
+    currency: 'EUR',
+  });
 
+  // Leasingfaktor in Prozent
+  const faktor = av > 0 ? (rate / av) * 100 : 0;
+  leasingfaktorEl.value =
+    formatLocale(faktor, {
+      style: 'decimal',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }) + ' %';
 
-    if (timelineContainer.classList.contains('open-timeline')) {
-      generateTimelineChart(finanzierungsbetrag, leasingRate, lz, indZins);
-      // Ensure max-height is recalculated if timeline was already open
-      timelineContainer.style.maxHeight = timelineContainer.scrollHeight + 'px';
-    }
-    // Reset clicked flag after calculation
-    calculateBtn.dataset.clicked = "false";
+  // Donut-Chart aktualisieren: Summe der Raten verwendet paymentX
+  updateCostChart(anzahlung, sumRaten, restwert);
+}
  }
 
   // NEU: Funktion zum Zurücksetzen aller Eingaben
