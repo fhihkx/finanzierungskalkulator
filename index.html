@@ -4,12 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Finanzierungskalkulator</title>
-  <script src=https://cdn.tailwindcss.com></script>
-  <script src=https://cdn.jsdelivr.net/npm/chart.js></script>
-  <script src=https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js></script>
-  <link rel="preconnect" href=https://fonts.googleapis.com />
-  <link rel="preconnect" href=https://fonts.gstatic.com crossorigin />
-  <link href=https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     body {
       font-family: 'Montserrat', sans-serif;
@@ -49,7 +49,7 @@
         width: 1.25rem; /* w-5 */
         height: 1.25rem; /* h-5 */
     }
- 
+
     .result-field {
       background-color: transparent;
       border: none;
@@ -103,12 +103,12 @@
     }
     input:checked + .slider { background-color: #032659; }
     input:checked + .slider:before { transform: translateX(20px); }
- 
+
     select.is-placeholder {
         color: #9ca3af; /* text-gray-400 */
         font-size: 0.95rem;
     }
- 
+
     /* History Modal */
     #history-modal {
         transition: opacity 0.3s ease-in-out;
@@ -176,7 +176,7 @@
               </div>
           </div>
           <!-- NEU: Reset Button --><button id="reset-button" title="Eingaben zurücksetzen" class="ml-2 text-[#032659] header-button-wrapper">
-              <svg xmlns=http://www.w3.org/2000/svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                   <!-- Heroicons: ArrowUturnLeftIcon (Rückgängig) -->
                   <path stroke-linecap="round" stroke-linejoin="round" d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3" />
               </svg>
@@ -185,7 +185,7 @@
     </div>
     <!-- History Button --><div class="pt-1">
         <button id="history-button" title="Berechnungsverlauf anzeigen" class="p-2 rounded-full hover:bg-gray-200 transition-colors">
-            <svg xmlns=http://www.w3.org/2000/svg class="h-6 w-6 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
         </button>
@@ -327,7 +327,7 @@
                   <option>Leasing</option>
                   <option>Mietkauf</option>
                 </select>
-                <svg class="error-icon hidden" xmlns=http://www.w3.org/2000/svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+                <svg class="error-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
               </div>
             </div>
             <div>
@@ -338,7 +338,7 @@
                   <option>Herr</option>
                   <option>Frau</option>
                 </select>
-                <svg class="error-icon hidden" xmlns=http://www.w3.org/2000/svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+                <svg class="error-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
               </div>
             </div>
           </div>
@@ -347,14 +347,14 @@
               <label for="vorname" class="block text-sm font-medium text-slate-600 mb-1">Vorname</label>
               <div class="relative">
                 <input type="text" id="vorname" class="w-full form-input-underline text-lg" required />
-                <svg class="error-icon hidden" xmlns=http://www.w3.org/2000/svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+                <svg class="error-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
               </div>
             </div>
             <div>
               <label for="nachname" class="block text-sm font-medium text-slate-600 mb-1">Nachname</label>
               <div class="relative">
                 <input type="text" id="nachname" class="w-full form-input-underline text-lg" required />
-                <svg class="error-icon hidden" xmlns=http://www.w3.org/2000/svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+                <svg class="error-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
               </div>
             </div>
           </div>
@@ -362,7 +362,7 @@
             <label for="firma" class="block text-sm font-medium text-slate-600 mb-1">Firma</label>
             <div class="relative">
                 <input type="text" id="firma" class="w-full form-input-underline text-lg" required />
-                <svg class="error-icon hidden" xmlns=http://www.w3.org/2000/svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+                <svg class="error-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
             </div>
           </div>
           <!-- Adresse, PLZ, Ort --><div class="grid grid-cols-1 md:grid-cols-3 gap-x-10 gap-y-8">
@@ -370,21 +370,21 @@
               <label for="adresse" class="block text-sm font-medium text-slate-600 mb-1">Adresse &amp; Hausnummer</label>
               <div class="relative">
                 <input type="text" id="adresse" class="w-full form-input-underline text-lg" required />
-                <svg class="error-icon hidden" xmlns=http://www.w3.org/2000/svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+                <svg class="error-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
               </div>
             </div>
             <div>
               <label for="plz" class="block text-sm font-medium text-slate-600 mb-1">Postleitzahl</label>
               <div class="relative">
                 <input type="text" id="plz" class="w-full form-input-underline text-lg" required />
-                <svg class="error-icon hidden" xmlns=http://www.w3.org/2000/svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+                <svg class="error-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
               </div>
             </div>
             <div>
               <label for="ort" class="block text-sm font-medium text-slate-600 mb-1">Ort</label>
               <div class="relative">
                 <input type="text" id="ort" class="w-full form-input-underline text-lg" required />
-                <svg class="error-icon hidden" xmlns=http://www.w3.org/2000/svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+                <svg class="error-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
               </div>
             </div>
           </div>
@@ -392,17 +392,17 @@
             <label for="objekt" class="block text-sm font-medium text-slate-600 mb-1">Objekt</label>
             <div class="relative">
                 <input type="text" id="objekt" class="w-full form-input-underline text-lg" required />
-                <svg class="error-icon hidden" xmlns=http://www.w3.org/2000/svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+                <svg class="error-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
             </div>
           </div>
           <div>
             <label for="hersteller" class="block text-sm font-medium text-slate-600 mb-1">Hersteller</label>
             <div class="relative">
                 <input type="text" id="hersteller" class="w-full form-input-underline text-lg" required />
-                <svg class="error-icon hidden" xmlns=http://www.w3.org/2000/svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+                <svg class="error-icon hidden" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
             </div>
           </div>
-         
+          
           <!-- GELÖSCHT: E-Mail & Telefon --><!-- GELÖSCHT: Objektart --><!-- Container für Fehlermeldung und Button --><div class="mt-8 text-center min-h-[7rem] flex flex-col justify-end pb-2">
             <p id="offer-error-message" class="text-red-600 text-sm mb-4 hidden"></p>
             <button type="button" id="download-pdf-btn" class="w-full md:w-1/2 mx-auto bg-[#032659] text-white font-bold py-4 px-4 rounded-lg hover:bg-opacity-90 focus:outline-none focus:ring-4 focus:ring-[#032659]/50 transition-all duration-300 ease-in-out">
@@ -455,13 +455,13 @@
     </div>
   </section>
 </div>
- 
+
 <!-- History Modal --><div id="history-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 opacity-0 pointer-events-none">
     <div id="history-panel" class="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[80vh] flex flex-col transform -translate-y-10">
         <div class="flex justify-between items-center p-4 border-b">
             <h2 class="text-xl font-bold text-slate-800">Verlauf der Berechnungen</h2>
             <button id="close-history-button" class="p-2 rounded-full hover:bg-gray-200">
-                <svg xmlns=http://www.w3.org/2000/svg class="h-6 w-6 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>
             </button>
@@ -473,16 +473,16 @@
             <!-- History items will be injected here --></div>
     </div>
 </div>
- 
- 
+
+
 <script>
   // Hilfsfunktionen (unformat, formatLocale, formatInput - unchanged)
-const unformat = (str) => {
+ const unformat = (str) => {
     if (typeof str !== 'string' || !str) return 0;
     // Handle potential spaces within the number string after formatting
     return parseFloat(str.replace(/\./g, '').replace(',', '.').replace(/\s/g, '')) || 0;
-};
-function formatLocale(value, options = {}) {
+ };
+ function formatLocale(value, options = {}) {
     if (value === null || value === undefined || value === '') return '';
     // Ensure value is a number before formatting
     const numValue = Number(value);
@@ -490,8 +490,8 @@ function formatLocale(value, options = {}) {
     // Default to currency style if not specified
     const defaultOptions = { style: 'currency', currency: 'EUR', ...options };
     return numValue.toLocaleString('de-DE', defaultOptions);
-}
-function formatInput(event) {
+ }
+ function formatInput(event) {
     const el = event.target;
     // Don't format if the input is empty or just a comma/period
     if (!el.value || el.value === ',' || el.value === '.') return;
@@ -509,15 +509,15 @@ function formatInput(event) {
          const intValue = parseInt(el.value.replace(/\D/g, '')); // Remove non-digits
          el.value = isNaN(intValue) ? '' : intValue.toString();
     }
-}
- 
+ }
+
   // Finanzierungsformeln (PMT, RATE - unchanged)
-function PMT(rate, nper, pv, fv = 0) {
+ function PMT(rate, nper, pv, fv = 0) {
     if (rate === 0) return -(pv + fv) / nper;
     const pvFactor = Math.pow(1 + rate, nper);
     return -(rate * (fv + pv * pvFactor)) / (pvFactor - 1);
   }
-function RATE(nper, pmt, pv, fv = 0) {
+ function RATE(nper, pmt, pv, fv = 0) {
     const precision = 1e-7;
     const maxIter = 100;
     let low = -0.99, high = 5; // Start high range higher
@@ -527,12 +527,12 @@ function RATE(nper, pmt, pv, fv = 0) {
         console.error("Invalid input for RATE function");
         return NaN; // Indicate error
     }
- 
+
     // Check edge case for zero rate possibility
     if (Math.abs(pv + pmt * nper + fv) < precision) {
         return 0;
     }
- 
+
     const f = (rate) => {
       if (rate === 0) return pv + pmt * nper + fv; // Handle zero rate case separately
        // Add check for rate being close to -1 which causes issues with pow
@@ -545,17 +545,17 @@ function RATE(nper, pmt, pv, fv = 0) {
           return Infinity; // Indicate error
        }
     };
- 
+
      // Initial check of bounds
      let fLow = f(low);
      let fHigh = f(high);
- 
+
      if (isNaN(fLow) || isNaN(fHigh)) {
         console.error("Initial bounds yield NaN for RATE function", {fLow, fHigh});
         return NaN; // Cannot proceed
      }
- 
- 
+
+
      // Adjust bounds if necessary if the function doesn't cross zero within initial range
      if (fLow * fHigh >= 0) {
           console.warn("RATE function might not have a root in the initial range [-0.99, 5]. Result might be inaccurate.");
@@ -572,39 +572,39 @@ function RATE(nper, pmt, pv, fv = 0) {
              // Return NaN or best guess depending on desired behavior
              return NaN;
           }
- 
+
      }
- 
- 
+
+
     for (let i = 0; i < maxIter; i++) {
        // Check if bounds are valid numbers
       if (isNaN(low) || isNaN(high) || low >= high) {
            console.error("Invalid bounds in RATE iteration", { low, high, i });
            return NaN; // Error state
       }
- 
+
       const mid = (low + high) / 2;
- 
+
        // Prevent infinite loop if mid calculation gets stuck
        if (mid === low || mid === high) {
             console.warn("RATE stuck in loop, returning current estimate.");
             break;
        }
- 
+
       const fMid = f(mid);
- 
+
       if (isNaN(fMid)) {
            console.error("f(mid) resulted in NaN in RATE iteration", { mid, i });
            // Adjust bounds away from the problematic mid, this is heuristic
            if (fLow < 0) high = mid; else low = mid; // Assume it failed on one side
            continue; // Try next iteration
        }
- 
- 
+
+
       if (Math.abs(fMid) < precision) {
         return mid * 12; // Annual rate
       }
- 
+
       // Update bounds based on sign change
       fLow = f(low); // Re-evaluate f(low) in case it changed due to bound adjustment
        if (isNaN(fLow)){
@@ -613,7 +613,7 @@ function RATE(nper, pmt, pv, fv = 0) {
            low = mid; // Try moving lower bound up
            continue;
        }
- 
+
       if (fLow * fMid < 0) {
         high = mid;
       } else {
@@ -622,7 +622,7 @@ function RATE(nper, pmt, pv, fv = 0) {
     }
      console.warn("RATE did not converge within max iterations. Returning best estimate.");
     return ((low + high) / 2) * 12; // Return best estimate
-}
+ }
   // Globale Variablen und DOM-Elemente
   let costChart = null;
   let timelineChart = null;
@@ -655,7 +655,7 @@ function RATE(nper, pmt, pv, fv = 0) {
   const infoButton = document.getElementById('info-button');
   const infoTooltip = document.getElementById('info-tooltip');
   const resetButton = document.getElementById('reset-button'); // NEU
- 
+
   // History Functionality
   const historyButton = document.getElementById('history-button');
   const historyModal = document.getElementById('history-modal');
@@ -663,17 +663,17 @@ function RATE(nper, pmt, pv, fv = 0) {
   const closeHistoryButton = document.getElementById('close-history-button');
   const historyList = document.getElementById('history-list');
   const historySearchInput = document.getElementById('history-search');
- 
- 
+
+
   // Hauptberechnung (calls save function with offerData)
-function performCalculation(isRestoring = false) {
+ function performCalculation(isRestoring = false) {
     // Hide results initially if calculation wasn't triggered and not restoring
     if (!calculateBtn.dataset.clicked && !isRestoring) {
          showPlaceholder();
          return; // Don't proceed if calculate wasn't clicked
     }
- 
- 
+
+
     const av = unformat(document.getElementById('anschaffungswert').value);
     const lz = parseInt(document.getElementById('laufzeit').value) || 0;
     const bz = unformat(document.getElementById('basiszins').value);
@@ -683,14 +683,14 @@ function performCalculation(isRestoring = false) {
     const az = anzahlungToggle.checked ? (azInput / 100) * av : azInput;
     const rw = restwertToggle.checked ? (rwInput / 100) * av : rwInput;
     const marge = margeToggle.checked ? (margeInput / 100) * av : margeInput;
- 
+
     if (av <= 0 || lz <= 0) {
       // Show error only if triggered by button click or restoring invalid data
       showError("Anschaffungswert und Laufzeit müssen größer als 0 sein.");
       clearResultsOnError(); // Clear results when showing error
       return;
     }
- 
+
     hideError(); // Clear previous errors if inputs are valid
     const finanzierungsbetrag = av - az;
      // Ensure principal (PV for PMT) is reasonable
@@ -700,16 +700,16 @@ function performCalculation(isRestoring = false) {
          console.warn("Calculation might be invalid: Negative principal with non-positive residual value.");
          // Optionally show a specific error or default results
     }
- 
+
     const monRate = bz / 100 / 12;
- 
+
      // Add checks before calling PMT
      if (isNaN(monRate) || isNaN(lz) || isNaN(principal) || isNaN(rw)) {
           showError("Ungültige Eingabe für Zinsberechnung.");
           clearResultsOnError();
           return;
      }
- 
+
     const leasingInternal = PMT(monRate, lz, principal, -rw);
      // Check if PMT result is valid
      if (isNaN(leasingInternal) || !isFinite(leasingInternal)) {
@@ -717,9 +717,9 @@ function performCalculation(isRestoring = false) {
           clearResultsOnError();
           return;
      }
- 
+
     const leasingRate = -leasingInternal;
- 
+
     // Only save if it's a new calculation (not restoring) triggered by the button
     if (!isRestoring && calculateBtn.dataset.clicked === "true" && av > 0 && lz > 0) {
          // Get offer data when saving calculation
@@ -738,9 +738,9 @@ function performCalculation(isRestoring = false) {
         };
         saveCalculationToHistory(leasingRate, offerData);
     }
- 
+
     displayResult(leasingRate, az, rw, av, lz);
- 
+
     // Calculate Indikativer Zins (RATE function)
     const indZins = RATE(lz, leasingInternal, finanzierungsbetrag, -rw);
     if (!isNaN(indZins)) {
@@ -749,8 +749,8 @@ function performCalculation(isRestoring = false) {
          indikativerZinsEl.value = 'N/A'; // Show N/A if RATE calculation failed
          console.error("RATE calculation failed.");
     }
- 
- 
+
+
     if (timelineContainer.classList.contains('open-timeline')) {
       generateTimelineChart(finanzierungsbetrag, leasingRate, lz, indZins);
       // Ensure max-height is recalculated if timeline was already open
@@ -758,8 +758,8 @@ function performCalculation(isRestoring = false) {
     }
     // Reset clicked flag after calculation
     calculateBtn.dataset.clicked = "false";
-}
- 
+ }
+
   // NEU: Funktion zum Zurücksetzen aller Eingaben
   function resetAllInputs() {
       // 1. Reset Calculator Inputs
@@ -769,7 +769,7 @@ function performCalculation(isRestoring = false) {
       document.getElementById('anzahlung').value = '0';
       document.getElementById('restwert').value = '0';
       document.getElementById('margegesamt').value = '0';
- 
+
       // 2. Reset Toggles
       if (anzahlungToggle.checked) anzahlungToggle.checked = false;
       if (restwertToggle.checked) restwertToggle.checked = false;
@@ -777,10 +777,10 @@ function performCalculation(isRestoring = false) {
       anzahlungUnit.textContent = '(€)';
       restwertUnit.textContent = '(€)';
       margeUnit.textContent = '(€)';
- 
+
       // 3. Format Inputs
       document.querySelectorAll('.numeric-input, #laufzeit').forEach(input => formatInput({ target: input }));
- 
+
       // 4. Reset Offer Form Inputs
       document.getElementById('finanzierungsart').value = '';
       document.getElementById('anrede').value = '';
@@ -793,7 +793,7 @@ function performCalculation(isRestoring = false) {
       document.getElementById('objekt').value = '';
       document.getElementById('hersteller').value = '';
       // Removed fields (email, telefon, objektart) are already gone
- 
+
       // 5. Reset Select Placeholders
       document.querySelectorAll('select.is-placeholder').forEach(select => {
           select.classList.add('is-placeholder');
@@ -803,7 +803,7 @@ function performCalculation(isRestoring = false) {
           select.classList.remove('has-error');
           if (icon) icon.classList.add('hidden');
       });
- 
+
       // 6. Clear Offer Form Errors
       const offerErrorMessage = document.getElementById('offer-error-message');
       offerErrorMessage.classList.add('hidden');
@@ -814,11 +814,11 @@ function performCalculation(isRestoring = false) {
           field.classList.remove('has-error');
           if (icon) icon.classList.add('hidden');
       });
- 
- 
+
+
       // 7. Reset Results
       showPlaceholder(); // This handles chart, result fields, and error text
- 
+
       // 8. Reset Timeline Chart
       if (timelineChart) {
           timelineChart.destroy();
@@ -827,12 +827,12 @@ function performCalculation(isRestoring = false) {
       tlRateEl.textContent = '–';
       tlZinsSumEl.textContent = '–';
       tlTilgSumEl.textContent = '–';
- 
+
       // 9. Reset calculate button clicked state
       calculateBtn.dataset.clicked = "false";
   }
- 
- 
+
+
   function clearResultsOnError() {
      if (costChart) { costChart.destroy(); costChart = null; }
      resultText.textContent = '';
@@ -842,7 +842,7 @@ function performCalculation(isRestoring = false) {
      resultContainer.classList.add('hidden');
      placeholderContainer.classList.remove('hidden');
   }
- 
+
   function showPlaceholder() {
        if (costChart) { costChart.destroy(); costChart = null; }
        resultText.textContent = '';
@@ -853,8 +853,8 @@ function performCalculation(isRestoring = false) {
        placeholderContainer.classList.remove('hidden');
        hideError(); // Also hide any potential error messages
    }
- 
- 
+
+
   function displayResult(rate, anzahlung, restwert, av, monate) {
     resultContainer.classList.remove('hidden');
     resultContainer.classList.add('fade-in');
@@ -867,7 +867,7 @@ function performCalculation(isRestoring = false) {
     updateCostChart(anzahlung, rate * (monate || 0), restwert);
   }
   // updateCostChart, generateTimelineChart, showError, hideError, setupToggle (unchanged)
-function updateCostChart(anzahlung, summeRaten, restwert) {
+ function updateCostChart(anzahlung, summeRaten, restwert) {
     if (costChart) costChart.destroy();
     const ctx = costChartCanvas.getContext('2d');
     const values = [anzahlung, summeRaten, restwert].map(v => Math.max(0, v)); // Ensure non-negative values for chart
@@ -904,11 +904,11 @@ function updateCostChart(anzahlung, summeRaten, restwert) {
               const idx = legendItem.index;
               const chart = legend.chart;
               const alreadyHidden = !chart.getDataVisibility(idx);
- 
+
               // Toggle visibility
               chart.toggleDataVisibility(idx);
               chart.update();
- 
+
               // Recalculate sum of visible segments
               let visibleSum = 0;
               chart.getDatasetMeta(0).data.forEach((arc, i) => {
@@ -935,10 +935,10 @@ function updateCostChart(anzahlung, summeRaten, restwert) {
     });
     // Ensure Gesamtkosten reflects initial visible sum
     gesamtkostenEl.value = formatLocale(total, { style: 'currency', currency: 'EUR' });
-}
-function generateTimelineChart(startkapital, rate, monate, jahreszins) {
+ }
+ function generateTimelineChart(startkapital, rate, monate, jahreszins) {
     if (timelineChart) timelineChart.destroy();
- 
+
      // Validate inputs for timeline chart
     if (isNaN(startkapital) || isNaN(rate) || isNaN(monate) || isNaN(jahreszins) || monate <= 0) {
         console.error("Invalid inputs for generateTimelineChart.");
@@ -948,8 +948,8 @@ function generateTimelineChart(startkapital, rate, monate, jahreszins) {
         if (tlTilgSumEl) tlTilgSumEl.textContent = '–';
         return;
     }
- 
- 
+
+
     let restschuld = startkapital;
     const monZins = jahreszins / 12; // Annual rate to monthly
     const labels = [];
@@ -958,7 +958,7 @@ function generateTimelineChart(startkapital, rate, monate, jahreszins) {
     const restSchulden = [];
     let totalZins = 0;
     let totalTilgung = 0;
- 
+
     // Check for invalid rate which might cause infinite loop or weird results
     if (isNaN(rate) || rate <= 0 || isNaN(monZins)) {
         console.error("Invalid rate or interest for timeline chart calculation.");
@@ -968,8 +968,8 @@ function generateTimelineChart(startkapital, rate, monate, jahreszins) {
          if(tlTilgSumEl) tlTilgSumEl.textContent = '–';
         return;
     }
- 
- 
+
+
     for (let i = 1; i <= monate; i++) {
       labels.push(`M ${i}`);
       // Ensure Zins calculation doesn't go below zero if restschuld is already 0
@@ -977,7 +977,7 @@ function generateTimelineChart(startkapital, rate, monate, jahreszins) {
       // Ensure Tilgung doesn't make restschuld negative unnecessarily large
       // Tilgung is the portion of the rate that reduces principal
       let tilg = rate - zins;
- 
+
       // Adjust tilg if it exceeds remaining restschuld (e.g., last payment)
       if (tilg > restschuld) {
            tilg = restschuld;
@@ -986,18 +986,18 @@ function generateTimelineChart(startkapital, rate, monate, jahreszins) {
       }
       // Ensure tilg is not negative if zins > rate (can happen with very low startkapital or high initial interest)
       tilg = Math.max(0, tilg);
- 
- 
+
+
       restschuld = restschuld - tilg;
       // Clamp restschuld at 0
       restschuld = Math.max(0, restschuld);
- 
+
       zinsAnteile.push(zins);
       tilgAnteile.push(tilg);
       restSchulden.push(restschuld);
       totalZins += zins;
       totalTilgung += tilg;
- 
+
        // Safety break if restschuld somehow becomes negative significantly (shouldn't happen with clamping)
        if (restschuld < -0.01) {
            console.warn("Restschuld became significantly negative during timeline calculation, stopping early.");
@@ -1010,13 +1010,13 @@ function generateTimelineChart(startkapital, rate, monate, jahreszins) {
            // For simplicity, we can stop here. The chart will just end.
            // break; // Uncomment if you want the chart to stop early
        }
- 
+
     }
     // Update summary fields
     tlRateEl.textContent = formatLocale(rate, { style: 'currency', currency: 'EUR' });
     tlZinsSumEl.textContent = formatLocale(totalZins, { style: 'currency', currency: 'EUR' });
     tlTilgSumEl.textContent = formatLocale(totalTilgung, { style: 'currency', currency: 'EUR' });
- 
+
     const ctx = timelineChartCanvas.getContext('2d');
     timelineChart = new Chart(ctx, {
       type: 'bar',
@@ -1093,15 +1093,15 @@ function generateTimelineChart(startkapital, rate, monate, jahreszins) {
       }
       }
     });
-}
-function showError(msg) {
+ }
+ function showError(msg) {
     // Only show the error message, clearing results is handled separately or within performCalculation
     errorText.textContent = msg;
-}
-function hideError() {
+ }
+ function hideError() {
     errorText.textContent = '';
-}
-function setupToggle(toggleEl, inputEl, unitEl) {
+ }
+ function setupToggle(toggleEl, inputEl, unitEl) {
     toggleEl.addEventListener('change', () => {
       const av = unformat(document.getElementById('anschaffungswert').value);
       const currentVal = unformat(inputEl.value);
@@ -1124,31 +1124,31 @@ function setupToggle(toggleEl, inputEl, unitEl) {
       // Re-apply formatting after potential conversion
       formatInput({ target: inputEl });
     });
-}
- 
- 
+ }
+
+
   // --- Initial Setup & Event Listeners --- (unchanged toggle setup, blur listeners)
   setupToggle(anzahlungToggle, document.getElementById('anzahlung'), anzahlungUnit);
   setupToggle(restwertToggle, document.getElementById('restwert'), restwertUnit);
   setupToggle(margeToggle, document.getElementById('margegesamt'), margeUnit);
- 
+
   document.querySelectorAll('.numeric-input, #laufzeit').forEach(input => {
     input.addEventListener('blur', formatInput);
      formatInput({ target: input });
   });
- 
+
   calculateBtn.addEventListener('click', () => {
        calculateBtn.dataset.clicked = "true"; // Mark button as clicked
        performCalculation();
   });
- 
+
   // NEU: Reset Button Listener
   resetButton.addEventListener('click', resetAllInputs);
- 
+
   // Info Tooltip (unchanged)
   infoButton.addEventListener('mouseenter', () => infoTooltip.classList.remove('hidden'));
   infoButton.addEventListener('mouseleave', () => infoTooltip.classList.add('hidden'));
- 
+
   // Accordion Toggles (unchanged)
   offerToggleBtn.addEventListener('click', () => {
     const isOpen = offerContainer.classList.toggle('open-offer');
@@ -1162,7 +1162,7 @@ function setupToggle(toggleEl, inputEl, unitEl) {
        const av = unformat(document.getElementById('anschaffungswert').value);
        const lz = parseInt(document.getElementById('laufzeit').value) || 0;
        const resultsVisible = !resultContainer.classList.contains('hidden');
- 
+
        if (resultsVisible && av > 0 && lz > 0 && !errorText.textContent) {
           performCalculation(true);
        } else {
@@ -1172,18 +1172,18 @@ function setupToggle(toggleEl, inputEl, unitEl) {
            if(tlZinsSumEl) tlZinsSumEl.textContent = '–';
            if(tlTilgSumEl) tlTilgSumEl.textContent = '–';
        }
- 
+
     } else {
       timelineContainer.style.maxHeight = null;
     }
   });
- 
+
    // PDF Download Logic (unchanged validation, uses updated PDF generation)
    pdfButton.addEventListener('click', () => {
     const offerErrorMessage = document.getElementById('offer-error-message');
     const requiredFields = Array.from(offerContainer.querySelectorAll('[required]'));
     let isFormValid = true;
- 
+
     // Reset previous errors
     requiredFields.forEach(field => {
          const parent = field.closest('.relative');
@@ -1191,7 +1191,7 @@ function setupToggle(toggleEl, inputEl, unitEl) {
          field.classList.remove('has-error');
          if (icon) icon.classList.add('hidden');
     });
- 
+
     // Validate fields
     requiredFields.forEach(field => {
       if (!field.value.trim()) {
@@ -1202,7 +1202,7 @@ function setupToggle(toggleEl, inputEl, unitEl) {
         if (icon) icon.classList.remove('hidden');
       }
     });
- 
+
     // Check if calculation results are available
     if (!resultText.textContent || resultContainer.classList.contains('hidden')) {
          offerErrorMessage.textContent = 'Bitte führen Sie zuerst eine gültige Berechnung durch.';
@@ -1210,7 +1210,7 @@ function setupToggle(toggleEl, inputEl, unitEl) {
          isFormValid = false;
          if (calculateBtn) calculateBtn.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
- 
+
     if (!isFormValid) {
          if (!offerErrorMessage.textContent) {
               offerErrorMessage.textContent = 'Bitte füllen Sie alle markierten Felder aus, um das Angebot herunterzuladen.';
@@ -1223,9 +1223,9 @@ function setupToggle(toggleEl, inputEl, unitEl) {
          }
          return;
     }
- 
+
     offerErrorMessage.classList.add('hidden');
- 
+
     // --- PDF Generation ---
     const values = {
       // Calculator values
@@ -1247,19 +1247,19 @@ function setupToggle(toggleEl, inputEl, unitEl) {
       objekt: document.getElementById('objekt').value,
       hersteller: document.getElementById('hersteller').value,
     };
- 
+
     // --- Calculate absolute Euro values ---
     const avNum = values.anschaffungswertRaw;
     const anzahlungEuro = values.anzahlungToggle ? (values.anzahlungRaw / 100) * avNum : values.anzahlungRaw;
     const restwertEuro = values.restwertToggle ? (values.restwertRaw / 100) * avNum : values.restwertRaw;
     const entgeltEuro = restwertEuro; // Entgelt is based on the absolute Restwert in Euro
- 
+
     const { jsPDF } = window.jspdf;
     const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
     pdf.setFont('helvetica', 'normal'); // Use a standard font like helvetica
     pdf.setTextColor(0); // Set default text color to black
     pdf.setFontSize(10); // Set default font size smaller for better fit
- 
+
     let y = 25; // Start position adjusted
     const leftMargin = 20; // Margin from left (ca. 2cm)
     const valueXPos = 70;    // X position for the start of the value text
@@ -1267,16 +1267,16 @@ function setupToggle(toggleEl, inputEl, unitEl) {
     const contentWidth = pageWidth - leftMargin * 2; // Width available between margins
     const lineSpacing = 6; // Adjusted line spacing
     const sectionSpacing = 10; // Adjusted section spacing
- 
+
     // Address Block (Top Left)
     const addressStartY = y;
     if (values.firma) { pdf.text(values.firma, leftMargin, y); y += 5; }
     if (values.anrede || values.nachname) { pdf.text(`${values.anrede || ''} ${values.nachname || ''}`.trim(), leftMargin, y); y += 5; }
     if (values.adresse) { pdf.text(values.adresse, leftMargin, y); y += 5; }
     if (values.plz || values.ort) { pdf.text(`${values.plz || ''} ${values.ort || ''}`.trim(), leftMargin, y); y += 5; }
- 
+
     y = Math.max(y, addressStartY) + sectionSpacing * 1.5; // Ensure space after address block
- 
+
     // Subject Line (Bold)
     pdf.setFontSize(11); // Slightly larger for subject
     pdf.setFont('helvetica', 'bold');
@@ -1286,18 +1286,18 @@ function setupToggle(toggleEl, inputEl, unitEl) {
           pdf.text(`Finanzierungsangebot`, leftMargin, y);
     }
     y += lineSpacing * 2; // More space after subject
- 
+
     // Greeting
     pdf.setFont('helvetica', 'normal'); // Reset font weight
     pdf.setFontSize(11);
     pdf.text(`Sehr ${values.anrede === 'Frau' ? 'geehrte Frau' : 'geehrter Herr'} ${values.nachname || ''},`, leftMargin, y);
     y += lineSpacing * 1.5;
- 
+
     // Intro Text
     const requestType = values.finanzierungsart === 'Mietkauf' ? 'Mietkaufanfrage' : 'Leasinganfrage';
     pdf.text(`wir danken für Ihre ${requestType} und bieten wie folgt unverbindlich an:`, leftMargin, y);
     y += sectionSpacing * 1.5; // More space before details
- 
+
     // Financial Details Function (Label left bold, Value right normal) - Updated Spacing
     const addDetailLinePDF = (label, value) => {
          if (value || value === 0 || String(value).replace(/[€\s]/g, '').trim() !== '') { // Improved check for empty/zero values
@@ -1309,34 +1309,34 @@ function setupToggle(toggleEl, inputEl, unitEl) {
               y += lineSpacing; // Use defined line spacing
          }
     };
- 
+
     addDetailLinePDF('Anschaffungspreis', formatLocale(avNum, { style: 'currency', currency: 'EUR'}));
     addDetailLinePDF('Laufzeit', values.laufzeit ? `${values.laufzeit} Monate` : 'N/A');
     addDetailLinePDF('Mietsonderzahlung', formatLocale(anzahlungEuro, { style: 'currency', currency: 'EUR'}));
     addDetailLinePDF('Monatliche Rate', values.monatlicheRate); // Already formatted €
     addDetailLinePDF('Restwert', formatLocale(restwertEuro, { style: 'currency', currency: 'EUR'}));
- 
+
     y += lineSpacing * 0.5; // Small gap before notes
- 
+
     // NEU: Definition von addWrappedTextPDF HIERHER VERSCHOBEN
     // Function to add wrapped text with specified left margin and width
     const addWrappedTextPDF = (text, startY, margin, width, lineSpacingScale = 1.0, isBold = false) => {
           const currentSize = pdf.getFontSize(); // Store current size
           const currentStyle = pdf.getFont().fontStyle; // Store current style
- 
+
           if (isBold) pdf.setFont('helvetica', 'bold');
           else pdf.setFont('helvetica', 'normal');
- 
+
           const lines = pdf.splitTextToSize(text, width);
           pdf.text(lines, margin, startY);
- 
+
           // Reset font style and size after printing
           pdf.setFont('helvetica', currentStyle);
           pdf.setFontSize(currentSize);
- 
+
           return startY + (lines.length * (lineSpacing * 0.8) * lineSpacingScale); // Calculate next y using slightly smaller spacing for wrapped text
     };
- 
+
     // Conditional Mietkauf Note (Bold and Black)
     if (values.finanzierungsart === 'Mietkauf') {
          pdf.setFontSize(9);
@@ -1346,34 +1346,34 @@ function setupToggle(toggleEl, inputEl, unitEl) {
          pdf.setFont('helvetica', 'normal'); // Reset font weight
          y += lineSpacing * 0.5; // Adjust spacing after note
     }
- 
+
     // General Notes & Closing (Adjusted Margins and Font)
     pdf.setFontSize(9); // Consistent smaller font for notes
     pdf.setTextColor(0); // Ensure black text
- 
+
     // GELÖSCHT: Vormalige Position der Funktion (war hier)
- 
+
     // Use leftMargin and contentWidth for alignment
     y = addWrappedTextPDF('Die oben genannten Preise verstehen sich netto, zuzüglich der gesetzlichen Mehrwertsteuer.', y, leftMargin, contentWidth);
     const formattedEntgelt = formatLocale(entgeltEuro, { style: 'currency', currency: 'EUR' });
     y = addWrappedTextPDF(`Bei Vertragsabschluss berechnet die Leasinggesellschaft Ihnen einmalig ein Entgelt in Höhe von ${formattedEntgelt}.`, y, leftMargin, contentWidth);
     y += sectionSpacing;
- 
+
     pdf.setFontSize(10); // Slightly larger font for closing remarks
     y = addWrappedTextPDF('Gerne begleiten wir Sie auch bei weiteren Investitionen in Ihren Betrieb. Kommen Sie ganz unverbindlich auf uns zu.', y, leftMargin, contentWidth, 1.2); // More spacing
     y = addWrappedTextPDF('Wir freuen uns, für Sie tätig werden zu können und sichern Ihnen bereits jetzt eine faire, schnelle und unbürokratische Abwicklung zu.', y, leftMargin, contentWidth, 1.2);
     y += sectionSpacing * 1.5;
- 
+
     pdf.text('Mit freundlichen Grüßen', leftMargin, y);
- 
+
     // --- Filename ---
     const pdfTitle = `${values.finanzierungsart || 'Finanzierung'}svertrag (${values.nachname || 'Kunde'}).pdf`;
     pdf.save(pdfTitle);
- 
+
     // --- End PDF Generation ---
   });
- 
- 
+
+
   // Placeholder styling for select elements (unchanged)
   document.querySelectorAll('select.is-placeholder').forEach(select => {
     select.addEventListener('change', (e) => {
@@ -1388,8 +1388,8 @@ function setupToggle(toggleEl, inputEl, unitEl) {
          select.classList.remove('is-placeholder');
     }
   });
- 
- 
+
+
   // --- History Modal & Functionality ---
   const openHistoryModal = () => {
        loadHistory(); // Load unfiltered history first
@@ -1398,12 +1398,12 @@ function setupToggle(toggleEl, inputEl, unitEl) {
        historyPanel.classList.remove('-translate-y-10');
        historySearchInput.focus(); // Focus search input when modal opens
   };
- 
+
   const closeHistoryModal = () => {
        historyModal.classList.add('opacity-0', 'pointer-events-none');
        historyPanel.classList.add('-translate-y-10');
   };
- 
+
   historyButton.addEventListener('click', openHistoryModal);
   closeHistoryButton.addEventListener('click', closeHistoryModal);
   historyModal.addEventListener('click', (e) => {
@@ -1412,20 +1412,20 @@ function setupToggle(toggleEl, inputEl, unitEl) {
            closeHistoryModal();
        }
   });
- 
+
   // Search functionality
   historySearchInput.addEventListener('input', (e) => {
        loadHistory(e.target.value); // Reload history list with the search term
   });
- 
- 
+
+
   const saveCalculationToHistory = (rate, offerData) => {
        // Check if rate is valid before saving
         if (isNaN(rate) || !isFinite(rate)) {
            console.warn("Invalid rate calculated, not saving to history.");
            return;
         }
- 
+
        const historyEntry = {
            timestamp: new Date().toISOString(),
            // Calculation Data
@@ -1452,7 +1452,7 @@ function setupToggle(toggleEl, inputEl, unitEl) {
            hersteller: offerData.hersteller || '',
            // GELÖSCHT: email, telefon, objektart
        };
- 
+
        let history = JSON.parse(localStorage.getItem('financingHistory')) || [];
        // Prevent saving duplicates if inputs haven't changed substantially
        if (history.length > 0) {
@@ -1460,24 +1460,24 @@ function setupToggle(toggleEl, inputEl, unitEl) {
            const calcKeysToCompare = ['anschaffungswert', 'laufzeit', 'anzahlung', 'restwert', 'basiszins', 'margegesamt'];
            // AKTUALISIERT: offerKeysToCompare (entfernte Felder rausgenommen)
            const offerKeysToCompare = ['finanzierungsart', 'anrede', 'vorname', 'nachname', 'firma', 'adresse', 'plz', 'ort', 'objekt', 'hersteller'];
- 
- 
+
+
            const calcIsDuplicate = calcKeysToCompare.every(key => historyEntry[key] === lastEntry[key]) &&
                                      historyEntry.anzahlungToggle === lastEntry.anzahlungToggle &&
                                      historyEntry.restwertToggle === lastEntry.restwertToggle &&
                                      historyEntry.margeToggle === lastEntry.margeToggle;
- 
+
            // Only consider offer data duplicate if calc data is also duplicate
            const offerIsDuplicate = offerKeysToCompare.every(key => historyEntry[key] === lastEntry[key]);
- 
- 
+
+
            if (calcIsDuplicate && offerIsDuplicate) {
               // console.log("Skipping duplicate history entry.");
                return; // Don't save if it looks like a duplicate
            }
        }
- 
- 
+
+
        history.unshift(historyEntry); // Add new entry to the beginning
        if (history.length > 50) { // Keep only the last 50
            history = history.slice(0, 50);
@@ -1485,12 +1485,12 @@ function setupToggle(toggleEl, inputEl, unitEl) {
        localStorage.setItem('financingHistory', JSON.stringify(history));
        console.log("Calculation saved to history.");
   };
- 
+
   const loadHistory = (searchTerm = '') => {
        historyList.innerHTML = ''; // Clear previous list
        let history = JSON.parse(localStorage.getItem('financingHistory')) || [];
        const lowerSearchTerm = searchTerm.toLowerCase().trim();
- 
+
        // Filter history based on search term
        if (lowerSearchTerm) {
            history = history.filter(entry => {
@@ -1512,17 +1512,17 @@ function setupToggle(toggleEl, inputEl, unitEl) {
                               if (key === 'restwert' && entry.restwert?.replace(/[.,€%\s]/g, '').includes(lowerSearchTerm)) return true;
                               if (key === 'basiszins' && entry.basiszins?.replace(/[%.,\s]/g, '').includes(lowerSearchTerm)) return true;
                               if (key === 'margegesamt' && entry.margegesamt?.replace(/[.,€%\s]/g, '').includes(lowerSearchTerm)) return true;
- 
+
                          }
                      }
                      return false;
                  };
                  return checkEntry(entry);
             });
- 
+
        }
- 
- 
+
+
        if (history.length === 0) {
            if(lowerSearchTerm) {
                 historyList.innerHTML = `<p class="text-slate-500 text-center py-8">Keine Einträge für "${searchTerm}" gefunden.</p>`;
@@ -1531,13 +1531,13 @@ function setupToggle(toggleEl, inputEl, unitEl) {
            }
            return;
        }
- 
+
        history.forEach((entry, index) => {
            const date = new Date(entry.timestamp);
            // Format date and time clearly
            const formattedDate = date.toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
            const formattedTime = date.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
- 
+
             // Determine display name based on priority
              let displayName = 'N/A';
              if (entry.nachname) {
@@ -1549,8 +1549,8 @@ function setupToggle(toggleEl, inputEl, unitEl) {
              } else if (entry.objekt) {
                  displayName = entry.objekt;
              }
- 
- 
+
+
            const item = document.createElement('div');
            item.className = 'p-4 border border-gray-200 rounded-lg hover:bg-slate-50 cursor-pointer transition-colors group'; // Added group for potential hover effects on children
            item.innerHTML = `
@@ -1585,15 +1585,15 @@ function setupToggle(toggleEl, inputEl, unitEl) {
            historyList.appendChild(item);
        });
   };
- 
+
    const deleteHistoryEntry = (timestampToDelete) => {
        let history = JSON.parse(localStorage.getItem('financingHistory')) || [];
        const updatedHistory = history.filter(entry => entry.timestamp !== timestampToDelete);
        localStorage.setItem('financingHistory', JSON.stringify(updatedHistory));
        loadHistory(historySearchInput.value); // Reload history with current search term
    };
- 
- 
+
+
   const restoreFromHistory = (entry) => {
     console.log("Restoring from history:", entry);
     // Set calculation values directly
@@ -1603,17 +1603,17 @@ function setupToggle(toggleEl, inputEl, unitEl) {
     document.getElementById('anzahlung').value = entry.anzahlung;
     document.getElementById('restwert').value = entry.restwert;
     document.getElementById('margegesamt').value = entry.margegesamt;
- 
+
     // Set toggle states
     document.getElementById('anzahlung-toggle').checked = entry.anzahlungToggle;
     document.getElementById('restwert-toggle').checked = entry.restwertToggle;
     document.getElementById('marge-toggle').checked = entry.margeToggle;
- 
+
     // Manually update unit labels based on restored toggle state
     document.getElementById('anzahlung-unit').textContent = entry.anzahlungToggle ? '(%)' : '(€)';
     document.getElementById('restwert-unit').textContent = entry.restwertToggle ? '(%)' : '(€)';
     document.getElementById('marge-unit').textContent = entry.margeToggle ? '(%)' : '(€)';
- 
+
     // Restore ALL offer data fields
     document.getElementById('finanzierungsart').value = entry.finanzierungsart || '';
     document.getElementById('anrede').value = entry.anrede || '';
@@ -1626,7 +1626,7 @@ function setupToggle(toggleEl, inputEl, unitEl) {
     document.getElementById('objekt').value = entry.objekt || '';
     document.getElementById('hersteller').value = entry.hersteller || '';
     // GELÖSCHT: email, telefon, objektart
- 
+
      // Update placeholder class for select elements after restoring
     document.querySelectorAll('select.is-placeholder').forEach(select => {
          if (select.value) {
@@ -1635,23 +1635,23 @@ function setupToggle(toggleEl, inputEl, unitEl) {
              select.classList.add('is-placeholder');
          }
     });
- 
- 
+
+
     // Apply formatting to restored calculation values
     document.querySelectorAll('.numeric-input, #laufzeit').forEach(input => formatInput({ target: input }));
- 
+
     // Mark that a calculation should happen
     calculateBtn.dataset.clicked = "true";
     performCalculation(true); // Recalculate, passing true to prevent re-saving
     closeHistoryModal();
   };
- 
- 
+
+
    // Initial setup on page load
    document.addEventListener('DOMContentLoaded', (event) => {
          // Show placeholder initially
          showPlaceholder();
- 
+
          // Add blur listener for formatting numeric inputs initially
          document.querySelectorAll('.numeric-input').forEach(input => {
              input.addEventListener('blur', formatInput);
@@ -1662,7 +1662,7 @@ function setupToggle(toggleEl, inputEl, unitEl) {
          const laufzeitInput = document.getElementById('laufzeit');
          laufzeitInput.addEventListener('blur', formatInput);
          formatInput({ target: laufzeitInput }); // Initial format check
- 
+
          // Set initial state for select placeholders
          document.querySelectorAll('select.is-placeholder').forEach(select => {
               if (!select.value) {
@@ -1670,8 +1670,8 @@ function setupToggle(toggleEl, inputEl, unitEl) {
               }
          });
    });
- 
- 
+
+
 </script>
 </body>
 </html>
