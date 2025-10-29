@@ -665,7 +665,6 @@
   const historySearchInput = document.getElementById('history-search');
 
 
-  // Hauptberechnung (calls save function with offerData)
 // Berechnung entsprechend Excel: Diskontierung des Restwerts, Barwertmarge und "Fudge"-Abschlag
 function performCalculation(isRestoring = false) {
   // Placeholder aktiv lassen, solange "Berechnen" nicht geklickt wurde
@@ -855,17 +854,6 @@ function displayResult(rate, anzahlung, restwert, av, monate, paymentX) {
 
 
   function clearResultsOnError() {
-     if (costChart) { costChart.destroy(); costChart = null; }
-     resultText.textContent = '';
-     indikativerZinsEl.value = '';
-     leasingfaktorEl.value = '';
-     gesamtkostenEl.value = '';
-     resultContainer.classList.add('hidden');
-     placeholderContainer.classList.remove('hidden');
-  }
-
-  function showPlaceholder() {
-       if (costChart) { costChart.destroy(); costChart = null; }
        resultText.textContent = '';
        indikativerZinsEl.value = '';
        leasingfaktorEl.value = '';
